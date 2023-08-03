@@ -59,15 +59,15 @@ GET /introduction-boards/all-introduction-boards : 게시글 (전체) 가져오�
 <h3> photo-board-controller (/photo-boards) </h3>
 사진 게시판 컨트롤러: 사진 게시판을 위한 컨트롤러입니다.<br>
 
-예정 GET /photo-boards: 게시글 (1개) 조회하기
+GET /photo-boards: 게시글 (1개) 조회하기
 
-예정 POST /photo-boards: 게시글 (1개) 등록하기
+POST /photo-boards: 게시글 (1개) 등록하기
 
-예정 DELETE /photo-boards: 게시글 (1개) 삭제하기
+DELETE /photo-boards: 게시글 (1개) 삭제하기
 
 PATCH /photo-boards: 게시글 (1개) 수정하기
 
-예정 GET /photo-boards/all-photo-boards : 게시글 (전체) 가져오기
+GET /photo-boards/all-photo-boards : 게시글 (전체) 가져오기
 
 <h3> faq-board-controller (/faq-boards) </h3>
 FAQ 게시판 컨트롤러: FAQ 게시판을 위한 컨트롤러입니다.<br>
