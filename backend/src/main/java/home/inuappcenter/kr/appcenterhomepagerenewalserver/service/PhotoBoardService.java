@@ -8,10 +8,11 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.Boa
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.ImageRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.PhotoBoardRepository;
 import javax.servlet.http.HttpServletRequest;
+
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class PhotoBoardService {
     private final HttpServletRequest request;
 
     public BoardResponseDto<List<String>> getBoard(Long id) {
-        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow();
+        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
 
         List<Image> ImageList = foundBoard.getImages();
 
@@ -38,11 +39,12 @@ public class PhotoBoardService {
         return boardResponseDto;
     }
 
+    @Transactional
     // 게시글 저장하기
-    public BoardResponseDto<List<Long>> saveBoard(BoardRequestDto boardRequestDto, ImageRequestDto imageRequestDto) throws IOException {
+    public BoardResponseDto<List<Long>> saveBoard(BoardRequestDto boardRequestDto, ImageRequestDto imageRequestDto) {
         PhotoBoard photoBoard = new PhotoBoard();
         // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
-        List<Image> imageList = new Image().toList(imageRequestDto, photoBoard);
+        List<Image> imageList = new <PhotoBoard>Image().toList(imageRequestDto, photoBoard);
 
         // introBoardRequestDto를 introBoard 타입으로 변환
         photoBoard.setPhotoBoard(boardRequestDto);
@@ -67,7 +69,7 @@ public class PhotoBoardService {
     }
 
     public String deleteBoard(Long id) {
-        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow();
+        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
 
         List<Image> ImageList = foundBoard.getImages();
 

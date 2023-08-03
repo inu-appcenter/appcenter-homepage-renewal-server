@@ -12,7 +12,7 @@ import java.util.List;
 public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findAllByIsThumbnailTrue();
 
-    List<Image> findAllByIntroBoard(IntroBoard introBoard);
+    List<Image> findByIntroBoard(IntroBoard introBoard);
 
-    List<Image> findAllByPhotoBoard(PhotoBoard photoBoard);
+    List<Image> findByPhotoBoard(PhotoBoard photoBoard);
 }

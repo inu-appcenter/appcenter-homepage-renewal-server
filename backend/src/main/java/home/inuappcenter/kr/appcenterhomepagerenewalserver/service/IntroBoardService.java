@@ -8,10 +8,12 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.Boa
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.ImageRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.IntroBoardRepository;
 import javax.servlet.http.HttpServletRequest;
+
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +24,10 @@ public class IntroBoardService {
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
 
+    @Transactional
     // 게시글 조회하기
     public BoardResponseDto<List<String>> getBoard(Long id) {
-        IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow();
+        IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
 
         List<Image> ImageList = foundBoard.getImages();
 
@@ -39,15 +42,15 @@ public class IntroBoardService {
         return boardResponseDto;
     }
 
-
+    @Transactional
     // 게시글 저장하기
-    public BoardResponseDto<List<Long>> saveBoard(BoardRequestDto boardRequestDto, ImageRequestDto imageRequestDto) throws IOException {
+    public BoardResponseDto<List<Long>> saveBoard(BoardRequestDto boardRequestDto, ImageRequestDto imageRequestDto) {
         IntroBoard introBoard = new IntroBoard();
         // introBoardRequestDto를 introBoard 타입으로 변환
         introBoard.setIntroBoard(boardRequestDto);
 
         // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
-        List<Image> imageList = new Image().toList(imageRequestDto, introBoard);
+        List<Image> imageList = new <IntroBoard>Image().toList(imageRequestDto, introBoard);
 
         // introBoard를 저장
         introBoardRepository.save(introBoard);
@@ -68,30 +71,38 @@ public class IntroBoardService {
         return boardResponseDto;
     }
 
+    @Transactional
     // 게시글 수정
-    public BoardResponseDto<List<Long>> updateBoard(BoardRequestDto boardRequestDto, Long board_id) throws Exception {
+    public BoardResponseDto<List<Long>> updateBoard(BoardRequestDto boardRequestDto, ImageRequestDto imageRequestDto, Long board_id) {
         // 보드 찾아오기
-        IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(Exception::new);
-
+        IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new RuntimeException(""));
+        // 찾은 보드에 바뀐 내용 대입
         foundBoard.setIntroBoard(boardRequestDto);
 
-        // 찾은 보드에 새로운 정보를 기입해줌
-        foundBoard.setIntroBoard(boardRequestDto);
-        // introBoard를 저장
+        // 이미지를 found 해옴
+        List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
+        // 찾은 이미지에 내용 대입
+        for(Image image: foundImg) {
+            for(MultipartFile multipartFile: imageRequestDto.getMultipartFileList()) {
+                image.setImage(multipartFile);
+            }
+
+        }
+
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
 
-        // 이미지 묶음 찾아오기 1. 게시판에 등록된 외래키 가져와서 2. 외래키로 imageRepository에서 find
-        List<Image> foundImageList = imageRepository.findAllByIntroBoard(foundBoard);
+        List<Image> savedImage = imageRepository.saveAll(foundImg);
 
         List<Long> imageIds = new ArrayList<>();
 
-        for(Image image: foundImageList) {
+        for(Image image: savedImage) {
             imageIds.add(image.getId());
         }
 
         BoardResponseDto<List<Long>> boardResponseDto = new BoardResponseDto<>();
         boardResponseDto.setBoardResponse(introBoard, imageIds);
         return boardResponseDto;
+
     }
 
     public String deleteBoard(Long id) {
@@ -111,6 +122,7 @@ public class IntroBoardService {
 
     public List<BoardResponseDto<String>> findAllBoard() {
         List<IntroBoard> boardList = introBoardRepository.findAll();
+
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();
 
         List<BoardResponseDto<String>> boardResponseDtoList = new ArrayList<>();

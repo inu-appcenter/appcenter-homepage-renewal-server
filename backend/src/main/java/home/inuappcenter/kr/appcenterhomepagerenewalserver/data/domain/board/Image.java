@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,31 +48,41 @@ public class Image {
         this.introBoard = introBoard;
     }
 
-    public Image(String originalFileName, byte[] imageData, Long fileSize, PhotoBoard photoBoard) {
+    public <T>Image(String originalFileName, byte[] imageData, Long fileSize, T board) {
         this.originalFileName = originalFileName;
         this.imageData = ImageUtils.compressImage(imageData);
         this.fileSize = fileSize;
-        this.photoBoard = photoBoard;
+
+        if (board instanceof IntroBoard) {
+            this.introBoard = (IntroBoard) board;
+        } else {
+            this.photoBoard = (PhotoBoard) board;
+        }
+    }
+
+    public void setImage(MultipartFile multipartFile) {
+        try {
+            this.originalFileName = multipartFile.getOriginalFilename();
+            this.imageData = ImageUtils.compressImage(multipartFile.getBytes());
+            this.fileSize = multipartFile.getSize();
+        } catch (IOException e) {
+            throw new RuntimeException("업로드 된 이미지의 정보를 불러올 수 없습니다.");
+        }
     }
 
     public List<Image> makeNewList() {
         return new ArrayList<>();
     }
 
-    public List<Image> toList(ImageRequestDto imageRequestDto, IntroBoard introBoard) throws IOException {
+    public <T> List<Image> toList(ImageRequestDto imageRequestDto, T board) {
         List<Image> imageList = this.makeNewList();
         for (MultipartFile file: imageRequestDto.getMultipartFileList()) {
-            Image image = new Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), introBoard);
-            imageList.add(image);
-        }
-        return imageList;
-    }
-
-    public List<Image> toList(ImageRequestDto imageRequestDto, PhotoBoard photoBoard) throws IOException {
-        List<Image> imageList = this.makeNewList();
-        for (MultipartFile file: imageRequestDto.getMultipartFileList()) {
-            Image image = new Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), photoBoard);
-            imageList.add(image);
+            try {
+                Image image = new Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), board);
+                imageList.add(image);
+            } catch (IOException e) {
+                throw new RuntimeException("파일을 불러오는데 실패하였습니다.");
+            }
         }
         return imageList;
     }

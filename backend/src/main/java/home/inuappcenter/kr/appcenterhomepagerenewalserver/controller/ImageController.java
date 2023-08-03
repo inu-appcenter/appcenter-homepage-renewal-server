@@ -20,7 +20,7 @@ public class ImageController {
     @Operation(summary = "사진 (1개) 가져오기", description = "가져올 id를 입력해주세요")
     @Parameter(name = "id", description = "사진 ID")
     @GetMapping("/photo/{id}")
-    public ResponseEntity<?> downloadImageToFileSystem (@PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<?> getPhoto (@PathVariable("id") Long id) {
         byte[] downloadImage = imageService.getImage(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))

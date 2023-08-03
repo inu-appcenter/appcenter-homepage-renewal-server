@@ -4,8 +4,10 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Member;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.MemberRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.MemberResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.MemberRepository;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,9 +18,10 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupService groupService;
 
-    public MemberResponseDto getMember(Long id) throws Exception {
+    @Transactional
+    public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(Exception::new);
+                .orElseThrow(CustomNotFoundIdException::new);
         MemberResponseDto memberResponseDto = new MemberResponseDto();
         memberResponseDto.setMemberResponseDto(member);
         return memberResponseDto;
@@ -33,8 +36,9 @@ public class MemberService {
         return memberResponseDto;
     }
 
-    public MemberResponseDto updateMember(Long id, MemberRequestDto memberRequestDto) throws Exception {
-        Member found_member = memberRepository.findById(id).orElseThrow(Exception::new);
+    @Transactional
+    public MemberResponseDto updateMember(Long id, MemberRequestDto memberRequestDto) {
+        Member found_member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         found_member.setMember(id, memberRequestDto);
         Member saved_member = memberRepository.save(found_member);
         MemberResponseDto memberResponseDto = new MemberResponseDto();
@@ -49,8 +53,8 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
-    public String deleteMember(Long id) throws Exception {
-        Member found_member = memberRepository.findById(id).orElseThrow(Exception::new);
+    public String deleteMember(Long id) {
+        Member found_member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         if(!groupService.findMember(found_member)) {
             memberRepository.deleteById(id);
             return "member id ["+ id + "] has been deleted.";

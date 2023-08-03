@@ -8,8 +8,10 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.Gro
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.GroupRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.MemberRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.RoleRepository;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +23,9 @@ public class GroupService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
-    public GroupResponseDto getGroup(Long id) throws Exception {
-        Group found_group = groupRepository.findById(id).orElseThrow(Exception::new);
+    @Transactional
+    public GroupResponseDto getGroup(Long id) {
+        Group found_group = groupRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         GroupResponseDto groupResponseDto = new GroupResponseDto();
         groupResponseDto.setGroupResponseDto(found_group);
         return groupResponseDto;
@@ -35,9 +38,10 @@ public class GroupService {
                 .collect(Collectors.toList());
     }
 
-    public GroupResponseDto assignGroup(Long member_id, Long role_id, GroupRequestDto groupRequestDto) throws Exception {
-        Member found_member = memberRepository.findById(member_id).orElseThrow(Exception::new);
-        Role found_role = roleRepository.findById(role_id).orElseThrow(Exception::new);
+    @Transactional
+    public GroupResponseDto assignGroup(Long member_id, Long role_id, GroupRequestDto groupRequestDto) {
+        Member found_member = memberRepository.findById(member_id).orElseThrow(CustomNotFoundIdException::new);
+        Role found_role = roleRepository.findById(role_id).orElseThrow(CustomNotFoundIdException::new);
 
         Group group = new Group();
         group.setGroup(found_member, found_role, groupRequestDto);
@@ -48,10 +52,11 @@ public class GroupService {
         return groupResponseDto;
     }
 
-    public GroupResponseDto updateGroup(GroupRequestDto groupRequestDto, Long id) throws Exception {
+    @Transactional
+    public GroupResponseDto updateGroup(GroupRequestDto groupRequestDto, Long id) {
         // 여기서 외래키까지 다 변경할 수 있게 하려고 했는데, 과한듯
         // 그룹 객체 찾기
-        Group foundGroup = groupRepository.findById(id).orElseThrow(Exception::new);
+        Group foundGroup = groupRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         foundGroup.setGroup(id, groupRequestDto);
         Group savedGroup = groupRepository.save(foundGroup);
 

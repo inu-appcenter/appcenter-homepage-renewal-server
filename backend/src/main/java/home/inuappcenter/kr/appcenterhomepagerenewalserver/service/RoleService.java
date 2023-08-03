@@ -4,8 +4,11 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Role;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.RoleRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.RoleResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.RoleRepository;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,8 +19,9 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final GroupService groupService;
 
-    public RoleResponseDto getRole(Long id) throws Exception {
-        Role getRole = roleRepository.findById(id).orElseThrow(Exception::new);
+    @Transactional
+    public RoleResponseDto getRole(Long id) {
+        Role getRole = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         RoleResponseDto roleResponseDto = new RoleResponseDto();
         roleResponseDto.setRoleResponseDto(getRole);
         return roleResponseDto;
@@ -32,8 +36,9 @@ public class RoleService {
         return roleResponseDto;
     }
 
-    public RoleResponseDto updateRole(Long id, RoleRequestDto roleRequestDto) throws Exception {
-        Role found_role = roleRepository.findById(id).orElseThrow(Exception::new);
+    @Transactional
+    public RoleResponseDto updateRole(Long id, RoleRequestDto roleRequestDto) {
+        Role found_role = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         found_role.setRole(id, roleRequestDto);
         Role update_role = roleRepository.save(found_role);
         RoleResponseDto roleResponseDto = new RoleResponseDto();
@@ -48,8 +53,9 @@ public class RoleService {
                 .collect(Collectors.toList());
     }
 
-    public String deleteRole(Long id) throws Exception {
-        Role found_role = roleRepository.findById(id).orElseThrow(Exception::new);
+    @Transactional
+    public String deleteRole(Long id) {
+        Role found_role = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         if(!groupService.findRole(found_role)) {
             roleRepository.deleteById(id);
             return "role id ["+ id + "] has been deleted.";
