@@ -21,7 +21,7 @@ public class MemberController {
     @Operation(summary = "동아리원 (1명) 정보 가져오기", description = "동아리원에게 부여된 id를 입력해주세요 / 동아리원(1명)을 반환합니다.")
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @GetMapping
-    public ResponseEntity<MemberResponseDto> getMember(Long id) throws Exception {
+    public ResponseEntity<MemberResponseDto> getMember(Long id) {
         MemberResponseDto memberResponseDto = memberService.getMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
@@ -43,7 +43,7 @@ public class MemberController {
     @Operation(summary = "동아리원 (1명) 수정하기", description = "수정할 동아리원 정보를 입력해주세요")
     @Parameter(name = "id", description = "동아리원 id")
     @PatchMapping
-    public ResponseEntity<MemberResponseDto> updateMember(@RequestBody MemberRequestDto memberRequestDto, Long id) throws Exception {
+    public ResponseEntity<MemberResponseDto> updateMember(@RequestBody MemberRequestDto memberRequestDto, Long id) {
         MemberResponseDto memberResponseDto = memberService.updateMember(id, memberRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberResponseDto);
     }
@@ -53,7 +53,7 @@ public class MemberController {
     @Operation(summary = "동아리원 (1명) 삭제하기", description = "동아리원 삭제 / 동아리원이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "동아리원 id")
     @DeleteMapping
-    public ResponseEntity<String> deleteMember(Long id) throws Exception {
+    public ResponseEntity<String> deleteMember(Long id) {
         String result = memberService.deleteMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

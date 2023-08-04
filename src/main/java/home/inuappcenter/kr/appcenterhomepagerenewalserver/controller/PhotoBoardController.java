@@ -1,6 +1,5 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.controller;
 
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Image;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.BoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.BoardResponseDto;

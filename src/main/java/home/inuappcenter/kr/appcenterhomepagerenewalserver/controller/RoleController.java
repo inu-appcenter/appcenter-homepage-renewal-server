@@ -21,7 +21,7 @@ public class RoleController {
     @Operation(summary = "역할 (1개) 가져오기", description = "역할에게 부여된 id를 입력해주세요 / 역할 1개를 반환합니다.")
     @Parameter(name = "id", description = "역할 id", required = true)
     @GetMapping
-    public ResponseEntity<RoleResponseDto> getRole(Long id) throws Exception {
+    public ResponseEntity<RoleResponseDto> getRole(Long id) {
         RoleResponseDto roleResponseDto = roleService.getRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(roleResponseDto);
     }
@@ -44,7 +44,7 @@ public class RoleController {
     @Operation(summary = "역할 (1개) 수정", description = "역할 수정")
     @Parameter(name = "id", description = "역할 id")
     @PatchMapping
-    public ResponseEntity<RoleResponseDto> updateUpdate(@RequestBody RoleRequestDto roleRequestDto, Long id) throws Exception {
+    public ResponseEntity<RoleResponseDto> updateUpdate(@RequestBody RoleRequestDto roleRequestDto, Long id) {
         RoleResponseDto roleResponseDto = roleService.updateRole(id, roleRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(roleResponseDto);
     }
@@ -54,7 +54,7 @@ public class RoleController {
     @Operation(summary = "역할 (1개) 삭제", description = "역할 삭제 / 역할이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "역할 id")
     @DeleteMapping
-    public ResponseEntity<String> deleteRole(Long id) throws Exception {
+    public ResponseEntity<String> deleteRole(Long id) {
         String result = roleService.deleteRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

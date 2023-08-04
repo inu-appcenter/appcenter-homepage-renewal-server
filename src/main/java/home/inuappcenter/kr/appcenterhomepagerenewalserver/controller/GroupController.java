@@ -21,7 +21,7 @@ public class GroupController {
 
     @Operation(summary = "그룹 멤버 (1명) 조회", description = "조회할 group_id을 입력해주세요")
     @GetMapping
-    public ResponseEntity<GroupResponseDto> getGroup(Long id) throws Exception {
+    public ResponseEntity<GroupResponseDto> getGroup(Long id) {
         GroupResponseDto groupResponseDto = groupService.getGroup(id);
         return ResponseEntity.status(HttpStatus.OK).body(groupResponseDto);
     }
@@ -39,7 +39,7 @@ public class GroupController {
             @Parameter(name = "role_id", description = "역할 ID")
     })
     @PostMapping
-    public ResponseEntity<GroupResponseDto> assignGroup(@RequestBody GroupRequestDto groupRequestDto, Long member_id, Long role_id) throws Exception {
+    public ResponseEntity<GroupResponseDto> assignGroup(@RequestBody GroupRequestDto groupRequestDto, Long member_id, Long role_id) {
             GroupResponseDto groupResponseDto = groupService.assignGroup(member_id, role_id, groupRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(groupResponseDto);
     }
@@ -47,7 +47,7 @@ public class GroupController {
     @Operation(summary = "그룹 멤버 (1명) 수정", description = "수정할 Group id를 입력해주세요")
     @Parameter(name = "group_id", description = "그룹 ID")
     @PatchMapping
-    public ResponseEntity<GroupResponseDto> updateGroup(@RequestBody GroupRequestDto groupRequestDto, Long id) throws Exception{
+    public ResponseEntity<GroupResponseDto> updateGroup(@RequestBody GroupRequestDto groupRequestDto, Long id) {
         GroupResponseDto groupResponseDto = groupService.updateGroup(groupRequestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(groupResponseDto);
     }
