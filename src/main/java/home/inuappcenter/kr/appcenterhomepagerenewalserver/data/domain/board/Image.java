@@ -41,13 +41,6 @@ public class Image {
     @Column(name = "is_thumbnail")
     private Boolean isThumbnail = false;
 
-    public Image(String originalFileName, byte[] imageData, Long fileSize, IntroBoard introBoard) {
-        this.originalFileName = originalFileName;
-        this.imageData = ImageUtils.compressImage(imageData);
-        this.fileSize = fileSize;
-        this.introBoard = introBoard;
-    }
-
     public <T>Image(String originalFileName, byte[] imageData, Long fileSize, T board) {
         this.originalFileName = originalFileName;
         this.imageData = ImageUtils.compressImage(imageData);
@@ -74,6 +67,7 @@ public class Image {
         return new ArrayList<>();
     }
 
+    // 제네릭 메소드를 이용하여 두가지 보드 타입을 처리하였음
     public <T> List<Image> toList(ImageRequestDto imageRequestDto, T board) {
         List<Image> imageList = this.makeNewList();
         for (MultipartFile file: imageRequestDto.getMultipartFileList()) {

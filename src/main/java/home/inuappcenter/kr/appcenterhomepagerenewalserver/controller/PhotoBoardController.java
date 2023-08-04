@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -21,7 +20,7 @@ import java.util.List;
 @RequestMapping("/photo-board")
 public class PhotoBoardController {
     private final PhotoBoardService photoBoardService;
-    private final List<MultipartFile> multipartFileList;
+
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping
@@ -36,7 +35,7 @@ public class PhotoBoardController {
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
     public ResponseEntity<BoardResponseDto<List<Long>>> saveBoard(@RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                                                  @RequestPart(value = "introBoardRequestDto") BoardRequestDto boardRequestDto) throws IOException {
+                                                                  @RequestPart(value = "introBoardRequestDto") BoardRequestDto boardRequestDto) {
 
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
         BoardResponseDto<List<Long>> boardResponseDto = photoBoardService.saveBoard(boardRequestDto, imageRequestDto);
