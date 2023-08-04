@@ -9,17 +9,17 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.Image
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.IntroBoardRepository;
 import javax.servlet.http.HttpServletRequest;
 
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.utils.BoardUtils;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class IntroBoardService {
+public class IntroBoardService extends BoardUtils {
     private final IntroBoardRepository introBoardRepository;
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
@@ -31,14 +31,8 @@ public class IntroBoardService {
 
         List<Image> ImageList = foundBoard.getImages();
 
-        List<String> images = new ArrayList<>();
-
-        for(Image image: ImageList) {
-            images.add(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +  "/image/photo/" + image.getId().toString());
-        }
-
         BoardResponseDto<List<String>> boardResponseDto = new BoardResponseDto<>();
-        boardResponseDto.setBoardResponse(foundBoard, images);
+        boardResponseDto.setBoardResponse(foundBoard, super.returnImageURL(request, ImageList));
         return boardResponseDto;
     }
 
@@ -60,14 +54,8 @@ public class IntroBoardService {
 
         List<Image> savedImage = imageRepository.saveAll(imageList);
 
-        List<Long> imageIds = new ArrayList<>();
-
-        for(Image image: savedImage) {
-            imageIds.add(image.getId());
-        }
-
         BoardResponseDto<List<Long>> boardResponseDto = new BoardResponseDto<>();
-        boardResponseDto.setBoardResponse(introBoard, imageIds);
+        boardResponseDto.setBoardResponse(introBoard, super.returnImageId(savedImage));
         return boardResponseDto;
     }
 
@@ -93,14 +81,8 @@ public class IntroBoardService {
 
         List<Image> savedImage = imageRepository.saveAll(foundImg);
 
-        List<Long> imageIds = new ArrayList<>();
-
-        for(Image image: savedImage) {
-            imageIds.add(image.getId());
-        }
-
         BoardResponseDto<List<Long>> boardResponseDto = new BoardResponseDto<>();
-        boardResponseDto.setBoardResponse(introBoard, imageIds);
+        boardResponseDto.setBoardResponse(introBoard, super.returnImageId(savedImage));
         return boardResponseDto;
 
     }
@@ -125,12 +107,6 @@ public class IntroBoardService {
 
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();
 
-        List<BoardResponseDto<String>> boardResponseDtoList = new ArrayList<>();
-
-        for(int i=0; i<=boardList.size()-1; i++) {
-            boardResponseDtoList.add(boardList.get(i).toBoardResponseDto(boardList.get(i), thumbnailList.get(i).getLocation(request, thumbnailList.get(i))));
-        }
-
-        return boardResponseDtoList;
+        return super.returnIntroBoardResponseDtoList(boardList, thumbnailList, request);
     }
 }
