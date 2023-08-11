@@ -4,6 +4,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Ima
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.IntroBoard;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.PhotoBoard;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.BoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.IntroBoardResponseDto;
 import lombok.NoArgsConstructor;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -32,13 +33,13 @@ public class BoardUtils {
         return imageIds;
     }
 
-    public List<BoardResponseDto<String>> returnIntroBoardResponseDtoList(List<IntroBoard> boardList, List<Image> thumbnailList, HttpServletRequest request) {
-        List<BoardResponseDto<String>> boardResponseDtoList = new ArrayList<>();
+    public List<IntroBoardResponseDto<String>> returnIntroBoardResponseDtoList(List<IntroBoard> boardList, List<Image> thumbnailList, HttpServletRequest request) {
+        List<IntroBoardResponseDto<String>> introBoardResponseDtoList = new ArrayList<>();
 
         for(int i=0; i<=boardList.size()-1; i++) {
-            boardResponseDtoList.add(boardList.get(i).toBoardResponseDto(boardList.get(i), thumbnailList.get(i).getLocation(request, thumbnailList.get(i))));
+            introBoardResponseDtoList.add(boardList.get(i).toBoardResponseDto(boardList.get(i), thumbnailList.get(i).getLocation(request, thumbnailList.get(i))));
         }
-        return  boardResponseDtoList;
+        return  introBoardResponseDtoList;
     }
 
     public List<BoardResponseDto<String>> returnPhotoBoardResponseDtoList(List<PhotoBoard> boardList, List<Image> thumbnailList, HttpServletRequest request) {

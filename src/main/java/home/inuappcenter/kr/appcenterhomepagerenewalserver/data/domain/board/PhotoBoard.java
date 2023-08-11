@@ -20,7 +20,7 @@ public class PhotoBoard extends Board{
     private List<Image> Images = new ArrayList<>();
 
     public void setPhotoBoard(BoardRequestDto boardRequestDto) {
-        this.body = boardRequestDto.getBoard();
+        this.body = boardRequestDto.getBody();
     }
 
     public BoardResponseDto<String> toBoardResponseDto(PhotoBoard photoBoard, String image) {

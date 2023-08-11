@@ -13,5 +13,5 @@ public class BoardRequestDto {
             description = "본문"
     )
     @NotBlank
-    String board;
+    String body;
 }
