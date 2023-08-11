@@ -5,9 +5,9 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Ima
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.IntroBoard;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.PhotoBoard;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.BoardRequestDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.PhotoBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.IntroBoardRequestDto;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.BoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.IntroBoardResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.BoardRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.ImageRepository;
@@ -128,25 +128,25 @@ public class BoardService extends BoardUtils {
 
     @Transactional
     // (사진) 게시글 조회
-    public BoardResponseDto<List<String>> getPhotoBoard(Long id) {
+    public PhotoBoardResponseDto<List<String>> getPhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
 
         List<Image> ImageList = foundBoard.getImages();
 
-        BoardResponseDto<List<String>> boardResponseDto = new BoardResponseDto<>();
-        boardResponseDto.setBoardResponse(foundBoard, super.returnImageURL(request, ImageList));
-        return boardResponseDto;
+        PhotoBoardResponseDto<List<String>> photoBoardResponseDto = new PhotoBoardResponseDto<>();
+        photoBoardResponseDto.setPhotoBoardResponse(foundBoard, super.returnImageURL(request, ImageList));
+        return photoBoardResponseDto;
     }
 
     @Transactional
     // (사진) 게시글 저장
-    public BoardResponseDto<List<Long>> savePhotoBoard(BoardRequestDto boardRequestDto, ImageRequestDto imageRequestDto) {
+    public PhotoBoardResponseDto<List<Long>> savePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto, ImageRequestDto imageRequestDto) {
         PhotoBoard photoBoard = new PhotoBoard();
         // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
         List<Image> imageList = new <PhotoBoard>Image().toList(imageRequestDto, photoBoard);
 
         // introBoardRequestDto를 introBoard 타입으로 변환
-        photoBoard.setPhotoBoard(boardRequestDto);
+        photoBoard.setPhotoBoard(photoBoardRequestDto);
 
         // introBoard를 저장
         boardRepository.save(photoBoard);
@@ -162,9 +162,9 @@ public class BoardService extends BoardUtils {
             imageIds.add(image.getId());
         }
 
-        BoardResponseDto<List<Long>> boardResponseDto = new BoardResponseDto<>();
-        boardResponseDto.setBoardResponse(photoBoard, imageIds);
-        return boardResponseDto;
+        PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = new PhotoBoardResponseDto<>();
+        photoBoardResponseDto.setPhotoBoardResponse(photoBoard, imageIds);
+        return photoBoardResponseDto;
     }
 
     @Transactional
@@ -186,7 +186,7 @@ public class BoardService extends BoardUtils {
 
     @Transactional
     // (사진) 모든 게시글 조회하기
-    public List<BoardResponseDto<String>> findAllPhotoBoard() {
+    public List<PhotoBoardResponseDto<String>> findAllPhotoBoard() {
         List<PhotoBoard> boardList = photoBoardRepository.findAll();
 
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();

@@ -1,8 +1,8 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.controller;
 
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.BoardRequestDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.PhotoBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.BoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,9 +24,9 @@ public class PhotoBoardController {
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping
-    public ResponseEntity<BoardResponseDto<List<String>>> getBoard(Long id) {
-        BoardResponseDto<List<String>> boardResponseDto = boardService.getPhotoBoard(id);
-        return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
+    public ResponseEntity<PhotoBoardResponseDto<List<String>>> getBoard(Long id) {
+        PhotoBoardResponseDto<List<String>> photoBoardResponseDto = boardService.getPhotoBoard(id);
+        return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
     }
 
     @Operation(summary = "게시글 (1개) 저장하기", description = "스웨거에서는 작동하지 않는 액션입니다.")
@@ -34,13 +34,13 @@ public class PhotoBoardController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<BoardResponseDto<List<Long>>> saveBoard(@RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                                                  @RequestPart(value = "introBoardRequestDto") BoardRequestDto boardRequestDto) {
+    public ResponseEntity<PhotoBoardResponseDto<List<Long>>> saveBoard(@RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
+                                                                       @RequestPart(value = "introBoardRequestDto") PhotoBoardRequestDto photoBoardRequestDto) {
 
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
-        BoardResponseDto<List<Long>> boardResponseDto = boardService.savePhotoBoard(boardRequestDto, imageRequestDto);
+        PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = boardService.savePhotoBoard(photoBoardRequestDto, imageRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
     }
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
@@ -53,8 +53,8 @@ public class PhotoBoardController {
 
     @Operation(summary = "사진 글 (전체) 조회", description = "사진 글을 모두 반환합니다.")
     @GetMapping("/all-boards-contents")
-    public ResponseEntity<List<BoardResponseDto<String>>> findAllBoard() {
-        List<BoardResponseDto<String>> dto_list = boardService.findAllPhotoBoard();
+    public ResponseEntity<List<PhotoBoardResponseDto<String>>> findAllBoard() {
+        List<PhotoBoardResponseDto<String>> dto_list = boardService.findAllPhotoBoard();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 

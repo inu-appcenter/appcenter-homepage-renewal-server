@@ -1,7 +1,7 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board;
 
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.BoardRequestDto;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.BoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.PhotoBoardRequestDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,13 +19,13 @@ public class PhotoBoard extends Board{
     @OneToMany(mappedBy = "photoBoard")
     private List<Image> Images = new ArrayList<>();
 
-    public void setPhotoBoard(BoardRequestDto boardRequestDto) {
-        this.body = boardRequestDto.getBody();
+    public void setPhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
+        this.body = photoBoardRequestDto.getBody();
     }
 
-    public BoardResponseDto<String> toBoardResponseDto(PhotoBoard photoBoard, String image) {
-        BoardResponseDto<String> boardResponseDto = new BoardResponseDto<>();
-        boardResponseDto.setBoardResponse(photoBoard, image);
-        return boardResponseDto;
+    public PhotoBoardResponseDto<String> toBoardResponseDto(PhotoBoard photoBoard, String image) {
+        PhotoBoardResponseDto<String> photoBoardResponseDto = new PhotoBoardResponseDto<>();
+        photoBoardResponseDto.setPhotoBoardResponse(photoBoard, image);
+        return photoBoardResponseDto;
     }
 }
