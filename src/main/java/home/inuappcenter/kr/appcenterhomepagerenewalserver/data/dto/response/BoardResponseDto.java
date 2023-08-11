@@ -13,19 +13,14 @@ public class BoardResponseDto<T> {
     private T images;
 
     public void setBoardResponse(IntroBoard introBoard, T images) {
-        this.board_id = introBoard.getIntroduction_board_id();
+        this.board_id = introBoard.getId();
         this.body = introBoard.getBody();
         this.images = images;
     }
 
     public void setBoardResponse(PhotoBoard photoBoard, T images) {
-        this.board_id = photoBoard.getPhoto_board_id();
+        this.board_id = photoBoard.getId();
         this.body = photoBoard.getBody();
         this.images = images;
-    }
-
-    public void setBoardResponse(IntroBoard introBoard) {
-        this.board_id = introBoard.getIntroduction_board_id();
-        this.body = introBoard.getBody();
     }
 }

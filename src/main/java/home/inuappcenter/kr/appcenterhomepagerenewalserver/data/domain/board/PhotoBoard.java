@@ -12,11 +12,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "photo_board")
-public class PhotoBoard {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long photo_board_id;
+public class PhotoBoard extends Board{
 
     private String body;
 

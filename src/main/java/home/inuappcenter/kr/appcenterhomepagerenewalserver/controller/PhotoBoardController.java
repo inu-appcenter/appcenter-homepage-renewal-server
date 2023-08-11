@@ -3,7 +3,7 @@ package home.inuappcenter.kr.appcenterhomepagerenewalserver.controller;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.BoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.BoardResponseDto;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.PhotoBoardService;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
@@ -19,13 +19,13 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/photo-board")
 public class PhotoBoardController {
-    private final PhotoBoardService photoBoardService;
+    private final BoardService boardService;
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping
     public ResponseEntity<BoardResponseDto<List<String>>> getBoard(Long id) {
-        BoardResponseDto<List<String>> boardResponseDto = photoBoardService.getBoard(id);
+        BoardResponseDto<List<String>> boardResponseDto = boardService.getPhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
     }
 
@@ -38,7 +38,7 @@ public class PhotoBoardController {
                                                                   @RequestPart(value = "introBoardRequestDto") BoardRequestDto boardRequestDto) {
 
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
-        BoardResponseDto<List<Long>> boardResponseDto = photoBoardService.saveBoard(boardRequestDto, imageRequestDto);
+        BoardResponseDto<List<Long>> boardResponseDto = boardService.savePhotoBoard(boardRequestDto, imageRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
     }
@@ -47,14 +47,14 @@ public class PhotoBoardController {
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping
     public ResponseEntity<String> deleteBoard(Long id) {
-        String result = photoBoardService.deleteBoard(id);
+        String result = boardService.deletePhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @Operation(summary = "사진 글 (전체) 조회", description = "사진 글을 모두 반환합니다.")
     @GetMapping("/all-boards-contents")
     public ResponseEntity<List<BoardResponseDto<String>>> findAllBoard() {
-        List<BoardResponseDto<String>> dto_list = photoBoardService.findAllBoard();
+        List<BoardResponseDto<String>> dto_list = boardService.findAllPhotoBoard();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 

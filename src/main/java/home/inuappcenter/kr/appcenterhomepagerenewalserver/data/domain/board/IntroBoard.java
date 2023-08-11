@@ -12,13 +12,13 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "introduction_board")
-public class IntroBoard {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long introduction_board_id;
+public class IntroBoard extends Board{
+    public String title;
+    public String subTitle;
+    public String androidStoreLink;
+    public String iOSStoreLink;
+    public String body;
 
-    private String body;
 
     @OneToMany(mappedBy = "introBoard")
     private List<Image> Images = new ArrayList<>();
