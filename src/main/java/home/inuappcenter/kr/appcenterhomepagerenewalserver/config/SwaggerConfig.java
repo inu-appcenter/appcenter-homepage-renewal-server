@@ -12,7 +12,7 @@ public class SwaggerConfig {
     public OpenAPI springOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("Appcenter Homepage Application")
-                        .description("앱센터 홈페이지 애플리케이션")
-                        .version("v0.0.1"));
+                        .description("앱센터 홈페이지 어플리케이션")
+                        .version("v0.1.0"));
     }
 }
