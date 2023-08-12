@@ -6,7 +6,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/groups")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GroupController {
     private final GroupService groupService;
 

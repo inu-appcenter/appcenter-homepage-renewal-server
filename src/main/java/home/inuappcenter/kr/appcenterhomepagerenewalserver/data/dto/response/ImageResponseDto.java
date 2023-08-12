@@ -12,7 +12,6 @@ public class ImageResponseDto {
     private IntroBoard introBoard;
     private PhotoBoard photoBoard ;
     private String originalFileName;
-    // 데이터를 받아오지 않음
     private Long fileSize;
     private Boolean isThumbnail = false;
 

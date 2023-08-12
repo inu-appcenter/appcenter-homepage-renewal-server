@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.PhotoBoardRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.utils.BoardUtils;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardService extends BoardUtils {
     private final BoardRepository<Board> boardRepository;
 
