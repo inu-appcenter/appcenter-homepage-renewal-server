@@ -5,7 +5,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.Mem
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/members")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
 

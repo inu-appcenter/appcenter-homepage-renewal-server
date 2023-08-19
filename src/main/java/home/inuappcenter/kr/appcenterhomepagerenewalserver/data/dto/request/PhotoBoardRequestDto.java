@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class BoardRequestDto {
+public class PhotoBoardRequestDto {
     @Schema(
             example = "안녕하세요",
             description = "본문"
     )
     @NotBlank
-    String board;
+    String body;
 }
