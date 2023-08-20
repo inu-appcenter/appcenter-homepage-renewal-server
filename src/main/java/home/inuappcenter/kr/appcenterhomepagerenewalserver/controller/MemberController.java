@@ -6,6 +6,8 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.MemberService
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
 
@@ -22,6 +25,7 @@ public class MemberController {
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @GetMapping
     public ResponseEntity<MemberResponseDto> getMember(Long id) {
+        log.info("안녕하세요 info");
         MemberResponseDto memberResponseDto = memberService.getMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
@@ -56,6 +60,17 @@ public class MemberController {
     public ResponseEntity<String> deleteMember(Long id) {
         String result = memberService.deleteMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping(value = "/log")
+    public void log() throws Exception {
+
+        //FATAL, ERROR, WARN, INFO, DEBUG, TRACE
+        log.error("ERROR");
+        log.warn("WARN");
+        log.info("INFO");
+        log.debug("DEBUG");
+        log.trace("TRACE");
     }
 
 }
