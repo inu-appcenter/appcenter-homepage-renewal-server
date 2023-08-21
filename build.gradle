@@ -15,7 +15,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    all {
+    configureEach {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
 }
@@ -37,10 +37,15 @@ dependencies {
     // 2.7.X 버전에서는 아래 의존성 사용
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
     // Log4j2
-    implementation "org.springframework.boot:spring-boot-starter-log4j2";
+    implementation "org.springframework.boot:spring-boot-starter-log4j2"
 
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+bootRun {
+    String activeProfile = System.properties['spring.profiles.active']
+    systemProperty "spring.profiles.active", activeProfile
 }

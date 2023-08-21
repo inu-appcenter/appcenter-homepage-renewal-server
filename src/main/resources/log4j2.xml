@@ -44,7 +44,7 @@
 
     <!-- 로그 범위  -->
     <Loggers>
-        <!-- Spring 관련 로그  -->
+        <!-- Spring 관련 로그-->
        <Logger name="org.springframework" additivity="false" level="INFO">
             <AppenderRef ref="Console_Appender"/>
             <AppenderRef ref="File_Info_Appender"/>
@@ -52,7 +52,7 @@
         </Logger>
 
         <!-- 프로젝트 로그 -->
-        <logger name=" kr.inuappcenter.home" additivity="false" level="INFO">
+        <logger name="home.inuappcenter.kr" additivity="false" level="DEBUG">
             <AppenderRef ref="Console_Appender"/>
             <AppenderRef ref="File_Info_Appender"/>
             <AppenderRef ref="File_Error_Appender"/>
