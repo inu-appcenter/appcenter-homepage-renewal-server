@@ -37,7 +37,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 
-    @Operation(summary = "동아리원 (1명) 등록하기", description = "등록할 동아리원 정보를 입력해주세요")
+    @Operation(summary = "동아리원 (1명) 등록", description = "등록할 동아리원 정보를 입력해주세요")
     @PostMapping
     public ResponseEntity<MemberResponseDto> saveMember(@RequestBody MemberRequestDto memberRequestDto) {
         log.info("사용자가 Member를 저장하도록 요청했습니다.\n" +

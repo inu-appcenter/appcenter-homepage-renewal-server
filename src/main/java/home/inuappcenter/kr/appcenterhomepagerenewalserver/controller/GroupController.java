@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/groups")
 @RequiredArgsConstructor
+@Slf4j
 public class GroupController {
     private final GroupService groupService;
 
     @Operation(summary = "그룹 멤버 (1명) 조회", description = "조회할 group_id을 입력해주세요")
     @GetMapping
     public ResponseEntity<GroupResponseDto> getGroup(Long id) {
+        log.info("사용자가 id: " + id + "을(를) 가진 Grop을 요청했습니다.");
         GroupResponseDto groupResponseDto = groupService.getGroup(id);
         return ResponseEntity.status(HttpStatus.OK).body(groupResponseDto);
     }
@@ -29,6 +32,7 @@ public class GroupController {
     @Operation(summary = "그룹 멤버 (전체) 조회", description = "전체 그룹 멤버를 반환합니다.")
     @GetMapping("/all-groups-members")
     public ResponseEntity<List<GroupResponseDto>> findAllGroup() {
+        log.info("사용자가 전체 Grop 목록을 요청했습니다.");
         List<GroupResponseDto> dto_list = groupService.findAllGroup();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
@@ -40,6 +44,8 @@ public class GroupController {
     })
     @PostMapping
     public ResponseEntity<GroupResponseDto> assignGroup(@RequestBody GroupRequestDto groupRequestDto, Long member_id, Long role_id) {
+        log.info("사용자가 Group을 저장하도록 요청했습니다.\n" +
+                "GroupRequestDto의 내용: "+ groupRequestDto.toString());
             GroupResponseDto groupResponseDto = groupService.assignGroup(member_id, role_id, groupRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(groupResponseDto);
     }
@@ -48,6 +54,8 @@ public class GroupController {
     @Parameter(name = "group_id", description = "그룹 ID")
     @PatchMapping
     public ResponseEntity<GroupResponseDto> updateGroup(@RequestBody GroupRequestDto groupRequestDto, Long id) {
+        log.info("사용자가 id: "+ id + "을(를) 가진 Group을 수정하도록 요청했습니다.\n" +
+                "GroupRequestDto의 내용: "+ groupRequestDto.toString());
         GroupResponseDto groupResponseDto = groupService.updateGroup(groupRequestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(groupResponseDto);
     }
@@ -55,8 +63,9 @@ public class GroupController {
     @Operation(summary = "그룹 멤버 (1명) 삭제", description = "삭제할 Group id를 입력해주세요")
     @Parameter(name = "group_id", description = "그룹 ID")
     @DeleteMapping
-    public ResponseEntity<String> deleteGroup(Long group_id) {
-        String result = groupService.deleteGroup(group_id);
+    public ResponseEntity<String> deleteGroup(Long id) {
+        log.info("사용자가 id: " + id + "을(를) 가진 Group을 삭제하도록 요청했습니다.");
+        String result = groupService.deleteGroup(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

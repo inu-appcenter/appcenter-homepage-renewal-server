@@ -7,6 +7,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/introduction-board")
+@Slf4j
 public class IntroductionBoardController {
 
     public final BoardService boardService;
@@ -25,6 +27,7 @@ public class IntroductionBoardController {
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping
     public ResponseEntity<IntroBoardResponseDto<List<String>>> getBoard(Long id) {
+        log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 요청했습니다.");
         IntroBoardResponseDto<List<String>> boardResponseDto = boardService.getIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
     }
@@ -36,7 +39,8 @@ public class IntroductionBoardController {
     })
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(@RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
                                                                   @RequestPart(value = "introBoardRequestDto") IntroBoardRequestDto introBoardRequestDto) {
-
+        log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
+                "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto, imageRequestDto);
 
@@ -47,6 +51,7 @@ public class IntroductionBoardController {
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping
     public ResponseEntity<String> deleteBoard(Long id) {
+        log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 삭제하도록 요청했습니다.");
         String result = boardService.deleteIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -54,6 +59,7 @@ public class IntroductionBoardController {
     @Operation(summary = "앱 소개 글 (전체) 조회", description = "앱 소개 글을 모두 반환합니다.")
     @GetMapping("/all-boards-contents")
     public ResponseEntity<List<IntroBoardResponseDto<String>>> findAllBoard() {
+        log.info("사용자가 전체 IntroBoard 목록을 요청했습니다.");
         List<IntroBoardResponseDto<String>> dto_list = boardService.findAllIntroBoard();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
@@ -67,9 +73,11 @@ public class IntroductionBoardController {
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> updateBoard(
                                          @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
                                          @RequestPart(value = "introBoardRequestDto") IntroBoardRequestDto introBoardRequestDto,
-                                         @RequestPart(value ="board_id") Long board_id) {
+                                         @RequestPart(value ="board_id") Long id) {
+        log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
+                "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
-        IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updateIntroBoard(introBoardRequestDto, imageRequestDto, board_id);
+        IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updateIntroBoard(introBoardRequestDto, imageRequestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
     }
 

@@ -48,6 +48,11 @@
        <Logger name="org.springframework" additivity="false" level="INFO">
             <AppenderRef ref="Console_Appender"/>
             <AppenderRef ref="File_Info_Appender"/>
+        </Logger>
+
+        <!-- Spring 관련 로그-->
+        <Logger name="org.springframework" additivity="false" level="ERROR">
+            <AppenderRef ref="Console_Appender"/>
             <AppenderRef ref="File_Error_Appender"/>
         </Logger>
 
@@ -55,6 +60,11 @@
         <logger name="home.inuappcenter.kr" additivity="false" level="DEBUG">
             <AppenderRef ref="Console_Appender"/>
             <AppenderRef ref="File_Info_Appender"/>
+        </logger>
+
+        <!-- 프로젝트 로그 -->
+        <logger name="home.inuappcenter.kr" additivity="false" level="ERROR">
+            <AppenderRef ref="Console_Appender"/>
             <AppenderRef ref="File_Error_Appender"/>
         </logger>
 
