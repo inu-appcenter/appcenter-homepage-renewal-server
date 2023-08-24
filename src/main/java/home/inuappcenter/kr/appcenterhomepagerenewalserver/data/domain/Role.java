@@ -29,8 +29,9 @@ public class Role {
     }
 
     public RoleResponseDto toRoleResponseDto(Role role) {
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(role);
-        return roleResponseDto;
+        return RoleResponseDto.builder()
+                .role_id(role.getRole_id())
+                .role_name(role.getRole_name())
+                .build();
     }
 }

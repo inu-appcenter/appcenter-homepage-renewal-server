@@ -22,18 +22,20 @@ public class RoleService {
     @Transactional
     public RoleResponseDto getRole(Long id) {
         Role getRole = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(getRole);
-        return roleResponseDto;
+        return RoleResponseDto.builder()
+                .role_id(getRole.getRole_id())
+                .role_name(getRole.getRole_name())
+                .build();
     }
 
     public RoleResponseDto saveRole(RoleRequestDto roleRequestDto) {
         Role role = new Role();
         role.setRole(roleRequestDto);
         Role savedRole = roleRepository.save(role);
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(savedRole);
-        return roleResponseDto;
+        return RoleResponseDto.builder()
+                .role_id(savedRole.getRole_id())
+                .role_name(savedRole.getRole_name())
+                .build();
     }
 
     @Transactional
@@ -41,9 +43,10 @@ public class RoleService {
         Role found_role = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         found_role.setRole(id, roleRequestDto);
         Role update_role = roleRepository.save(found_role);
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(update_role);
-        return roleResponseDto;
+        return RoleResponseDto.builder()
+                .role_id(update_role.getRole_id())
+                .role_name(update_role.getRole_name())
+                .build();
     }
 
     public List<RoleResponseDto> findAllRole() {
