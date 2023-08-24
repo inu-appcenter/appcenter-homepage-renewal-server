@@ -6,6 +6,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.MemberService
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
 
@@ -22,6 +24,7 @@ public class MemberController {
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @GetMapping
     public ResponseEntity<MemberResponseDto> getMember(Long id) {
+        log.info("사용자가 id: " + id + "을(를) 가진 Member를 요청했습니다.");
         MemberResponseDto memberResponseDto = memberService.getMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
@@ -29,13 +32,16 @@ public class MemberController {
     @Operation(summary = "동아리원 (전체) 정보 가져오기", description = "전체 동아리원을 반환합니다.")
     @GetMapping("/all-members")
     public ResponseEntity<List<MemberResponseDto>> findAllMember() {
+        log.info("사용자가 전체 Member 목록을 요청했습니다.");
         List<MemberResponseDto> dto_list = memberService.findAllMember();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 
-    @Operation(summary = "동아리원 (1명) 등록하기", description = "등록할 동아리원 정보를 입력해주세요")
+    @Operation(summary = "동아리원 (1명) 등록", description = "등록할 동아리원 정보를 입력해주세요")
     @PostMapping
     public ResponseEntity<MemberResponseDto> saveMember(@RequestBody MemberRequestDto memberRequestDto) {
+        log.info("사용자가 Member를 저장하도록 요청했습니다.\n" +
+                 "MemberRequestDto의 내용: "+ memberRequestDto.toString());
         MemberResponseDto memberResponseDto = memberService.saveMember(memberRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberResponseDto);
     }
@@ -44,6 +50,8 @@ public class MemberController {
     @Parameter(name = "id", description = "동아리원 id")
     @PatchMapping
     public ResponseEntity<MemberResponseDto> updateMember(@RequestBody MemberRequestDto memberRequestDto, Long id) {
+        log.info("사용자가 id: "+ id + "을(를) 가진 Member를 수정하도록 요청했습니다.\n" +
+                "MemberRequestDto의 내용: "+ memberRequestDto.toString());
         MemberResponseDto memberResponseDto = memberService.updateMember(id, memberRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberResponseDto);
     }
@@ -54,6 +62,7 @@ public class MemberController {
     @Parameter(name = "id", description = "동아리원 id")
     @DeleteMapping
     public ResponseEntity<String> deleteMember(Long id) {
+        log.info("사용자가 id: " + id + "을(를) 가진 Member를 삭제하도록 요청했습니다.");
         String result = memberService.deleteMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

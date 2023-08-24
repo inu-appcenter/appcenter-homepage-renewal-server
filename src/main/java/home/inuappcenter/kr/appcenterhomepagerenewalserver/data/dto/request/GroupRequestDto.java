@@ -5,9 +5,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class GroupRequestDto {
     @Schema(
             example = "서버",

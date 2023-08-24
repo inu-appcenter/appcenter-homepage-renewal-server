@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <!-- 파일 정보
+    <Properties>
+        <Property name="infoLogNm">./logs/inu/api_info.log</Property>
+        <Property name="errorLogNm">./logs/inu/api_error.log</Property>
+        <Property name="jsonInfoLogNm">./logs/inu/api_json_info.log</Property>
+        <Property name="layoutPattern">%style{%d{UTF-8}}{black} %highlight{%-5level} [%style{%t}{bright,blue}]
+            %style{%C}{bright,yellow}: %msg%n%throwable
+        </Property>
+    </Properties>
+    -->
+
+    <!-- 생성 파일 정보 -->
+    <Appenders>
+        <Console name="Console_Appender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p: %c - %m%n" />
+        </Console>
+
+        <!-- info level
+        <File name="File_Info_Appender">
+            <fileName>${infoLogNm}</fileName>
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </File>
+        -->
+
+        <!-- error level
+        <File name="File_Error_Appender">
+            <fileName>${errorLogNm}</fileName>
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </File>
+        -->
+
+        <!-- json api info
+        <File name="File_Json_info_Appender">
+            <fileName>${jsonInfoLogNm}</fileName>
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </File>
+        -->
+    </Appenders>
+
+    <!-- 로그 범위  -->
+    <Loggers>
+        <!-- Spring 관련 로그-->
+       <Logger name="org.springframework" additivity="false" level="INFO">
+            <AppenderRef ref="Console_Appender"/>
+        </Logger>s
+
+        <!-- 프로젝트 로그 -->
+        <logger name="home.inuappcenter.kr" additivity="false" level="DEBUG">
+            <AppenderRef ref="Console_Appender"/>
+        </logger>
+
+        <!-- Default 세팅 -->
+        <root additivity="false" level="OFF">
+            <AppenderRef ref="Console_Appender"/>
+        </root>
+    </Loggers>
+</Configuration>

@@ -6,6 +6,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.Mem
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.MemberRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +15,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupService groupService;
 
     @Transactional
     public MemberResponseDto getMember(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(CustomNotFoundIdException::new);
+        Member member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         MemberResponseDto memberResponseDto = new MemberResponseDto();
         memberResponseDto.setMemberResponseDto(member);
         return memberResponseDto;
