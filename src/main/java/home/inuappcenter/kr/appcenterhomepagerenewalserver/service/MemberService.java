@@ -23,18 +23,30 @@ public class MemberService {
     @Transactional
     public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
-        MemberResponseDto memberResponseDto = new MemberResponseDto();
-        memberResponseDto.setMemberResponseDto(member);
-        return memberResponseDto;
+        return MemberResponseDto.builder()
+                .member_id(member.getMember_id())
+                .name(member.getName())
+                .description(member.getDescription())
+                .profileImage(member.getProfileImage())
+                .blogLink(member.getBlogLink())
+                .email(member.getEmail())
+                .gitRepositoryLink(member.getGitRepositoryLink())
+                .build();
     }
 
     public MemberResponseDto saveMember(MemberRequestDto memberRequestDto) {
         Member member = new Member();
         member.setMember(memberRequestDto);
         Member saved_member = memberRepository.save(member);
-        MemberResponseDto memberResponseDto = new MemberResponseDto();
-        memberResponseDto.setMemberResponseDto(saved_member);
-        return memberResponseDto;
+        return MemberResponseDto.builder()
+                .member_id(saved_member.getMember_id())
+                .name(saved_member.getName())
+                .description(saved_member.getDescription())
+                .profileImage(saved_member.getProfileImage())
+                .blogLink(saved_member.getBlogLink())
+                .email(saved_member.getEmail())
+                .gitRepositoryLink(saved_member.getGitRepositoryLink())
+                .build();
     }
 
     @Transactional
@@ -42,9 +54,15 @@ public class MemberService {
         Member found_member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         found_member.setMember(id, memberRequestDto);
         Member saved_member = memberRepository.save(found_member);
-        MemberResponseDto memberResponseDto = new MemberResponseDto();
-        memberResponseDto.setMemberResponseDto(saved_member);
-        return memberResponseDto;
+        return MemberResponseDto.builder()
+                .member_id(saved_member.getMember_id())
+                .name(saved_member.getName())
+                .description(saved_member.getDescription())
+                .profileImage(saved_member.getProfileImage())
+                .blogLink(saved_member.getBlogLink())
+                .email(saved_member.getEmail())
+                .gitRepositoryLink(saved_member.getGitRepositoryLink())
+                .build();
     }
 
     public List<MemberResponseDto> findAllMember() {

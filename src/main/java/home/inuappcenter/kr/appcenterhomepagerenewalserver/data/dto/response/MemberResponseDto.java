@@ -1,27 +1,26 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response;
 
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Member;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class MemberResponseDto {
-    private Long member_id;
-    private String name;
-    private String description;
-    private String profileImage;
-    private String blogLink;
-    private String email;
-    private String gitRepositoryLink;
+    private final Long member_id;
+    private final String name;
+    private final String description;
+    private final String profileImage;
+    private final String blogLink;
+    private final String email;
+    private final String gitRepositoryLink;
 
-    public void setMemberResponseDto(Member member) {
-        this.member_id = member.getMember_id();
-        this.name = member.getName();
-        this.description = member.getDescription();
-        this.profileImage = member.getProfileImage();
-        this.blogLink = member.getBlogLink();
-        this.email = member.getEmail();
-        this.gitRepositoryLink = member.getGitRepositoryLink();
+    @Builder
+    private MemberResponseDto(Long member_id, String name, String description, String profileImage, String blogLink, String email, String gitRepositoryLink) {
+        this.member_id = member_id;
+        this.name = name;
+        this.description = description;
+        this.profileImage = profileImage;
+        this.blogLink = blogLink;
+        this.email = email;
+        this.gitRepositoryLink = gitRepositoryLink;
     }
 }

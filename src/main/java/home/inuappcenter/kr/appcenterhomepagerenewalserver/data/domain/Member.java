@@ -49,8 +49,14 @@ public class Member {
     }
 
     public MemberResponseDto toMemberResponseDto(Member member) {
-        MemberResponseDto memberResponseDto = new MemberResponseDto();
-        memberResponseDto.setMemberResponseDto(member);
-        return memberResponseDto;
+        return MemberResponseDto.builder()
+                .member_id(member.getMember_id())
+                .name(member.getName())
+                .description(member.getDescription())
+                .profileImage(member.getProfileImage())
+                .blogLink(member.getBlogLink())
+                .email(member.getEmail())
+                .gitRepositoryLink(member.getGitRepositoryLink())
+                .build();
     }
 }

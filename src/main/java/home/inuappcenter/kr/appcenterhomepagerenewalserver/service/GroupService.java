@@ -26,9 +26,17 @@ public class GroupService {
     @Transactional
     public GroupResponseDto getGroup(Long id) {
         Group found_group = groupRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
-        GroupResponseDto groupResponseDto = new GroupResponseDto();
-        groupResponseDto.setGroupResponseDto(found_group);
-        return groupResponseDto;
+        return GroupResponseDto.builder()
+                .group_id(found_group.getGroup_id())
+                .member(found_group.getMember().getName())
+                .profileImage(found_group.getMember().getProfileImage())
+                .email(found_group.getMember().getEmail())
+                .blogLink(found_group.getMember().getBlogLink())
+                .gitRepositoryLink(found_group.getMember().getGitRepositoryLink())
+                .role(found_group.getRole().getRole_name())
+                .part(found_group.getPart())
+                .year(found_group.getYear())
+                .build();
     }
 
     public List<GroupResponseDto> findAllGroup() {
@@ -47,9 +55,17 @@ public class GroupService {
         group.setGroup(found_member, found_role, groupRequestDto);
         Group saved_group = groupRepository.save(group);
 
-        GroupResponseDto groupResponseDto = new GroupResponseDto();
-        groupResponseDto.setGroupResponseDto(saved_group);
-        return groupResponseDto;
+        return GroupResponseDto.builder()
+                .group_id(saved_group.getGroup_id())
+                .member(saved_group.getMember().getName())
+                .profileImage(saved_group.getMember().getProfileImage())
+                .email(saved_group.getMember().getEmail())
+                .blogLink(saved_group.getMember().getBlogLink())
+                .gitRepositoryLink(saved_group.getMember().getGitRepositoryLink())
+                .role(saved_group.getRole().getRole_name())
+                .part(saved_group.getPart())
+                .year(saved_group.getYear())
+                .build();
     }
 
     @Transactional
@@ -59,10 +75,17 @@ public class GroupService {
         Group foundGroup = groupRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         foundGroup.setGroup(id, groupRequestDto);
         Group savedGroup = groupRepository.save(foundGroup);
-
-        GroupResponseDto groupResponseDto = new GroupResponseDto();
-        groupResponseDto.setGroupResponseDto(savedGroup);
-        return groupResponseDto;
+        return GroupResponseDto.builder()
+                .group_id(savedGroup.getGroup_id())
+                .member(savedGroup.getMember().getName())
+                .profileImage(savedGroup.getMember().getProfileImage())
+                .email(savedGroup.getMember().getEmail())
+                .blogLink(savedGroup.getMember().getBlogLink())
+                .gitRepositoryLink(savedGroup.getMember().getGitRepositoryLink())
+                .role(savedGroup.getRole().getRole_name())
+                .part(savedGroup.getPart())
+                .year(savedGroup.getYear())
+                .build();
     }
 
     // 멤버 찾기

@@ -40,12 +40,16 @@ public class BoardService extends BoardUtils {
     // (앱) 게시글 조회하기
     public IntroBoardResponseDto<List<String>> getIntroBoard(Long id) {
         IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
-
         List<Image> ImageList = foundBoard.getImages();
-
-        IntroBoardResponseDto<List<String>> boardResponseDto = new IntroBoardResponseDto<>();
-        boardResponseDto.setIntroBoardResponse(foundBoard, super.returnImageURL(request, ImageList));
-        return boardResponseDto;
+        return IntroBoardResponseDto.<List<String>>builder()
+                .id(foundBoard.getId())
+                .title(foundBoard.getTitle())
+                .subTitle(foundBoard.getSubTitle())
+                .androidStoreLink(foundBoard.getAndroidStoreLink())
+                .iOSStoreLink(foundBoard.getIOSStoreLink())
+                .body(foundBoard.getBody())
+                .images(super.returnImageURL(request, ImageList))
+                .build();
     }
 
     @Transactional
@@ -54,21 +58,23 @@ public class BoardService extends BoardUtils {
         IntroBoard introBoard = new IntroBoard();
         // introBoardRequestDto를 introBoard 타입으로 변환
         introBoard.setIntroBoard(introBoardRequestDto);
-
         // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
         List<Image> imageList = new <IntroBoard>Image().toList(imageRequestDto, introBoard);
-
         // introBoard를 저장
         boardRepository.save(introBoard);
-
         // 첫번째 이미지는 isThumbnail을 true로 변경
         imageList.get(0).isThumbnail();
-
         List<Image> savedImage = imageRepository.saveAll(imageList);
 
-        IntroBoardResponseDto<List<Long>> introBoardResponseDto = new IntroBoardResponseDto<>();
-        introBoardResponseDto.setIntroBoardResponse(introBoard, super.returnImageId(savedImage));
-        return introBoardResponseDto;
+        return IntroBoardResponseDto.<List<Long>>builder()
+                .id(introBoard.getId())
+                .title(introBoard.getTitle())
+                .subTitle(introBoard.getSubTitle())
+                .androidStoreLink(introBoard.getAndroidStoreLink())
+                .iOSStoreLink(introBoard.getIOSStoreLink())
+                .body(introBoard.getBody())
+                .images(super.returnImageId(savedImage))
+                .build();
     }
 
     @Transactional
@@ -88,14 +94,18 @@ public class BoardService extends BoardUtils {
             }
 
         }
-
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
-
         List<Image> savedImage = imageRepository.saveAll(foundImg);
 
-        IntroBoardResponseDto<List<Long>> introBoardResponseDto = new IntroBoardResponseDto<>();
-        introBoardResponseDto.setIntroBoardResponse(introBoard, super.returnImageId(savedImage));
-        return introBoardResponseDto;
+        return IntroBoardResponseDto.<List<Long>>builder()
+                .id(introBoard.getId())
+                .title(introBoard.getTitle())
+                .subTitle(introBoard.getSubTitle())
+                .androidStoreLink(introBoard.getAndroidStoreLink())
+                .iOSStoreLink(introBoard.getIOSStoreLink())
+                .body(introBoard.getBody())
+                .images(super.returnImageId(savedImage))
+                .build();
 
     }
 
@@ -130,12 +140,12 @@ public class BoardService extends BoardUtils {
     // (사진) 게시글 조회
     public PhotoBoardResponseDto<List<String>> getPhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
-
         List<Image> ImageList = foundBoard.getImages();
-
-        PhotoBoardResponseDto<List<String>> photoBoardResponseDto = new PhotoBoardResponseDto<>();
-        photoBoardResponseDto.setPhotoBoardResponse(foundBoard, super.returnImageURL(request, ImageList));
-        return photoBoardResponseDto;
+        return PhotoBoardResponseDto.<List<String>>builder()
+                .board_id(foundBoard.getId())
+                .body(foundBoard.getBody())
+                .images(super.returnImageURL(request, ImageList))
+                .build();
     }
 
     @Transactional
@@ -162,9 +172,11 @@ public class BoardService extends BoardUtils {
             imageIds.add(image.getId());
         }
 
-        PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = new PhotoBoardResponseDto<>();
-        photoBoardResponseDto.setPhotoBoardResponse(photoBoard, imageIds);
-        return photoBoardResponseDto;
+        return PhotoBoardResponseDto.<List<Long>>builder()
+                .board_id(photoBoard.getId())
+                .body(photoBoard.getBody())
+                .images(imageIds)
+                .build();
     }
 
     @Transactional
