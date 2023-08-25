@@ -51,8 +51,8 @@ public class GroupService {
         Member found_member = memberRepository.findById(member_id).orElseThrow(CustomNotFoundIdException::new);
         Role found_role = roleRepository.findById(role_id).orElseThrow(CustomNotFoundIdException::new);
 
-        Group group = new Group();
-        group.setGroup(found_member, found_role, groupRequestDto);
+        Group group = new Group(found_member, found_role, groupRequestDto);
+
         Group saved_group = groupRepository.save(group);
 
         return GroupResponseDto.builder()
@@ -73,7 +73,9 @@ public class GroupService {
         // 여기서 외래키까지 다 변경할 수 있게 하려고 했는데, 과한듯
         // 그룹 객체 찾기
         Group foundGroup = groupRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        // 그룹 객체를 찾고서 내용을 변경한다.
         foundGroup.setGroup(id, groupRequestDto);
+        // 변경된 내용을 저장소에 반영
         Group savedGroup = groupRepository.save(foundGroup);
         return GroupResponseDto.builder()
                 .group_id(savedGroup.getGroup_id())

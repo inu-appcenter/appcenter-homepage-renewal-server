@@ -16,7 +16,6 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long role_id;
-
     private String role_name;
 
     public void setRole(RoleRequestDto roleRequestDto) {

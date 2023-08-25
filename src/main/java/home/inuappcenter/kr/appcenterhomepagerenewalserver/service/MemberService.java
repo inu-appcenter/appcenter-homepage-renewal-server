@@ -35,8 +35,7 @@ public class MemberService {
     }
 
     public MemberResponseDto saveMember(MemberRequestDto memberRequestDto) {
-        Member member = new Member();
-        member.setMember(memberRequestDto);
+        Member member = new Member(memberRequestDto);
         Member saved_member = memberRepository.save(member);
         return MemberResponseDto.builder()
                 .member_id(saved_member.getMember_id())

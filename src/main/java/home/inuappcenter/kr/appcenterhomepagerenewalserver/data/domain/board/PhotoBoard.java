@@ -24,10 +24,10 @@ public class PhotoBoard extends Board{
     }
 
     public PhotoBoardResponseDto<String> toBoardResponseDto(PhotoBoard photoBoard, String image) {
-        return PhotoBoardResponseDto.<String>builder()
-                .board_id(photoBoard.getId())
-                .body(photoBoard.body)
-                .images(image)
-                .build();
+        return new PhotoBoardResponseDto<>(
+                photoBoard.getId(),
+                photoBoard.getBody(),
+                image
+        );
     }
 }

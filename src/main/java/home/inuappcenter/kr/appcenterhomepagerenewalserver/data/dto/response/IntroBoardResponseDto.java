@@ -1,6 +1,5 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -13,8 +12,7 @@ public class IntroBoardResponseDto<T> {
     public final String body;
     private final T images;
 
-    @Builder
-    private IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String iOSStoreLink, String body, T images) {
+    public IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String iOSStoreLink, String body, T images) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;

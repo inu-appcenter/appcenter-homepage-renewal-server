@@ -32,14 +32,14 @@ public class IntroBoard extends Board {
     }
 
     public IntroBoardResponseDto<String> toBoardResponseDto(IntroBoard introBoard, String image) {
-        return IntroBoardResponseDto.<String>builder()
-                .id(introBoard.getId())
-                .title(introBoard.getTitle())
-                .subTitle(introBoard.getSubTitle())
-                .androidStoreLink(introBoard.getAndroidStoreLink())
-                .iOSStoreLink(introBoard.getIOSStoreLink())
-                .body(introBoard.getBody())
-                .images(image)
-                .build();
+        return new IntroBoardResponseDto<>(
+                introBoard.getId(),
+                introBoard.getTitle(),
+                introBoard.getSubTitle(),
+                introBoard.getAndroidStoreLink(),
+                introBoard.getIOSStoreLink(),
+                introBoard.getBody(),
+                image
+        );
     }
 }

@@ -29,7 +29,7 @@ public class Member {
     @Column(name = "git_repository_link")
     private String gitRepositoryLink;
 
-    public void setMember(MemberRequestDto memberRequestDto) {
+    public Member (MemberRequestDto memberRequestDto) {
         this.name = memberRequestDto.getName();
         this.description = memberRequestDto.getDescription();
         this.profileImage = memberRequestDto.getProfileImage();

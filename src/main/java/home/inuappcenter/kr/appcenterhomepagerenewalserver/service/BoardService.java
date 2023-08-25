@@ -41,15 +41,16 @@ public class BoardService extends BoardUtils {
     public IntroBoardResponseDto<List<String>> getIntroBoard(Long id) {
         IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         List<Image> ImageList = foundBoard.getImages();
-        return IntroBoardResponseDto.<List<String>>builder()
-                .id(foundBoard.getId())
-                .title(foundBoard.getTitle())
-                .subTitle(foundBoard.getSubTitle())
-                .androidStoreLink(foundBoard.getAndroidStoreLink())
-                .iOSStoreLink(foundBoard.getIOSStoreLink())
-                .body(foundBoard.getBody())
-                .images(super.returnImageURL(request, ImageList))
-                .build();
+
+        return new IntroBoardResponseDto<>(
+                foundBoard.getId(),
+                foundBoard.getTitle(),
+                foundBoard.getSubTitle(),
+                foundBoard.getAndroidStoreLink(),
+                foundBoard.getIOSStoreLink(),
+                foundBoard.getBody(),
+                super.returnImageURL(request, ImageList)
+        );
     }
 
     @Transactional
@@ -66,15 +67,15 @@ public class BoardService extends BoardUtils {
         imageList.get(0).isThumbnail();
         List<Image> savedImage = imageRepository.saveAll(imageList);
 
-        return IntroBoardResponseDto.<List<Long>>builder()
-                .id(introBoard.getId())
-                .title(introBoard.getTitle())
-                .subTitle(introBoard.getSubTitle())
-                .androidStoreLink(introBoard.getAndroidStoreLink())
-                .iOSStoreLink(introBoard.getIOSStoreLink())
-                .body(introBoard.getBody())
-                .images(super.returnImageId(savedImage))
-                .build();
+        return new IntroBoardResponseDto<>(
+                introBoard.getId(),
+                introBoard.getTitle(),
+                introBoard.getSubTitle(),
+                introBoard.getAndroidStoreLink(),
+                introBoard.getIOSStoreLink(),
+                introBoard.getBody(),
+                super.returnImageId(savedImage)
+        );
     }
 
     @Transactional
@@ -97,16 +98,15 @@ public class BoardService extends BoardUtils {
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
         List<Image> savedImage = imageRepository.saveAll(foundImg);
 
-        return IntroBoardResponseDto.<List<Long>>builder()
-                .id(introBoard.getId())
-                .title(introBoard.getTitle())
-                .subTitle(introBoard.getSubTitle())
-                .androidStoreLink(introBoard.getAndroidStoreLink())
-                .iOSStoreLink(introBoard.getIOSStoreLink())
-                .body(introBoard.getBody())
-                .images(super.returnImageId(savedImage))
-                .build();
-
+        return new IntroBoardResponseDto<>(
+                        introBoard.getId(),
+                        introBoard.getTitle(),
+                        introBoard.getSubTitle(),
+                        introBoard.getAndroidStoreLink(),
+                        introBoard.getIOSStoreLink(),
+                        introBoard.getBody(),
+                        super.returnImageId(savedImage)
+                        );
     }
 
     @Transactional
@@ -141,11 +141,11 @@ public class BoardService extends BoardUtils {
     public PhotoBoardResponseDto<List<String>> getPhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
         List<Image> ImageList = foundBoard.getImages();
-        return PhotoBoardResponseDto.<List<String>>builder()
-                .board_id(foundBoard.getId())
-                .body(foundBoard.getBody())
-                .images(super.returnImageURL(request, ImageList))
-                .build();
+        return new PhotoBoardResponseDto<>(
+                foundBoard.getId(),
+                foundBoard.getBody(),
+                super.returnImageURL(request, ImageList)
+        );
     }
 
     @Transactional
@@ -172,11 +172,11 @@ public class BoardService extends BoardUtils {
             imageIds.add(image.getId());
         }
 
-        return PhotoBoardResponseDto.<List<Long>>builder()
-                .board_id(photoBoard.getId())
-                .body(photoBoard.getBody())
-                .images(imageIds)
-                .build();
+        return new PhotoBoardResponseDto<>(
+                photoBoard.getId(),
+                photoBoard.getBody(),
+                imageIds
+        );
     }
 
     @Transactional

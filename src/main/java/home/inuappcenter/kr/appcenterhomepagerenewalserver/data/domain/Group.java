@@ -27,7 +27,7 @@ public class Group {
 
     private Double year;
 
-    public void setGroup(Member member, Role role, GroupRequestDto groupRequestDto) {
+    public Group(Member member, Role role, GroupRequestDto groupRequestDto) {
         this.member = member;
         this.role = role;
         this.part = groupRequestDto.getPart();
