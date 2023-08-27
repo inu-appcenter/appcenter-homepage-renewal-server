@@ -1,27 +1,24 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response;
 
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.IntroBoard;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class IntroBoardResponseDto<T> {
-    private Long id;
-    public String title;
-    public String subTitle;
-    public String androidStoreLink;
-    public String iOSStoreLink;
-    public String body;
-    private T images;
+    private final Long id;
+    public final String title;
+    public final String subTitle;
+    public final String androidStoreLink;
+    public final String iOSStoreLink;
+    public final String body;
+    private final T images;
 
-    public void setIntroBoardResponse(IntroBoard introBoard, T images) {
-        this.id = introBoard.getId();
-        this.title = introBoard.getTitle();
-        this.subTitle = introBoard.getSubTitle();
-        this.androidStoreLink = introBoard.getAndroidStoreLink();
-        this.iOSStoreLink = introBoard.getIOSStoreLink();
-        this.body = introBoard.getBody();
+    public IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String iOSStoreLink, String body, T images) {
+        this.id = id;
+        this.title = title;
+        this.subTitle = subTitle;
+        this.androidStoreLink = androidStoreLink;
+        this.iOSStoreLink = iOSStoreLink;
+        this.body = body;
         this.images = images;
     }
 }

@@ -4,7 +4,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Role;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.RoleRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.RoleResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.RoleRepository;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,29 +21,32 @@ public class RoleService {
 
     @Transactional
     public RoleResponseDto getRole(Long id) {
-        Role getRole = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(getRole);
-        return roleResponseDto;
+        Role getRole = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        return RoleResponseDto.builder()
+                .role_id(getRole.getRole_id())
+                .role_name(getRole.getRole_name())
+                .build();
     }
 
     public RoleResponseDto saveRole(RoleRequestDto roleRequestDto) {
         Role role = new Role();
         role.setRole(roleRequestDto);
         Role savedRole = roleRepository.save(role);
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(savedRole);
-        return roleResponseDto;
+        return RoleResponseDto.builder()
+                .role_id(savedRole.getRole_id())
+                .role_name(savedRole.getRole_name())
+                .build();
     }
 
     @Transactional
     public RoleResponseDto updateRole(Long id, RoleRequestDto roleRequestDto) {
-        Role found_role = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         found_role.setRole(id, roleRequestDto);
         Role update_role = roleRepository.save(found_role);
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(update_role);
-        return roleResponseDto;
+        return RoleResponseDto.builder()
+                .role_id(update_role.getRole_id())
+                .role_name(update_role.getRole_name())
+                .build();
     }
 
     public List<RoleResponseDto> findAllRole() {
@@ -55,7 +58,7 @@ public class RoleService {
 
     @Transactional
     public String deleteRole(Long id) {
-        Role found_role = roleRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         if(!groupService.findRole(found_role)) {
             roleRepository.deleteById(id);
             return "role id ["+ id + "] has been deleted.";

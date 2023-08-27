@@ -16,7 +16,6 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long role_id;
-
     private String role_name;
 
     public void setRole(RoleRequestDto roleRequestDto) {
@@ -29,8 +28,9 @@ public class Role {
     }
 
     public RoleResponseDto toRoleResponseDto(Role role) {
-        RoleResponseDto roleResponseDto = new RoleResponseDto();
-        roleResponseDto.setRoleResponseDto(role);
-        return roleResponseDto;
+        return RoleResponseDto.builder()
+                .role_id(role.getRole_id())
+                .role_name(role.getRole_name())
+                .build();
     }
 }

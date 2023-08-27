@@ -32,8 +32,14 @@ public class IntroBoard extends Board {
     }
 
     public IntroBoardResponseDto<String> toBoardResponseDto(IntroBoard introBoard, String image) {
-        IntroBoardResponseDto<String> introBoardResponseDto = new IntroBoardResponseDto<>();
-        introBoardResponseDto.setIntroBoardResponse(introBoard, image);
-        return introBoardResponseDto;
+        return new IntroBoardResponseDto<>(
+                introBoard.getId(),
+                introBoard.getTitle(),
+                introBoard.getSubTitle(),
+                introBoard.getAndroidStoreLink(),
+                introBoard.getIOSStoreLink(),
+                introBoard.getBody(),
+                image
+        );
     }
 }

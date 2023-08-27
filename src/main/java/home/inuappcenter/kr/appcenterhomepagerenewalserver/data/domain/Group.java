@@ -27,7 +27,7 @@ public class Group {
 
     private Double year;
 
-    public void setGroup(Member member, Role role, GroupRequestDto groupRequestDto) {
+    public Group(Member member, Role role, GroupRequestDto groupRequestDto) {
         this.member = member;
         this.role = role;
         this.part = groupRequestDto.getPart();
@@ -41,8 +41,16 @@ public class Group {
     }
 
     public GroupResponseDto toGroupResponseDto(Group group) {
-        GroupResponseDto groupResponseDto = new GroupResponseDto();
-        groupResponseDto.setGroupResponseDto(group);
-        return groupResponseDto;
+        return GroupResponseDto.builder()
+                .group_id(group.getGroup_id())
+                .member(group.getMember().getName())
+                .profileImage(group.getMember().getProfileImage())
+                .email(group.getMember().getEmail())
+                .blogLink(group.getMember().getBlogLink())
+                .gitRepositoryLink(group.getMember().getGitRepositoryLink())
+                .role(group.getRole().getRole_name())
+                .part(group.getPart())
+                .year(group.getYear())
+                .build();
     }
 }

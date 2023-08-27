@@ -24,8 +24,10 @@ public class PhotoBoard extends Board{
     }
 
     public PhotoBoardResponseDto<String> toBoardResponseDto(PhotoBoard photoBoard, String image) {
-        PhotoBoardResponseDto<String> photoBoardResponseDto = new PhotoBoardResponseDto<>();
-        photoBoardResponseDto.setPhotoBoardResponse(photoBoard, image);
-        return photoBoardResponseDto;
+        return new PhotoBoardResponseDto<>(
+                photoBoard.getId(),
+                photoBoard.getBody(),
+                image
+        );
     }
 }
