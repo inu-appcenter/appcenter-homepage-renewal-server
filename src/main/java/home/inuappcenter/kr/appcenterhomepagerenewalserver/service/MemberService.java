@@ -4,7 +4,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Member;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.MemberRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.MemberResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.MemberRepository;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class MemberService {
 
     @Transactional
     public MemberResponseDto getMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return MemberResponseDto.builder()
                 .member_id(member.getMember_id())
                 .name(member.getName())
@@ -50,7 +50,7 @@ public class MemberService {
 
     @Transactional
     public MemberResponseDto updateMember(Long id, MemberRequestDto memberRequestDto) {
-        Member found_member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         found_member.setMember(id, memberRequestDto);
         Member saved_member = memberRepository.save(found_member);
         return MemberResponseDto.builder()
@@ -72,7 +72,7 @@ public class MemberService {
     }
 
     public String deleteMember(Long id) {
-        Member found_member = memberRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         if(!groupService.findMember(found_member)) {
             memberRepository.deleteById(id);
             return "member id ["+ id + "] has been deleted.";

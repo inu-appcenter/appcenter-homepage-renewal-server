@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.PhotoBoardRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.utils.BoardUtils;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.service.CustomNotFoundIdException;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +39,7 @@ public class BoardService extends BoardUtils {
     @Transactional
     // (앱) 게시글 조회하기
     public IntroBoardResponseDto<List<String>> getIntroBoard(Long id) {
-        IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         List<Image> ImageList = foundBoard.getImages();
 
         return new IntroBoardResponseDto<>(
@@ -139,7 +139,7 @@ public class BoardService extends BoardUtils {
     @Transactional
     // (사진) 게시글 조회
     public PhotoBoardResponseDto<List<String>> getPhotoBoard(Long id) {
-        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         List<Image> ImageList = foundBoard.getImages();
         return new PhotoBoardResponseDto<>(
                 foundBoard.getId(),
@@ -182,7 +182,7 @@ public class BoardService extends BoardUtils {
     @Transactional
     // (사진) 게시글 삭제
     public String deletePhotoBoard(Long id) {
-        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(CustomNotFoundIdException::new);
+        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
 
         List<Image> ImageList = foundBoard.getImages();
 
