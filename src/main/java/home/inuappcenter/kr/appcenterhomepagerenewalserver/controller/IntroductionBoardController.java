@@ -40,10 +40,11 @@ public class IntroductionBoardController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) @Valid List<MultipartFile> multipartFileList,
+    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
                                                                   @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto) {
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
+        @Valid
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto, imageRequestDto);
 
