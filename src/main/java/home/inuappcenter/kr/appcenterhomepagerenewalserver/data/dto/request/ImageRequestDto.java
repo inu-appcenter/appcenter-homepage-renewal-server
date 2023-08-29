@@ -1,7 +1,9 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,9 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ImageRequestDto {
     @Schema(
-            description = "리스트(MultipartFile)"
+            description = "이미지 리스트(MultipartFile)"
     )
-    @NotBlank
+    @NotBlank(message = "이미지가 비어있을 수 없습니다. (최소 1개 이상의 이미지가 필요합니다)")
     private List<MultipartFile> multipartFileList;
 
     public ImageRequestDto(List<MultipartFile> multipartFileList) {

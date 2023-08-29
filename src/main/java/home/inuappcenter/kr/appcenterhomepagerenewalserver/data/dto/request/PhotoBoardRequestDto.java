@@ -14,6 +14,6 @@ public class PhotoBoardRequestDto {
             example = "안녕하세요",
             description = "본문"
     )
-    @NotBlank
+    @NotBlank(message = "본문이 비어있을 수 업습니다.")
     String body;
 }

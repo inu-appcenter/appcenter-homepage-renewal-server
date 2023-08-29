@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
@@ -26,7 +28,7 @@ public class PhotoBoardController {
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping
-    public ResponseEntity<PhotoBoardResponseDto<List<String>>> getBoard(Long id) {
+    public ResponseEntity<PhotoBoardResponseDto<List<String>>> getBoard(final @NotEmpty Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 요청했습니다.");
         PhotoBoardResponseDto<List<String>> photoBoardResponseDto = boardService.getPhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
@@ -37,8 +39,8 @@ public class PhotoBoardController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<PhotoBoardResponseDto<List<Long>>> saveBoard(@RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                                                       @RequestPart(value = "introBoardRequestDto") PhotoBoardRequestDto photoBoardRequestDto) {
+    public ResponseEntity<PhotoBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) @Valid List<MultipartFile> multipartFileList,
+                                                                       final @RequestPart(value = "introBoardRequestDto") @Valid PhotoBoardRequestDto photoBoardRequestDto) {
 
         log.info("사용자가 PhotoBoard를 저장하도록 요청했습니다.\n" +
                 "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
@@ -51,7 +53,7 @@ public class PhotoBoardController {
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping
-    public ResponseEntity<String> deleteBoard(Long id) {
+    public ResponseEntity<String> deleteBoard(final @NotEmpty Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 삭제하도록 요청했습니다.");
         String result = boardService.deletePhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);

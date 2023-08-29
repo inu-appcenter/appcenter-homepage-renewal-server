@@ -27,7 +27,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> InvalidObjects(MethodArgumentNotValidException e) {
         log.error("서버로 전송된 데이터를 검증하는데 실패했습니다. 원인: " + Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("서버로 전송된 데이터를 검증하는데 실패했습니다. 원인: " + Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("서버로 전송된 데이터를 검증하는데 실패했습니다.\n원인: " + Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
     }
 
 }

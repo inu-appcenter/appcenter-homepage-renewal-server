@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @RestController
@@ -24,9 +27,9 @@ public class IntroductionBoardController {
     public final BoardService boardService;
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
-    @Parameter(name = "id", description = "게시판 id")
+    @Parameter(name = "id", description = "게시판 id", required = true)
     @GetMapping
-    public ResponseEntity<IntroBoardResponseDto<List<String>>> getBoard(Long id) {
+    public ResponseEntity<IntroBoardResponseDto<List<String>>> getBoard(final @NotNull Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 요청했습니다.");
         IntroBoardResponseDto<List<String>> boardResponseDto = boardService.getIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
@@ -37,8 +40,8 @@ public class IntroductionBoardController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(@RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                                                  @RequestPart(value = "introBoardRequestDto") IntroBoardRequestDto introBoardRequestDto) {
+    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) @Valid List<MultipartFile> multipartFileList,
+                                                                  @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto) {
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
@@ -48,9 +51,9 @@ public class IntroductionBoardController {
     }
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
-    @Parameter(name = "id", description = "게시판 id")
+    @Parameter(name = "id", description = "게시판 id", required = true)
     @DeleteMapping
-    public ResponseEntity<String> deleteBoard(Long id) {
+    public ResponseEntity<String> deleteBoard(final @NotNull Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 삭제하도록 요청했습니다.");
         String result = boardService.deleteIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -65,15 +68,15 @@ public class IntroductionBoardController {
     }
 
     @Operation(summary = "게시글 (1개) 수정", description = "스웨거에서 작동하지 않는 액션 입니다. / 포스트맨을 사용해주세요")
-    @Parameter(name = "board_id", description = "그룹 ID")
+    @Parameter(name = "board_id", description = "그룹 ID", required = true)
     @PatchMapping(consumes = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> updateBoard(
-                                         @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                         @RequestPart(value = "introBoardRequestDto") IntroBoardRequestDto introBoardRequestDto,
-                                         @RequestPart(value ="board_id") Long id) {
+                                         final @RequestPart(value = "multipartFileList", required = false) @Valid List<MultipartFile> multipartFileList,
+                                         final @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto,
+                                         final @RequestPart(value ="board_id") @NotNull Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
