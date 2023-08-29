@@ -34,16 +34,16 @@ public class IntroductionBoardController {
         IntroBoardResponseDto<List<String>> boardResponseDto = boardService.getIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
     }
-
     @Operation(summary = "게시글 (1개) 저장하기", description = "스웨거에서 작동하지 않는 액션 입니다. / 포스트맨을 사용해주세요")
     @PostMapping(consumes = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                                                  @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto) {
+                                                                  final @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto) {
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
+
         @Valid
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto, imageRequestDto);
@@ -75,7 +75,7 @@ public class IntroductionBoardController {
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> updateBoard(
-                                         final @RequestPart(value = "multipartFileList", required = false) @Valid List<MultipartFile> multipartFileList,
+                                         final @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
                                          final @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto,
                                          final @RequestPart(value ="board_id") @NotNull Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
