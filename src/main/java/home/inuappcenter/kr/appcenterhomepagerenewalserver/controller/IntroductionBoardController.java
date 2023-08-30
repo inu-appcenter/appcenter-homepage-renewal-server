@@ -27,8 +27,8 @@ public class IntroductionBoardController {
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id", required = true)
-    @GetMapping("/{id}")
-    public ResponseEntity<IntroBoardResponseDto<List<String>>> getBoard(final @PathVariable("id") Long id) {
+    @GetMapping
+    public ResponseEntity<IntroBoardResponseDto<List<String>>> getBoard(final Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 요청했습니다.");
         IntroBoardResponseDto<List<String>> boardResponseDto = boardService.getIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
@@ -52,8 +52,8 @@ public class IntroductionBoardController {
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id", required = true)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBoard(final @PathVariable Long id) {
+    @DeleteMapping
+    public ResponseEntity<String> deleteBoard(final Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 삭제하도록 요청했습니다.");
         String result = boardService.deleteIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
