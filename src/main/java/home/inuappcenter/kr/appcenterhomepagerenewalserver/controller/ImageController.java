@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ImageController {
     public final ImageService imageService;
     @Operation(summary = "사진 (1개) 가져오기", description = "가져올 id를 입력해주세요")
-    @Parameter(name = "id", description = "사진 ID")
+    @Parameter(name = "id", description = "사진 ID", required = true)
     @GetMapping("/photo/{id}")
-    public ResponseEntity<?> getPhoto (@PathVariable("id") Long id) {
+    public ResponseEntity<?> getPhoto (final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Image 자원을 요청했습니다.");
         byte[] downloadImage = imageService.getImage(id);
         return ResponseEntity.status(HttpStatus.OK)
