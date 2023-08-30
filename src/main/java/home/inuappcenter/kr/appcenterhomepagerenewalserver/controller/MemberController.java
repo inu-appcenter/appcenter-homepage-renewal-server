@@ -23,8 +23,8 @@ public class MemberController {
 
     @Operation(summary = "동아리원 (1명) 정보 가져오기", description = "동아리원에게 부여된 id를 입력해주세요 / 동아리원(1명)을 반환합니다.")
     @Parameter(name = "id", description = "동아리원 id", required = true)
-    @GetMapping
-    public ResponseEntity<MemberResponseDto> getMember(final Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponseDto> getMember(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Member를 요청했습니다.");
         MemberResponseDto memberResponseDto = memberService.getMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
@@ -61,8 +61,8 @@ public class MemberController {
     // 그룹에 등록되어 있는지 확인 후, 등록 안되어 있는 경우에만 삭제처리 하게끔 구현
     @Operation(summary = "동아리원 (1명) 삭제하기", description = "동아리원 삭제 / 동아리원이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "동아리원 id", required = true)
-    @DeleteMapping
-    public ResponseEntity<String> deleteMember(final Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteMember(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Member를 삭제하도록 요청했습니다.");
         String result = memberService.deleteMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);

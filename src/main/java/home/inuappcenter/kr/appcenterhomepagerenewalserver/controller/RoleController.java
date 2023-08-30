@@ -23,8 +23,8 @@ public class RoleController {
 
     @Operation(summary = "역할 (1개) 가져오기", description = "역할에게 부여된 id를 입력해주세요 / 역할 1개를 반환합니다.")
     @Parameter(name = "id", description = "역할 id", required = true)
-    @GetMapping
-    public ResponseEntity<RoleResponseDto> getRole(final Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<RoleResponseDto> getRole(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Role을 요청했습니다.");
         RoleResponseDto roleResponseDto = roleService.getRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(roleResponseDto);
@@ -62,8 +62,8 @@ public class RoleController {
     // 그룹에서 사용되지 않은 역할만 삭제 가능하도록 로직 구성
     @Operation(summary = "역할 (1개) 삭제", description = "역할 삭제 / 역할이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "역할 id", required = true)
-    @DeleteMapping
-    public ResponseEntity<String> deleteRole(final Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteRole(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Role을 삭제하도록 요청했습니다.");
         String result = roleService.deleteRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
