@@ -1,13 +1,15 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class IntroBoardRequestDto {
     @Schema(

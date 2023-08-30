@@ -36,22 +36,19 @@ public class IntroductionBoardController {
     }
     @Operation(summary = "게시글 (1개) 저장하기", description = "스웨거에서 작동하지 않는 액션 입니다. / 포스트맨을 사용해주세요")
     @PostMapping(consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
     })
-    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(@Valid IntroBoardRequestDto introBoardRequestDto,
-                                                                       @RequestParam("images") List<MultipartFile> images) {
+    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
+                                                                  final @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto) {
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
 
-        ImageRequestDto imageRequestDto = new ImageRequestDto(images);
+        @Valid
+        ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto, imageRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
-    }
-
-    @PostMapping(path = "/test")
-    public ResponseEntity<?> test(IntroBoardRequestDto introBoardRequestDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(introBoardRequestDto.toString());
     }
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
