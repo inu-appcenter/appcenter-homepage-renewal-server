@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -26,7 +24,7 @@ public class RoleController {
     @Operation(summary = "역할 (1개) 가져오기", description = "역할에게 부여된 id를 입력해주세요 / 역할 1개를 반환합니다.")
     @Parameter(name = "id", description = "역할 id", required = true)
     @GetMapping
-    public ResponseEntity<RoleResponseDto> getRole(final @NotEmpty Long id) {
+    public ResponseEntity<RoleResponseDto> getRole(final Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Role을 요청했습니다.");
         RoleResponseDto roleResponseDto = roleService.getRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(roleResponseDto);
@@ -53,7 +51,7 @@ public class RoleController {
     @Operation(summary = "역할 (1개) 수정", description = "역할 수정")
     @Parameter(name = "id", description = "역할 id", required = true)
     @PatchMapping
-    public ResponseEntity<RoleResponseDto> updateUpdate(final @RequestBody @Valid RoleRequestDto roleRequestDto, final @NotNull Long id) {
+    public ResponseEntity<RoleResponseDto> updateUpdate(final @RequestBody @Valid RoleRequestDto roleRequestDto, final Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 Role을 수정하도록 요청했습니다.\n" +
                 "RoleRequestDto의 내용: "+ roleRequestDto.toString());
         RoleResponseDto roleResponseDto = roleService.updateRole(id, roleRequestDto);
@@ -65,7 +63,7 @@ public class RoleController {
     @Operation(summary = "역할 (1개) 삭제", description = "역할 삭제 / 역할이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "역할 id", required = true)
     @DeleteMapping
-    public ResponseEntity<String> deleteRole(final @NotNull Long id) {
+    public ResponseEntity<String> deleteRole(final Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Role을 삭제하도록 요청했습니다.");
         String result = roleService.deleteRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);

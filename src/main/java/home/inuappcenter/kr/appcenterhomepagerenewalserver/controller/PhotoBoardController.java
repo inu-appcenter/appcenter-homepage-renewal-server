@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
@@ -28,7 +27,7 @@ public class PhotoBoardController {
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping
-    public ResponseEntity<PhotoBoardResponseDto<List<String>>> getBoard(final @NotEmpty Long id) {
+    public ResponseEntity<PhotoBoardResponseDto<List<String>>> getBoard(final Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 요청했습니다.");
         PhotoBoardResponseDto<List<String>> photoBoardResponseDto = boardService.getPhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
@@ -53,7 +52,7 @@ public class PhotoBoardController {
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping
-    public ResponseEntity<String> deleteBoard(final @NotEmpty Long id) {
+    public ResponseEntity<String> deleteBoard(final Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 삭제하도록 요청했습니다.");
         String result = boardService.deletePhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
