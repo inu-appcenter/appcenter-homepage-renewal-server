@@ -34,18 +34,14 @@ public class IntroductionBoardController {
         IntroBoardResponseDto<List<String>> boardResponseDto = boardService.getIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
     }
-    @Operation(summary = "게시글 (1개) 저장하기", description = "스웨거에서 작동하지 않는 액션 입니다. / 포스트맨을 사용해주세요")
-    @PostMapping(consumes = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE
-    })
-    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                                                  final @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto) {
+    @Operation(summary = "게시글 (1개) 저장하기", description = "1개의 사진이 필수적으로 필요합니다.")
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(@Valid IntroBoardRequestDto introBoardRequestDto,
+                                                                       final @RequestParam("image") List<MultipartFile> image) {
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
 
-        @Valid
-        ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
+        ImageRequestDto imageRequestDto = new ImageRequestDto(image);
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto, imageRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
