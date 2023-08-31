@@ -63,22 +63,20 @@ public class Image {
         }
     }
 
-    public List<Image> makeNewList() {
-        return new ArrayList<>();
-    }
-
     // 제네릭 메소드를 이용하여 두가지 보드 타입을 처리하였음
-    public <T> List<Image> toList(ImageRequestDto imageRequestDto, T board) {
-        List<Image> imageList = this.makeNewList();
-        for (MultipartFile file: imageRequestDto.getMultipartFileList()) {
+    public <T> List<Image> toImageListWithMapping(List<MultipartFile> multipartFileList, T board) {
+        List<Image> imageEntityList = new ArrayList<>();
+        for (MultipartFile file: multipartFileList) {
             try {
-                Image image = new Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), board);
-                imageList.add(image);
+                imageEntityList.add(new <T>Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), board));
             } catch (IOException e) {
                 throw new RuntimeException("파일을 불러오는데 실패하였습니다.");
             }
         }
-        return imageList;
+
+        // 첫번째 이미지는 isThumbnail을 true로 변경
+        imageEntityList.get(0).isThumbnail();
+        return imageEntityList;
     }
 
     // 실행시 이미지가 Thumbnail 속성을 가지고 있다는 것에 표시가 됨

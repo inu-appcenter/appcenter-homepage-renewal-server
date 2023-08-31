@@ -23,7 +23,15 @@ public class IntroBoard extends Board {
     @OneToMany(mappedBy = "introBoard")
     private List<Image> Images = new ArrayList<>();
 
-    public void setIntroBoard(IntroBoardRequestDto introBoardRequestDto) {
+    public IntroBoard(IntroBoardRequestDto introBoardRequestDto) {
+        this.title = introBoardRequestDto.getTitle();
+        this.subTitle = introBoardRequestDto.getSubTitle();
+        this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
+        this.iOSStoreLink = introBoardRequestDto.getIOSStoreLink();
+        this.body = introBoardRequestDto.getBody();
+    }
+
+    public void updateIntroBoard(IntroBoardRequestDto introBoardRequestDto) {
         this.title = introBoardRequestDto.getTitle();
         this.subTitle = introBoardRequestDto.getSubTitle();
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();

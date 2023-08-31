@@ -44,7 +44,7 @@ public class PhotoBoardController {
         log.info("사용자가 PhotoBoard를 저장하도록 요청했습니다.\n" +
                 "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
         ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
-        PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = boardService.savePhotoBoard(photoBoardRequestDto, imageRequestDto);
+        PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = boardService.savePhotoBoard(photoBoardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
     }

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,12 +35,19 @@ public class IntroductionBoardController {
     }
     @Operation(summary = "게시글 (1개) 저장하기", description = "1개의 사진이 필수적으로 필요합니다.")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto) {
+    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
+                                                                       BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            log.info("오류가 발생했습니다.");
+            // exception code 작성
+        }
+
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
 
-        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getImage());
-        IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto, imageRequestDto);
+        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getMultipartFiles());
+        IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
     }
@@ -69,7 +77,7 @@ public class IntroductionBoardController {
                                          final @RequestPart(value ="board_id") Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
-        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getImage());
+        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getMultipartFiles());
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updateIntroBoard(introBoardRequestDto, imageRequestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
     }

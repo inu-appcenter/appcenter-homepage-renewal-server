@@ -55,16 +55,14 @@ public class BoardService extends BoardUtils {
 
     @Transactional
     // (앱) 게시글 저장하기
-    public IntroBoardResponseDto<List<Long>> saveIntroBoard(IntroBoardRequestDto introBoardRequestDto, ImageRequestDto imageRequestDto) {
-        IntroBoard introBoard = new IntroBoard();
-        // introBoardRequestDto를 introBoard 타입으로 변환
-        introBoard.setIntroBoard(introBoardRequestDto);
-        // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
-        List<Image> imageList = new <IntroBoard>Image().toList(imageRequestDto, introBoard);
+    public IntroBoardResponseDto<List<Long>> saveIntroBoard(IntroBoardRequestDto introBoardRequestDto) {
+        // IntroBoardRequestDTO 내용이 담긴 IntroBoard 타입의 인스턴스를 생성
+        IntroBoard introBoard = new IntroBoard(introBoardRequestDto);
         // introBoard를 저장
         boardRepository.save(introBoard);
-        // 첫번째 이미지는 isThumbnail을 true로 변경
-        imageList.get(0).isThumbnail();
+
+        // imageRequestDto에 포함된 List<MultiPartFile>을 List<Image>로 변환 / 매핑을 위해 introBoard도 포함하여 함께 저장
+        List<Image> imageList = new <IntroBoard>Image().toImageListWithMapping(introBoardRequestDto.getMultipartFiles(), introBoard);
         List<Image> savedImage = imageRepository.saveAll(imageList);
 
         return new IntroBoardResponseDto<>(
@@ -81,10 +79,8 @@ public class BoardService extends BoardUtils {
     @Transactional
     // (앱) 게시글 수정
     public IntroBoardResponseDto<List<Long>> updateIntroBoard(IntroBoardRequestDto introBoardRequestDto, ImageRequestDto imageRequestDto, Long board_id) {
-        // 보드 찾아오기
-        IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new RuntimeException(""));
-        // 찾은 보드에 바뀐 내용 대입
-        foundBoard.setIntroBoard(introBoardRequestDto);
+        IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
+        foundBoard.updateIntroBoard(introBoardRequestDto);
 
         // 이미지를 found 해옴
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
@@ -150,10 +146,10 @@ public class BoardService extends BoardUtils {
 
     @Transactional
     // (사진) 게시글 저장
-    public PhotoBoardResponseDto<List<Long>> savePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto, ImageRequestDto imageRequestDto) {
+    public PhotoBoardResponseDto<List<Long>> savePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
         PhotoBoard photoBoard = new PhotoBoard();
         // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
-        List<Image> imageList = new <PhotoBoard>Image().toList(imageRequestDto, photoBoard);
+        List<Image> imageList = new <PhotoBoard>Image().toImageListWithMapping(photoBoardRequestDto.getMultipartFiles(), photoBoard);
 
         // introBoardRequestDto를 introBoard 타입으로 변환
         photoBoard.setPhotoBoard(photoBoardRequestDto);

@@ -51,5 +51,6 @@ public class IntroBoardRequestDto {
             description = "이미지를 배열로 받습니다."
     )
     @NotNull(message = "이미지가 최소 1개 이상 필요합니다. (첫번째 이미지는 썸네일입니다.)")
-    private List<MultipartFile> image;
+    private List<MultipartFile> multipartFiles;
+
 }
