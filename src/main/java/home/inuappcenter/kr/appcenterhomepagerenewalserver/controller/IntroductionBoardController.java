@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -35,12 +34,11 @@ public class IntroductionBoardController {
     }
     @Operation(summary = "게시글 (1개) 저장하기", description = "1개의 사진이 필수적으로 필요합니다.")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(@Valid IntroBoardRequestDto introBoardRequestDto,
-                                                                       final @RequestParam("image") List<MultipartFile> image) {
+    public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto) {
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
 
-        ImageRequestDto imageRequestDto = new ImageRequestDto(image);
+        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getImage());
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto, imageRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
@@ -65,17 +63,13 @@ public class IntroductionBoardController {
 
     @Operation(summary = "게시글 (1개) 수정", description = "스웨거에서 작동하지 않는 액션 입니다. / 포스트맨을 사용해주세요")
     @Parameter(name = "board_id", description = "그룹 ID", required = true)
-    @PatchMapping(consumes = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE
-    })
+    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> updateBoard(
-                                         final @RequestPart(value = "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                         final @RequestPart(value = "introBoardRequestDto") @Valid IntroBoardRequestDto introBoardRequestDto,
+                                         final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
                                          final @RequestPart(value ="board_id") Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
-        ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
+        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getImage());
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updateIntroBoard(introBoardRequestDto, imageRequestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
     }
