@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 @Getter
 @AllArgsConstructor
@@ -42,6 +41,6 @@ public class IntroBoardRequestDto {
             example = "This Application is...",
             description = "앱 소개"
     )
-    @NotEmpty(message = "앱 소개글이 비어있을 수 없습니다.")
+    @NotBlank(message = "앱 소개글이 비어있을 수 없습니다.")
     public String body;
 }
