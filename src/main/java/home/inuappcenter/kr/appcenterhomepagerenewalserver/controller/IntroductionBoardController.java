@@ -3,6 +3,7 @@ package home.inuappcenter.kr.appcenterhomepagerenewalserver.controller;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.IntroBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.IntroBoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomModelAttributeException;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,10 +38,8 @@ public class IntroductionBoardController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> saveBoard(final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
                                                                        BindingResult bindingResult) {
-
         if(bindingResult.hasErrors()) {
-            log.info("오류가 발생했습니다.");
-            // exception code 작성
+            throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +

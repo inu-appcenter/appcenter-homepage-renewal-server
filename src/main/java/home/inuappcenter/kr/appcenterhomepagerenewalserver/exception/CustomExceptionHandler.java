@@ -1,5 +1,6 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.exception;
 
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomModelAttributeException;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,12 @@ public class CustomExceptionHandler {
     public ResponseEntity<String> InvalidObjects(MethodArgumentNotValidException e) {
         log.error("서버로 전송된 데이터를 검증하는데 실패했습니다. 원인: " + Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("서버로 전송된 데이터를 검증하는데 실패했습니다.\n원인: " + Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
+    }
+
+    @ExceptionHandler(CustomModelAttributeException.class)
+    public ResponseEntity<String> modelAttributeException(CustomModelAttributeException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
 }
