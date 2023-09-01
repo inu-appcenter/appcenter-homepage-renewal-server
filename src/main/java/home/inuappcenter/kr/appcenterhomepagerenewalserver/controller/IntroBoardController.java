@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/introduction-board")
-@Slf4j
-public class IntroductionBoardController {
+public class IntroBoardController {
 
     public final BoardService boardService;
 
@@ -45,7 +45,6 @@ public class IntroductionBoardController {
         log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
 
-        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getMultipartFiles());
         IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
@@ -69,11 +68,10 @@ public class IntroductionBoardController {
     }
 
     @Operation(summary = "게시글 (1개) 수정", description = "스웨거에서 작동하지 않는 액션 입니다. / 포스트맨을 사용해주세요")
-    @Parameter(name = "board_id", description = "그룹 ID", required = true)
     @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> updateBoard(
                                          final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
-                                         final @RequestPart(value ="board_id") Long id) {
+                                         final @Parameter(name = "id", description = "그룹 ID", required = true) Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
         ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getMultipartFiles());

@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardUtils {
 
-    public List<String> returnImageURL(HttpServletRequest request, List<Image> ImageList) {
+    public static List<String> returnImageURL(HttpServletRequest request, List<Image> ImageList) {
         List<String> images = new ArrayList<>();
         if (ImageList != null) {
             for(Image image: ImageList) {
@@ -23,7 +23,7 @@ public class BoardUtils {
         return images;
     }
 
-    public List<Long> returnImageId(List<Image> ImageList) {
+    public static List<Long> returnImageId(List<Image> ImageList) {
         List<Long> imageIds = new ArrayList<>();
 
         for(Image image: ImageList) {
@@ -33,7 +33,7 @@ public class BoardUtils {
         return imageIds;
     }
 
-    public List<IntroBoardResponseDto<String>> returnIntroBoardResponseDtoList(List<IntroBoard> boardList, List<Image> thumbnailList, HttpServletRequest request) {
+    public static List<IntroBoardResponseDto<String>> returnIntroBoardResponseDtoList(List<IntroBoard> boardList, List<Image> thumbnailList, HttpServletRequest request) {
         List<IntroBoardResponseDto<String>> introBoardResponseDtoList = new ArrayList<>();
 
         for(int i=0; i<=boardList.size()-1; i++) {
@@ -42,7 +42,7 @@ public class BoardUtils {
         return  introBoardResponseDtoList;
     }
 
-    public List<PhotoBoardResponseDto<String>> returnPhotoBoardResponseDtoList(List<PhotoBoard> boardList, List<Image> thumbnailList, HttpServletRequest request) {
+    public static List<PhotoBoardResponseDto<String>> returnPhotoBoardResponseDtoList(List<PhotoBoard> boardList, List<Image> thumbnailList, HttpServletRequest request) {
         List<PhotoBoardResponseDto<String>> photoBoardResponseDtoList = new ArrayList<>();
 
         for(int i=0; i<=boardList.size()-1; i++) {

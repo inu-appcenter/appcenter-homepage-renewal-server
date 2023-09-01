@@ -18,6 +18,7 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.Photo
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.utils.BoardUtils;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
-public class BoardService extends BoardUtils {
+@Slf4j
+public class BoardService {
     private final BoardRepository<Board> boardRepository;
 
     private final IntroBoardRepository introBoardRepository;
@@ -49,7 +52,7 @@ public class BoardService extends BoardUtils {
                 foundBoard.getAndroidStoreLink(),
                 foundBoard.getIOSStoreLink(),
                 foundBoard.getBody(),
-                super.returnImageURL(request, ImageList)
+                BoardUtils.returnImageURL(request, ImageList)
         );
     }
 
@@ -72,7 +75,7 @@ public class BoardService extends BoardUtils {
                 introBoard.getAndroidStoreLink(),
                 introBoard.getIOSStoreLink(),
                 introBoard.getBody(),
-                super.returnImageId(savedImage)
+                BoardUtils.returnImageId(savedImage)
         );
     }
 
@@ -81,11 +84,12 @@ public class BoardService extends BoardUtils {
     public IntroBoardResponseDto<List<Long>> updateIntroBoard(IntroBoardRequestDto introBoardRequestDto, ImageRequestDto imageRequestDto, Long board_id) {
         IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateIntroBoard(introBoardRequestDto);
-
-        // 이미지를 found 해옴
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
+
         // 찾은 이미지에 내용 대입
         for(Image image: foundImg) {
+            log.info(image.getOriginalFileName());
+
             for(MultipartFile multipartFile: imageRequestDto.getMultipartFileList()) {
                 image.setImage(multipartFile);
             }
@@ -101,7 +105,7 @@ public class BoardService extends BoardUtils {
                         introBoard.getAndroidStoreLink(),
                         introBoard.getIOSStoreLink(),
                         introBoard.getBody(),
-                        super.returnImageId(savedImage)
+                        BoardUtils.returnImageId(savedImage)
                         );
     }
 
@@ -129,7 +133,7 @@ public class BoardService extends BoardUtils {
 
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();
 
-        return super.returnIntroBoardResponseDtoList(boardList, thumbnailList, request);
+        return BoardUtils.returnIntroBoardResponseDtoList(boardList, thumbnailList, request);
     }
 
     @Transactional
@@ -140,7 +144,7 @@ public class BoardService extends BoardUtils {
         return new PhotoBoardResponseDto<>(
                 foundBoard.getId(),
                 foundBoard.getBody(),
-                super.returnImageURL(request, ImageList)
+                BoardUtils.returnImageURL(request, ImageList)
         );
     }
 
@@ -199,6 +203,6 @@ public class BoardService extends BoardUtils {
 
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();
 
-        return super.returnPhotoBoardResponseDtoList(boardList, thumbnailList, request);
+        return BoardUtils.returnPhotoBoardResponseDtoList(boardList, thumbnailList, request);
     }
 }

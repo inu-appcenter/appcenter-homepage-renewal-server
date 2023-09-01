@@ -6,7 +6,6 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.Mem
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.MemberRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupService groupService;
