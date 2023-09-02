@@ -1,6 +1,5 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.controller;
 
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.IntroBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.IntroBoardResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomModelAttributeException;
@@ -67,15 +66,20 @@ public class IntroBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 
-    @Operation(summary = "게시글 (1개) 수정", description = "스웨거에서 작동하지 않는 액션 입니다. / 포스트맨을 사용해주세요")
+    @Operation(summary = "게시글 (1개) 수정")
     @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<IntroBoardResponseDto<List<Long>>> updateBoard(
                                          final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
+                                         BindingResult bindingResult,
                                          final @Parameter(name = "id", description = "그룹 ID", required = true) Long id) {
+        if(bindingResult.hasErrors()) {
+            throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
+
         log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
-        ImageRequestDto imageRequestDto = new ImageRequestDto(introBoardRequestDto.getMultipartFiles());
-        IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updateIntroBoard(introBoardRequestDto, imageRequestDto, id);
+
+        IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updateIntroBoard(introBoardRequestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
     }
 

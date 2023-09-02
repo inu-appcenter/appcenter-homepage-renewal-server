@@ -4,7 +4,6 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Boa
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Image;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.IntroBoard;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.PhotoBoard;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.PhotoBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.IntroBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
@@ -81,7 +80,7 @@ public class BoardService {
 
     @Transactional
     // (앱) 게시글 수정
-    public IntroBoardResponseDto<List<Long>> updateIntroBoard(IntroBoardRequestDto introBoardRequestDto, ImageRequestDto imageRequestDto, Long board_id) {
+    public IntroBoardResponseDto<List<Long>> updateIntroBoard(IntroBoardRequestDto introBoardRequestDto, Long board_id) {
         IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateIntroBoard(introBoardRequestDto);
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
@@ -89,12 +88,11 @@ public class BoardService {
         // 찾은 이미지에 내용 대입
         for(Image image: foundImg) {
             log.info(image.getOriginalFileName());
-
-            for(MultipartFile multipartFile: imageRequestDto.getMultipartFileList()) {
+            for(MultipartFile multipartFile: introBoardRequestDto.getMultipartFiles()) {
                 image.setImage(multipartFile);
             }
-
         }
+
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
         List<Image> savedImage = imageRepository.saveAll(foundImg);
 
@@ -154,24 +152,17 @@ public class BoardService {
         PhotoBoard photoBoard = new PhotoBoard();
         // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
         List<Image> imageList = new <PhotoBoard>Image().toImageListWithMapping(photoBoardRequestDto.getMultipartFiles(), photoBoard);
-
         // introBoardRequestDto를 introBoard 타입으로 변환
         photoBoard.setPhotoBoard(photoBoardRequestDto);
-
         // introBoard를 저장
         boardRepository.save(photoBoard);
-
         // 첫번째 이미지는 isThumbnail을 true로 변경
         imageList.get(0).isThumbnail();
-
         List<Image> savedImage = imageRepository.saveAll(imageList);
-
         List<Long> imageIds = new ArrayList<>();
-
         for(Image image: savedImage) {
             imageIds.add(image.getId());
         }
-
         return new PhotoBoardResponseDto<>(
                 photoBoard.getId(),
                 photoBoard.getBody(),
