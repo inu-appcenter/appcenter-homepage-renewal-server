@@ -34,7 +34,7 @@ public class PhotoBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
     }
 
-    @Operation(summary = "게시글 (1개) 저장하기", description = "스웨거에서는 작동하지 않는 액션입니다.")
+    @Operation(summary = "게시글 (1개) 저장하기", description = "1개의 사진이 필수적으로 필요합니다.")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<PhotoBoardResponseDto<List<Long>>> saveBoard(final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
                                                                        BindingResult bindingResult) {
@@ -48,7 +48,7 @@ public class PhotoBoardController {
         }
     }
 
-    @Operation(summary = "게시글 (1개) 수정")
+    @Operation(summary = "게시글 (1개) 수정", description = "1개의 사진이 필수적으로 필요합니다.")
     @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<PhotoBoardResponseDto<List<Long>>> updateBoard(
             final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
@@ -58,10 +58,10 @@ public class PhotoBoardController {
         if(bindingResult.hasErrors()) {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         } else {
-            log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
-                    "IntroBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
-            PhotoBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updatePhotoBoard(photoBoardRequestDto, id);
-            return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
+            log.info("사용자가 id: "+ id + "을(를) 가진 PhotoBoard를 수정하도록 요청했습니다.\n" +
+                    "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
+            PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = boardService.updatePhotoBoard(photoBoardRequestDto, id);
+            return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
         }
     }
 
