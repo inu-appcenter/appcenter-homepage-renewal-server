@@ -2,12 +2,13 @@ package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain;
 
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.RoleRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.RoleResponseDto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter

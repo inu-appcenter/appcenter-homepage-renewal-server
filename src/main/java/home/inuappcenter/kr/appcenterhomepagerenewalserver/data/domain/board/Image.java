@@ -1,12 +1,12 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board;
 
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.utils.ImageUtils;
-import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,6 @@ public class Image {
                 throw new RuntimeException("파일을 불러오는데 실패하였습니다.");
             }
         }
-
         // 첫번째 이미지는 isThumbnail을 true로 변경
         imageEntityList.get(0).isThumbnail();
         return imageEntityList;

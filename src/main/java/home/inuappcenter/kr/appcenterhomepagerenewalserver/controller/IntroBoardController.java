@@ -15,7 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -39,14 +40,12 @@ public class IntroBoardController {
                                                                        BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        } else {
+            log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
+                    "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
+            IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto);
+            return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
         }
-
-        log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
-                "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
-
-        IntroBoardResponseDto<List<Long>> introBoardResponseDto = boardService.saveIntroBoard(introBoardRequestDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
     }
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")

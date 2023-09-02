@@ -1,8 +1,8 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.controller;
 
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.PhotoBoardRequestDto;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.ImageRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomModelAttributeException;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,11 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,19 +35,34 @@ public class PhotoBoardController {
     }
 
     @Operation(summary = "게시글 (1개) 저장하기", description = "스웨거에서는 작동하지 않는 액션입니다.")
-    @PostMapping(consumes = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE
-    })
-    public ResponseEntity<PhotoBoardResponseDto<List<Long>>> saveBoard(final @RequestPart(value = "multipartFileList", required = false) @Valid List<MultipartFile> multipartFileList,
-                                                                       final @RequestPart(value = "introBoardRequestDto") @Valid PhotoBoardRequestDto photoBoardRequestDto) {
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<PhotoBoardResponseDto<List<Long>>> saveBoard(final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
+                                                                       BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        } else {
+            log.info("사용자가 PhotoBoard를 저장하도록 요청했습니다.\n" +
+                    "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
+            PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = boardService.savePhotoBoard(photoBoardRequestDto);
+            return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
+        }
+    }
 
-        log.info("사용자가 PhotoBoard를 저장하도록 요청했습니다.\n" +
-                "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
-        ImageRequestDto imageRequestDto = new ImageRequestDto(multipartFileList);
-        PhotoBoardResponseDto<List<Long>> photoBoardResponseDto = boardService.savePhotoBoard(photoBoardRequestDto);
+    @Operation(summary = "게시글 (1개) 수정")
+    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<PhotoBoardResponseDto<List<Long>>> updateBoard(
+            final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
+            BindingResult bindingResult,
+            final @Parameter(name = "id", description = "그룹 ID", required = true) Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
+        if(bindingResult.hasErrors()) {
+            throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        } else {
+            log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
+                    "IntroBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
+            PhotoBoardResponseDto<List<Long>> introBoardResponseDto = boardService.updatePhotoBoard(photoBoardRequestDto, id);
+            return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
+        }
     }
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")

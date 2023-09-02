@@ -1,14 +1,17 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.service;
 
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Group;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Member;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.MemberRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.MemberResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.GroupRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.MemberRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final GroupService groupService;
+    private final GroupRepository groupRepository;
 
     @Transactional
     public MemberResponseDto getMember(Long id) {
@@ -72,7 +75,8 @@ public class MemberService {
 
     public String deleteMember(Long id) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        if(!groupService.findMember(found_member)) {
+        ArrayList<Group> found_group = groupRepository.findAllByMember(found_member);
+        if(found_group.isEmpty()) {
             memberRepository.deleteById(id);
             return "member id ["+ id + "] has been deleted.";
         } else {

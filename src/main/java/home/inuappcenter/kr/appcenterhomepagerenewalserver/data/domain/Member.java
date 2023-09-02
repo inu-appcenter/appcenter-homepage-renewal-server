@@ -2,9 +2,10 @@ package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain;
 
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.MemberRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.MemberResponseDto;
-import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Getter
 @Entity

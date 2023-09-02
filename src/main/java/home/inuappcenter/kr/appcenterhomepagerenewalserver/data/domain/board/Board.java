@@ -1,8 +1,9 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board;
 
-import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Entity
 @Getter

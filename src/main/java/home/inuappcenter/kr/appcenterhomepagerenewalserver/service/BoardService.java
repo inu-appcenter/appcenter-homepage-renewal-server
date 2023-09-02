@@ -4,15 +4,13 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Boa
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Image;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.IntroBoard;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.PhotoBoard;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.PhotoBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.IntroBoardRequestDto;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.PhotoBoardRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.IntroBoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.BoardRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.ImageRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.IntroBoardRepository;
-import javax.servlet.http.HttpServletRequest;
-
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.PhotoBoardRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.utils.BoardUtils;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
@@ -22,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -66,7 +64,6 @@ public class BoardService {
         // imageRequestDto에 포함된 List<MultiPartFile>을 List<Image>로 변환 / 매핑을 위해 introBoard도 포함하여 함께 저장
         List<Image> imageList = new <IntroBoard>Image().toImageListWithMapping(introBoardRequestDto.getMultipartFiles(), introBoard);
         List<Image> savedImage = imageRepository.saveAll(imageList);
-
         return new IntroBoardResponseDto<>(
                 introBoard.getId(),
                 introBoard.getTitle(),
@@ -79,13 +76,11 @@ public class BoardService {
     }
 
     @Transactional
-    // (앱) 게시글 수정
     public IntroBoardResponseDto<List<Long>> updateIntroBoard(IntroBoardRequestDto introBoardRequestDto, Long board_id) {
         IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
-        foundBoard.updateIntroBoard(introBoardRequestDto);
+        foundBoard.updateBoard(introBoardRequestDto);
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
 
-        // 찾은 이미지에 내용 대입
         for(Image image: foundImg) {
             log.info(image.getOriginalFileName());
             for(MultipartFile multipartFile: introBoardRequestDto.getMultipartFiles()) {
@@ -108,7 +103,6 @@ public class BoardService {
     }
 
     @Transactional
-    // (앱) 게시글 삭제
     public String deleteIntroBoard(Long id) {
         IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow();
 
@@ -125,7 +119,6 @@ public class BoardService {
     }
 
     @Transactional
-    // (앱) 모든 게시글 조회하기
     public List<IntroBoardResponseDto<String>> findAllIntroBoard() {
         List<IntroBoard> boardList = introBoardRepository.findAll();
 
@@ -135,7 +128,6 @@ public class BoardService {
     }
 
     @Transactional
-    // (사진) 게시글 조회
     public PhotoBoardResponseDto<List<String>> getPhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         List<Image> ImageList = foundBoard.getImages();
@@ -147,31 +139,43 @@ public class BoardService {
     }
 
     @Transactional
-    // (사진) 게시글 저장
     public PhotoBoardResponseDto<List<Long>> savePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
-        PhotoBoard photoBoard = new PhotoBoard();
-        // imageRequestDto를 List<Image> 타입으로 변환 / 게시판 정보도 함께 포함해서 저장시킴
+        PhotoBoard photoBoard = new PhotoBoard(photoBoardRequestDto);
         List<Image> imageList = new <PhotoBoard>Image().toImageListWithMapping(photoBoardRequestDto.getMultipartFiles(), photoBoard);
-        // introBoardRequestDto를 introBoard 타입으로 변환
-        photoBoard.setPhotoBoard(photoBoardRequestDto);
-        // introBoard를 저장
         boardRepository.save(photoBoard);
-        // 첫번째 이미지는 isThumbnail을 true로 변경
-        imageList.get(0).isThumbnail();
         List<Image> savedImage = imageRepository.saveAll(imageList);
-        List<Long> imageIds = new ArrayList<>();
-        for(Image image: savedImage) {
-            imageIds.add(image.getId());
-        }
         return new PhotoBoardResponseDto<>(
                 photoBoard.getId(),
                 photoBoard.getBody(),
-                imageIds
+                BoardUtils.returnImageId(savedImage)
         );
     }
 
     @Transactional
-    // (사진) 게시글 삭제
+    public PhotoBoardResponseDto<List<Long>> updatePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto, Long board_id) {
+        PhotoBoard foundBoard = photoBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
+        foundBoard.updateBoard(photoBoardRequestDto);
+        List<Image> foundImg = imageRepository.findByPhotoBoard(foundBoard);
+
+        // 찾은 이미지에 내용 대입
+        for(Image image: foundImg) {
+            log.info(image.getOriginalFileName());
+            for(MultipartFile multipartFile: photoBoardRequestDto.getMultipartFiles()) {
+                image.setImage(multipartFile);
+            }
+        }
+
+        PhotoBoard photoBoard = photoBoardRepository.save(foundBoard);
+        List<Image> savedImage = imageRepository.saveAll(foundImg);
+
+        return new PhotoBoardResponseDto<>(
+                photoBoard.getId(),
+                photoBoard.getBody(),
+                BoardUtils.returnImageId(savedImage)
+        );
+    }
+
+    @Transactional
     public String deletePhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
 
@@ -188,7 +192,6 @@ public class BoardService {
     }
 
     @Transactional
-    // (사진) 모든 게시글 조회하기
     public List<PhotoBoardResponseDto<String>> findAllPhotoBoard() {
         List<PhotoBoard> boardList = photoBoardRepository.findAll();
 

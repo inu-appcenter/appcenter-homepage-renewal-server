@@ -1,18 +1,17 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class PhotoBoardRequestDto {
     @Schema(

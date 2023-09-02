@@ -3,9 +3,10 @@ package home.inuappcenter.kr.appcenterhomepagerenewalserver.data.utils;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.Image;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.IntroBoard;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.board.PhotoBoard;
-import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.IntroBoardResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.PhotoBoardResponseDto;
 import lombok.NoArgsConstructor;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;

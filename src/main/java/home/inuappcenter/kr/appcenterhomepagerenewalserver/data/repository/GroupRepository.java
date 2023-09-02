@@ -6,8 +6,10 @@ import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    Group getByMember(Member member);
-    Group getByRole(Role role);
+    ArrayList<Group> findAllByMember(Member member);
+    ArrayList<Group> findAllByRole(Role role);
 }

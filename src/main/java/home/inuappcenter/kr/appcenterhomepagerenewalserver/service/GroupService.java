@@ -55,7 +55,6 @@ public class GroupService {
         Group group = new Group(found_member, found_role, groupRequestDto);
 
         Group saved_group = groupRepository.save(group);
-
         return GroupResponseDto.builder()
                 .group_id(saved_group.getGroup_id())
                 .member(saved_group.getMember().getName())
@@ -89,18 +88,6 @@ public class GroupService {
                 .part(savedGroup.getPart())
                 .year(savedGroup.getYear())
                 .build();
-    }
-
-    // 멤버 찾기
-    public boolean findMember(Member member) {
-        Group found_member = groupRepository.getByMember(member);
-        return found_member != null;
-    }
-
-    // 역할 찾기
-    public boolean findRole(Role role) {
-        Group found_role = groupRepository.getByRole(role);
-        return found_role != null;
     }
 
     public String deleteGroup(Long id) {

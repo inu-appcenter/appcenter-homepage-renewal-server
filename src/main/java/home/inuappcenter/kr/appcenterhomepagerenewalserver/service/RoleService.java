@@ -1,24 +1,29 @@
 package home.inuappcenter.kr.appcenterhomepagerenewalserver.service;
 
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Group;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.domain.Role;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.request.RoleRequestDto;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.dto.response.RoleResponseDto;
+import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.GroupRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.data.repository.RoleRepository;
 import home.inuappcenter.kr.appcenterhomepagerenewalserver.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class RoleService {
 
     private final RoleRepository roleRepository;
-    private final GroupService groupService;
+    private final GroupRepository groupRepository;
 
     @Transactional
     public RoleResponseDto getRole(Long id) {
@@ -60,9 +65,10 @@ public class RoleService {
     @Transactional
     public String deleteRole(Long id) {
         Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        if(!groupService.findRole(found_role)) {
+        ArrayList<Group> found_groups = groupRepository.findAllByRole(found_role);
+        if (found_groups.isEmpty()) {
             roleRepository.deleteById(id);
-            return "role id ["+ id + "] has been deleted.";
+            return "role id [" + id + "] has been deleted.";
         } else {
             return "The role [" + id + "] is part of a Group. Please delete the Group first";
         }
