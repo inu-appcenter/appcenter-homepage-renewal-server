@@ -53,7 +53,7 @@ public class PhotoBoardController {
     public ResponseEntity<PhotoBoardResponseDto<List<Long>>> updateBoard(
             final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
             BindingResult bindingResult,
-            final @Parameter(name = "id", description = "그룹 ID", required = true) Long id) {
+            final @Parameter(name = "id", description = "게시판 ID", required = true) Long id) {
 
         if(bindingResult.hasErrors()) {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());

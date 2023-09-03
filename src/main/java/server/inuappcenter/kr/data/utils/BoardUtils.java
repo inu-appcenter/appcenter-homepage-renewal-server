@@ -5,13 +5,11 @@ import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
-import lombok.NoArgsConstructor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
 public class BoardUtils {
 
     public static List<String> returnImageURL(HttpServletRequest request, List<Image> ImageList) {

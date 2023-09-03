@@ -54,7 +54,7 @@
         </Logger>s
 
         <!-- 프로젝트 로그 -->
-        <logger name="home.inuappcenter.kr" additivity="false" level="DEBUG">
+        <logger name="server.inuappcenter.kr" additivity="false" level="DEBUG">
             <AppenderRef ref="Console_Appender"/>
         </logger>
 
