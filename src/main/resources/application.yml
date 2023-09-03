@@ -6,8 +6,9 @@ spring:
     password: test1234
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: 'true'
+    open-in-view: false
   servlet:
     multipart:
       maxFileSize: 500MB
