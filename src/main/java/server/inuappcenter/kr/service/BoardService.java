@@ -11,7 +11,6 @@ import server.inuappcenter.kr.data.repository.*;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -194,6 +193,7 @@ public class BoardService {
         return BoardUtils.returnPhotoBoardResponseDtoList(boardList, thumbnailList, request);
     }
 
+    @Transactional
     public FaqBoardResponseDto getFaqBoard(Long id) {
         FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return new FaqBoardResponseDto(
@@ -204,6 +204,7 @@ public class BoardService {
         );
     }
 
+    @Transactional
     public FaqBoardResponseDto saveFaqBoard(FaqBoardRequestDto faqBoardRequestDto) {
         FaqBoard savedBoard = faqRepository.save(new FaqBoard(faqBoardRequestDto));
         return new FaqBoardResponseDto(
@@ -212,5 +213,24 @@ public class BoardService {
                 savedBoard.getQuestion(),
                 savedBoard.getAnswer()
         );
+    }
+
+    @Transactional
+    public FaqBoardResponseDto updateFaqBoard(Long id, FaqBoardRequestDto faqBoardRequestDto) {
+        FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        foundBoard.updateFaqBoard(faqBoardRequestDto);
+        return new FaqBoardResponseDto(
+                foundBoard.getId(),
+                foundBoard.getPart(),
+                foundBoard.getQuestion(),
+                foundBoard.getAnswer()
+        );
+    }
+
+    @Transactional
+    public String deleteFaqBoard(Long id) {
+        faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        faqRepository.deleteById(id);
+        return "id: " + id + " has been successfully deleted.";
     }
 }

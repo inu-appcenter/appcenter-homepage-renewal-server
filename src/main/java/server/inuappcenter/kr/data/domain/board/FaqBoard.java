@@ -21,4 +21,10 @@ public class FaqBoard extends Board{
         this.answer = faqBoardRequestDto.getAnswer();
     }
 
+    public void updateFaqBoard(FaqBoardRequestDto faqBoardRequestDto) {
+        this.part = faqBoardRequestDto.getPart();
+        this.question = faqBoardRequestDto.getQuestion();
+        this.answer = faqBoardRequestDto.getAnswer();
+    }
+
 }
