@@ -205,6 +205,12 @@ public class BoardService {
     }
 
     @Transactional
+    public List<FaqBoardResponseDto> getFaqBoardList() {
+        List<FaqBoard> boardList = faqRepository.findAll();
+        return BoardUtils.returnFaqBoardResponseDtoList(boardList);
+    }
+
+    @Transactional
     public FaqBoardResponseDto saveFaqBoard(FaqBoardRequestDto faqBoardRequestDto) {
         FaqBoard savedBoard = faqRepository.save(new FaqBoard(faqBoardRequestDto));
         return new FaqBoardResponseDto(

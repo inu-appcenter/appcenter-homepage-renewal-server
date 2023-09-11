@@ -3,6 +3,7 @@ package server.inuappcenter.kr.data.domain.board;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
 
 import javax.persistence.Entity;
 
@@ -25,6 +26,15 @@ public class FaqBoard extends Board{
         this.part = faqBoardRequestDto.getPart();
         this.question = faqBoardRequestDto.getQuestion();
         this.answer = faqBoardRequestDto.getAnswer();
+    }
+
+    public FaqBoardResponseDto toResponseDto(FaqBoard faqBoard) {
+       return new FaqBoardResponseDto(
+               faqBoard.getId(),
+               faqBoard.getPart(),
+               faqBoard.getQuestion(),
+               faqBoard.getAnswer()
+       );
     }
 
 }
