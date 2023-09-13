@@ -1,21 +1,16 @@
 package server.inuappcenter.kr.service;
 
-import server.inuappcenter.kr.data.domain.board.Board;
-import server.inuappcenter.kr.data.domain.board.Image;
-import server.inuappcenter.kr.data.domain.board.IntroBoard;
-import server.inuappcenter.kr.data.domain.board.PhotoBoard;
+import server.inuappcenter.kr.data.domain.board.*;
+import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
-import server.inuappcenter.kr.data.repository.BoardRepository;
-import server.inuappcenter.kr.data.repository.ImageRepository;
-import server.inuappcenter.kr.data.repository.IntroBoardRepository;
-import server.inuappcenter.kr.data.repository.PhotoBoardRepository;
+import server.inuappcenter.kr.data.repository.*;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,12 +21,12 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class BoardService {
     private final BoardRepository<Board> boardRepository;
 
     private final IntroBoardRepository introBoardRepository;
     private final PhotoBoardRepository photoBoardRepository;
+    private final FaqRepository faqRepository;
 
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
@@ -82,7 +77,6 @@ public class BoardService {
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
 
         for(Image image: foundImg) {
-            log.info(image.getOriginalFileName());
             for(MultipartFile multipartFile: introBoardRequestDto.getMultipartFiles()) {
                 image.setImage(multipartFile);
             }
@@ -159,7 +153,6 @@ public class BoardService {
 
         // 찾은 이미지에 내용 대입
         for(Image image: foundImg) {
-            log.info(image.getOriginalFileName());
             for(MultipartFile multipartFile: photoBoardRequestDto.getMultipartFiles()) {
                 image.setImage(multipartFile);
             }
@@ -198,5 +191,52 @@ public class BoardService {
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();
 
         return BoardUtils.returnPhotoBoardResponseDtoList(boardList, thumbnailList, request);
+    }
+
+    @Transactional
+    public FaqBoardResponseDto getFaqBoard(Long id) {
+        FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        return new FaqBoardResponseDto(
+                foundBoard.getId(),
+                foundBoard.getPart(),
+                foundBoard.getQuestion(),
+                foundBoard.getAnswer()
+        );
+    }
+
+    @Transactional
+    public List<FaqBoardResponseDto> getFaqBoardList() {
+        List<FaqBoard> boardList = faqRepository.findAll();
+        return BoardUtils.returnFaqBoardResponseDtoList(boardList);
+    }
+
+    @Transactional
+    public FaqBoardResponseDto saveFaqBoard(FaqBoardRequestDto faqBoardRequestDto) {
+        FaqBoard savedBoard = faqRepository.save(new FaqBoard(faqBoardRequestDto));
+        return new FaqBoardResponseDto(
+                savedBoard.getId(),
+                savedBoard.getPart(),
+                savedBoard.getQuestion(),
+                savedBoard.getAnswer()
+        );
+    }
+
+    @Transactional
+    public FaqBoardResponseDto updateFaqBoard(Long id, FaqBoardRequestDto faqBoardRequestDto) {
+        FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        foundBoard.updateFaqBoard(faqBoardRequestDto);
+        return new FaqBoardResponseDto(
+                foundBoard.getId(),
+                foundBoard.getPart(),
+                foundBoard.getQuestion(),
+                foundBoard.getAnswer()
+        );
+    }
+
+    @Transactional
+    public String deleteFaqBoard(Long id) {
+        faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        faqRepository.deleteById(id);
+        return "id: " + id + " has been successfully deleted.";
     }
 }

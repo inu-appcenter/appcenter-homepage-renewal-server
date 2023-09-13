@@ -1,8 +1,10 @@
 package server.inuappcenter.kr.data.utils;
 
+import server.inuappcenter.kr.data.domain.board.FaqBoard;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.domain.board.PhotoBoard;
+import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 
@@ -48,6 +50,16 @@ public class BoardUtils {
             photoBoardResponseDtoList.add(boardList.get(i).toBoardResponseDto(boardList.get(i), thumbnailList.get(i).getLocation(request, thumbnailList.get(i))));
         }
         return photoBoardResponseDtoList;
+    }
+
+    public static List<FaqBoardResponseDto> returnFaqBoardResponseDtoList(List<FaqBoard> boardList) {
+        List<FaqBoardResponseDto> faqBoardResponseDtoList = new ArrayList<>();
+
+        for(int i = 0; i<boardList.size()-1; i++) {
+            faqBoardResponseDtoList.add(boardList.get(i).toResponseDto(boardList.get(i)));
+        }
+
+        return faqBoardResponseDtoList;
     }
 
 
