@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain;
 
+import server.inuappcenter.kr.common.data.domain.BaseTimeEntity;
 import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Table(name = "appcenter_group")
-public class Group {
+public class Group extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long group_id;

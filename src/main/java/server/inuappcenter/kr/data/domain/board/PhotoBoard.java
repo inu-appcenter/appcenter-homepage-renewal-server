@@ -32,7 +32,9 @@ public class PhotoBoard extends Board {
         return new PhotoBoardResponseDto<>(
                 photoBoard.getId(),
                 photoBoard.getBody(),
-                image
+                image,
+                photoBoard.getCreatedDate(),
+                photoBoard.getLastModifiedDate()
         );
     }
 }

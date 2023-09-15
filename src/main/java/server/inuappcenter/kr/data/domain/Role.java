@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain;
 
+import server.inuappcenter.kr.common.data.domain.BaseTimeEntity;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
 import server.inuappcenter.kr.data.dto.response.RoleResponseDto;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Role {
+public class Role extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long role_id;

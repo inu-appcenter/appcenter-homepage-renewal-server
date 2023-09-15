@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Role;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
@@ -31,6 +32,8 @@ public class RoleService {
         return RoleResponseDto.builder()
                 .role_id(getRole.getRole_id())
                 .role_name(getRole.getRole_name())
+                .createdDate(getRole.getCreatedDate())
+                .lastModifiedDate(getRole.getLastModifiedDate())
                 .build();
     }
 
@@ -41,6 +44,8 @@ public class RoleService {
         return RoleResponseDto.builder()
                 .role_id(savedRole.getRole_id())
                 .role_name(savedRole.getRole_name())
+                .createdDate(savedRole.getCreatedDate())
+                .lastModifiedDate(savedRole.getLastModifiedDate())
                 .build();
     }
 
@@ -52,6 +57,8 @@ public class RoleService {
         return RoleResponseDto.builder()
                 .role_id(update_role.getRole_id())
                 .role_name(update_role.getRole_name())
+                .createdDate(update_role.getCreatedDate())
+                .lastModifiedDate(update_role.getLastModifiedDate())
                 .build();
     }
 
@@ -63,14 +70,14 @@ public class RoleService {
     }
 
     @Transactional
-    public String deleteRole(Long id) {
+    public CommonResponseDto deleteRole(Long id) {
         Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_groups = groupRepository.findAllByRole(found_role);
         if (found_groups.isEmpty()) {
             roleRepository.deleteById(id);
-            return "role id [" + id + "] has been deleted.";
+            return new CommonResponseDto("role id [" + id + "] has been deleted.");
         } else {
-            return "The role [" + id + "] is part of a Group. Please delete the Group first";
+            return new CommonResponseDto("The role [" + id + "] is part of a Group. Please delete the Group first");
         }
     }
 }

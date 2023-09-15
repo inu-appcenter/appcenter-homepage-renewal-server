@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 @Getter
 @Entity
 @NoArgsConstructor
-public class FaqBoard extends Board{
+public class FaqBoard extends Board {
 
     private String part;
     private String question;
@@ -33,7 +33,9 @@ public class FaqBoard extends Board{
                faqBoard.getId(),
                faqBoard.getPart(),
                faqBoard.getQuestion(),
-               faqBoard.getAnswer()
+               faqBoard.getAnswer(),
+               faqBoard.getCreatedDate(),
+               faqBoard.getLastModifiedDate()
        );
     }
 

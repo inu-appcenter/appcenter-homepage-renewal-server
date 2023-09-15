@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.controller;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
 import server.inuappcenter.kr.service.GroupService;
@@ -65,9 +66,9 @@ public class GroupController {
 
     @Operation(summary = "그룹 멤버 (1명) 삭제", description = "삭제할 Group id를 입력해주세요")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteGroup(final @PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponseDto> deleteGroup(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Group을 삭제하도록 요청했습니다.");
-        String result = groupService.deleteGroup(id);
+        CommonResponseDto result = groupService.deleteGroup(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
