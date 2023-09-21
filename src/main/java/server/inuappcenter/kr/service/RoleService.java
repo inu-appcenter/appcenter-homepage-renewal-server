@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class RoleService {
@@ -26,7 +25,7 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final GroupRepository groupRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RoleResponseDto getRole(Long id) {
         Role getRole = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return RoleResponseDto.builder()
@@ -62,6 +61,7 @@ public class RoleService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<RoleResponseDto> findAllRole() {
         List<Role> found_roles = roleRepository.findAll();
         return found_roles.stream()
@@ -69,7 +69,7 @@ public class RoleService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CommonResponseDto deleteRole(Long id) {
         Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_groups = groupRepository.findAllByRole(found_role);

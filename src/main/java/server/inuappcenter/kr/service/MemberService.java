@@ -17,13 +17,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return MemberResponseDto.builder()
@@ -73,6 +72,7 @@ public class MemberService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<MemberResponseDto> findAllMember() {
         List<Member> found_members = memberRepository.findAll();
         return found_members.stream()
@@ -80,6 +80,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public CommonResponseDto deleteMember(Long id) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_group = groupRepository.findAllByMember(found_member);

@@ -18,14 +18,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class GroupService {
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GroupResponseDto getGroup(Long id) {
         Group found_group = groupRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return GroupResponseDto.builder()
@@ -43,6 +42,7 @@ public class GroupService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<GroupResponseDto> findAllGroup() {
         List<Group> found_Groups = groupRepository.findAll();
         return found_Groups.stream()
@@ -97,6 +97,7 @@ public class GroupService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public CommonResponseDto deleteGroup(Long id) {
         groupRepository.deleteById(id);
         return new CommonResponseDto("id: " + id + " has been successfully deleted.");
