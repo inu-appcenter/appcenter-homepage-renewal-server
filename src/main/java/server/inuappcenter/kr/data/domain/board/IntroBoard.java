@@ -47,7 +47,9 @@ public class IntroBoard extends Board {
                 introBoard.getAndroidStoreLink(),
                 introBoard.getIOSStoreLink(),
                 introBoard.getBody(),
-                image
+                image,
+                introBoard.getCreatedDate(),
+                introBoard.getLastModifiedDate()
         );
     }
 }

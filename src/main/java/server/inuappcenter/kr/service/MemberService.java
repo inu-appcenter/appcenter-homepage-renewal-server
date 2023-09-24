@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
@@ -16,13 +17,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return MemberResponseDto.builder()
@@ -33,6 +33,8 @@ public class MemberService {
                 .blogLink(member.getBlogLink())
                 .email(member.getEmail())
                 .gitRepositoryLink(member.getGitRepositoryLink())
+                .createdDate(member.getCreatedDate())
+                .lastModifiedDate(member.getLastModifiedDate())
                 .build();
     }
 
@@ -47,6 +49,8 @@ public class MemberService {
                 .blogLink(saved_member.getBlogLink())
                 .email(saved_member.getEmail())
                 .gitRepositoryLink(saved_member.getGitRepositoryLink())
+                .createdDate(saved_member.getCreatedDate())
+                .lastModifiedDate(saved_member.getLastModifiedDate())
                 .build();
     }
 
@@ -63,9 +67,12 @@ public class MemberService {
                 .blogLink(saved_member.getBlogLink())
                 .email(saved_member.getEmail())
                 .gitRepositoryLink(saved_member.getGitRepositoryLink())
+                .createdDate(saved_member.getCreatedDate())
+                .lastModifiedDate(saved_member.getLastModifiedDate())
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<MemberResponseDto> findAllMember() {
         List<Member> found_members = memberRepository.findAll();
         return found_members.stream()
@@ -73,14 +80,15 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
-    public String deleteMember(Long id) {
+    @Transactional(readOnly = true)
+    public CommonResponseDto deleteMember(Long id) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_group = groupRepository.findAllByMember(found_member);
         if(found_group.isEmpty()) {
             memberRepository.deleteById(id);
-            return "member id ["+ id + "] has been deleted.";
+            return new CommonResponseDto("member id ["+ id + "] has been deleted.");
         } else {
-            return "The member [" + id + "] is part of a Group. Please delete the Group first";
+            return new CommonResponseDto("The member [" + id + "] is part of a Group. Please delete the Group first");
         }
     }
 }

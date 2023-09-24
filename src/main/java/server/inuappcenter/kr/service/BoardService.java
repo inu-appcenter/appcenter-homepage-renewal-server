@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.board.*;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository<Board> boardRepository;
@@ -31,7 +31,7 @@ public class BoardService {
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
 
-    @Transactional
+    @Transactional(readOnly = true)
     // (앱) 게시글 조회하기
     public IntroBoardResponseDto<List<String>> getIntroBoard(Long id) {
         IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
@@ -44,7 +44,9 @@ public class BoardService {
                 foundBoard.getAndroidStoreLink(),
                 foundBoard.getIOSStoreLink(),
                 foundBoard.getBody(),
-                BoardUtils.returnImageURL(request, ImageList)
+                BoardUtils.returnImageURL(request, ImageList),
+                foundBoard.getCreatedDate(),
+                foundBoard.getLastModifiedDate()
         );
     }
 
@@ -66,7 +68,9 @@ public class BoardService {
                 introBoard.getAndroidStoreLink(),
                 introBoard.getIOSStoreLink(),
                 introBoard.getBody(),
-                BoardUtils.returnImageId(savedImage)
+                BoardUtils.returnImageId(savedImage),
+                introBoard.getCreatedDate(),
+                introBoard.getLastModifiedDate()
         );
     }
 
@@ -92,12 +96,14 @@ public class BoardService {
                         introBoard.getAndroidStoreLink(),
                         introBoard.getIOSStoreLink(),
                         introBoard.getBody(),
-                        BoardUtils.returnImageId(savedImage)
+                        BoardUtils.returnImageId(savedImage),
+                        introBoard.getCreatedDate(),
+                        introBoard.getLastModifiedDate()
                         );
     }
 
-    @Transactional
-    public String deleteIntroBoard(Long id) {
+    @Transactional(readOnly = true)
+    public CommonResponseDto deleteIntroBoard(Long id) {
         IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow();
 
         List<Image> ImageList = foundBoard.getImages();
@@ -109,10 +115,10 @@ public class BoardService {
         // 게시글 삭제
         introBoardRepository.deleteById(id);
 
-        return "id: " + id + " has been successfully deleted.";
+        return new CommonResponseDto("id: " + id + " has been successfully deleted.");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<IntroBoardResponseDto<String>> findAllIntroBoard() {
         List<IntroBoard> boardList = introBoardRepository.findAll();
 
@@ -121,14 +127,16 @@ public class BoardService {
         return BoardUtils.returnIntroBoardResponseDtoList(boardList, thumbnailList, request);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PhotoBoardResponseDto<List<String>> getPhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         List<Image> ImageList = foundBoard.getImages();
         return new PhotoBoardResponseDto<>(
                 foundBoard.getId(),
                 foundBoard.getBody(),
-                BoardUtils.returnImageURL(request, ImageList)
+                BoardUtils.returnImageURL(request, ImageList),
+                foundBoard.getCreatedDate(),
+                foundBoard.getLastModifiedDate()
         );
     }
 
@@ -141,7 +149,9 @@ public class BoardService {
         return new PhotoBoardResponseDto<>(
                 photoBoard.getId(),
                 photoBoard.getBody(),
-                BoardUtils.returnImageId(savedImage)
+                BoardUtils.returnImageId(savedImage),
+                photoBoard.getCreatedDate(),
+                photoBoard.getLastModifiedDate()
         );
     }
 
@@ -164,12 +174,14 @@ public class BoardService {
         return new PhotoBoardResponseDto<>(
                 photoBoard.getId(),
                 photoBoard.getBody(),
-                BoardUtils.returnImageId(savedImage)
+                BoardUtils.returnImageId(savedImage),
+                photoBoard.getCreatedDate(),
+                photoBoard.getLastModifiedDate()
         );
     }
 
-    @Transactional
-    public String deletePhotoBoard(Long id) {
+    @Transactional(readOnly = true)
+    public CommonResponseDto deletePhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
 
         List<Image> ImageList = foundBoard.getImages();
@@ -181,7 +193,7 @@ public class BoardService {
         // 게시글 삭제
         boardRepository.deleteById(id);
 
-        return "id: " + id + " has been successfully deleted.";
+        return new CommonResponseDto("id: " + id + " has been successfully deleted.");
     }
 
     @Transactional
@@ -193,18 +205,20 @@ public class BoardService {
         return BoardUtils.returnPhotoBoardResponseDtoList(boardList, thumbnailList, request);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public FaqBoardResponseDto getFaqBoard(Long id) {
         FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return new FaqBoardResponseDto(
                 foundBoard.getId(),
                 foundBoard.getPart(),
                 foundBoard.getQuestion(),
-                foundBoard.getAnswer()
+                foundBoard.getAnswer(),
+                foundBoard.getCreatedDate(),
+                foundBoard.getLastModifiedDate()
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FaqBoardResponseDto> getFaqBoardList() {
         List<FaqBoard> boardList = faqRepository.findAll();
         return BoardUtils.returnFaqBoardResponseDtoList(boardList);
@@ -217,7 +231,9 @@ public class BoardService {
                 savedBoard.getId(),
                 savedBoard.getPart(),
                 savedBoard.getQuestion(),
-                savedBoard.getAnswer()
+                savedBoard.getAnswer(),
+                savedBoard.getCreatedDate(),
+                savedBoard.getLastModifiedDate()
         );
     }
 
@@ -229,14 +245,16 @@ public class BoardService {
                 foundBoard.getId(),
                 foundBoard.getPart(),
                 foundBoard.getQuestion(),
-                foundBoard.getAnswer()
+                foundBoard.getAnswer(),
+                foundBoard.getCreatedDate(),
+                foundBoard.getLastModifiedDate()
         );
     }
 
-    @Transactional
-    public String deleteFaqBoard(Long id) {
+    @Transactional(readOnly = true)
+    public CommonResponseDto deleteFaqBoard(Long id) {
         faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         faqRepository.deleteById(id);
-        return "id: " + id + " has been successfully deleted.";
+        return new CommonResponseDto("id: " + id + " has been successfully deleted.");
     }
 }

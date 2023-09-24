@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.controller;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
 import server.inuappcenter.kr.data.dto.response.RoleResponseDto;
 import server.inuappcenter.kr.service.RoleService;
@@ -63,9 +64,9 @@ public class RoleController {
     @Operation(summary = "역할 (1개) 삭제", description = "역할 삭제 / 역할이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "역할 id", required = true)
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteRole(final @PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponseDto> deleteRole(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Role을 삭제하도록 요청했습니다.");
-        String result = roleService.deleteRole(id);
+        CommonResponseDto result = roleService.deleteRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

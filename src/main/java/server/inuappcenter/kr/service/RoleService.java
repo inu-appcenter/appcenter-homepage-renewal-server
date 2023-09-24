@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Role;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class RoleService {
@@ -25,12 +25,14 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final GroupRepository groupRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RoleResponseDto getRole(Long id) {
         Role getRole = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return RoleResponseDto.builder()
                 .role_id(getRole.getRole_id())
                 .role_name(getRole.getRole_name())
+                .createdDate(getRole.getCreatedDate())
+                .lastModifiedDate(getRole.getLastModifiedDate())
                 .build();
     }
 
@@ -41,6 +43,8 @@ public class RoleService {
         return RoleResponseDto.builder()
                 .role_id(savedRole.getRole_id())
                 .role_name(savedRole.getRole_name())
+                .createdDate(savedRole.getCreatedDate())
+                .lastModifiedDate(savedRole.getLastModifiedDate())
                 .build();
     }
 
@@ -52,9 +56,12 @@ public class RoleService {
         return RoleResponseDto.builder()
                 .role_id(update_role.getRole_id())
                 .role_name(update_role.getRole_name())
+                .createdDate(update_role.getCreatedDate())
+                .lastModifiedDate(update_role.getLastModifiedDate())
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<RoleResponseDto> findAllRole() {
         List<Role> found_roles = roleRepository.findAll();
         return found_roles.stream()
@@ -62,15 +69,15 @@ public class RoleService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public String deleteRole(Long id) {
+    @Transactional(readOnly = true)
+    public CommonResponseDto deleteRole(Long id) {
         Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_groups = groupRepository.findAllByRole(found_role);
         if (found_groups.isEmpty()) {
             roleRepository.deleteById(id);
-            return "role id [" + id + "] has been deleted.";
+            return new CommonResponseDto("role id [" + id + "] has been deleted.");
         } else {
-            return "The role [" + id + "] is part of a Group. Please delete the Group first";
+            return new CommonResponseDto("The role [" + id + "] is part of a Group. Please delete the Group first");
         }
     }
 }

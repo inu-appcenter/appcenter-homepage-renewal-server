@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.Role;
@@ -17,14 +18,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class GroupService {
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GroupResponseDto getGroup(Long id) {
         Group found_group = groupRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return GroupResponseDto.builder()
@@ -37,9 +37,12 @@ public class GroupService {
                 .role(found_group.getRole().getRole_name())
                 .part(found_group.getPart())
                 .year(found_group.getYear())
+                .createdDate(found_group.getCreatedDate())
+                .lastModifiedDate(found_group.getLastModifiedDate())
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<GroupResponseDto> findAllGroup() {
         List<Group> found_Groups = groupRepository.findAll();
         return found_Groups.stream()
@@ -65,6 +68,8 @@ public class GroupService {
                 .role(saved_group.getRole().getRole_name())
                 .part(saved_group.getPart())
                 .year(saved_group.getYear())
+                .createdDate(saved_group.getCreatedDate())
+                .lastModifiedDate(saved_group.getLastModifiedDate())
                 .build();
     }
 
@@ -87,11 +92,14 @@ public class GroupService {
                 .role(savedGroup.getRole().getRole_name())
                 .part(savedGroup.getPart())
                 .year(savedGroup.getYear())
+                .createdDate(savedGroup.getCreatedDate())
+                .lastModifiedDate(savedGroup.getLastModifiedDate())
                 .build();
     }
 
-    public String deleteGroup(Long id) {
+    @Transactional(readOnly = true)
+    public CommonResponseDto deleteGroup(Long id) {
         groupRepository.deleteById(id);
-        return "id: " + id + " has been successfully deleted.";
+        return new CommonResponseDto("id: " + id + " has been successfully deleted.");
     }
 }

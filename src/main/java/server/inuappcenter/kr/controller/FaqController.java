@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
 import server.inuappcenter.kr.service.BoardService;
@@ -57,9 +58,9 @@ public class FaqController {
 
     @Operation(summary = "FAQ 한 개 삭제", description = "삭제할 faq_id를 입력해주세요")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteGroup(final @PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponseDto> deleteGroup(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 FAQ를 삭제하도록 요청했습니다.");
-        String result = boardService.deleteFaqBoard(id);
+        CommonResponseDto result = boardService.deleteFaqBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

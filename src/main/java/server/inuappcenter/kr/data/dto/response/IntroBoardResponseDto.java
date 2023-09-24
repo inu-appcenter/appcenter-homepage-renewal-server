@@ -2,6 +2,8 @@ package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class IntroBoardResponseDto<T> {
     private final Long id;
@@ -11,8 +13,11 @@ public class IntroBoardResponseDto<T> {
     public final String iOSStoreLink;
     public final String body;
     private final T images;
+    private final LocalDateTime createdDate;
+    private final LocalDateTime lastModifiedDate;
 
-    public IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String iOSStoreLink, String body, T images) {
+    public IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String iOSStoreLink, String body, T images,
+                                  LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
@@ -20,5 +25,7 @@ public class IntroBoardResponseDto<T> {
         this.iOSStoreLink = iOSStoreLink;
         this.body = body;
         this.images = images;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

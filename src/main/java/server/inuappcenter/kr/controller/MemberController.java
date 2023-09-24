@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.controller;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.response.MemberResponseDto;
 import server.inuappcenter.kr.service.MemberService;
@@ -62,9 +63,9 @@ public class MemberController {
     @Operation(summary = "동아리원 (1명) 삭제하기", description = "동아리원 삭제 / 동아리원이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMember(final @PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponseDto> deleteMember(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Member를 삭제하도록 요청했습니다.");
-        String result = memberService.deleteMember(id);
+        CommonResponseDto result = memberService.deleteMember(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

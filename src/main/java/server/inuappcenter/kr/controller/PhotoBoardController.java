@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.controller;
 
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
@@ -68,9 +69,9 @@ public class PhotoBoardController {
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBoard(final @PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponseDto> deleteBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 삭제하도록 요청했습니다.");
-        String result = boardService.deletePhotoBoard(id);
+        CommonResponseDto result = boardService.deletePhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
