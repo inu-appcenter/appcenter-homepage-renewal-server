@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain.board;
 
+import lombok.AccessLevel;
 import server.inuappcenter.kr.data.utils.ImageUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image {
 
     @Id

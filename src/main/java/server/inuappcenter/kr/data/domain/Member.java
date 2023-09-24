@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain;
 
+import lombok.AccessLevel;
 import server.inuappcenter.kr.common.data.domain.BaseTimeEntity;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.response.MemberResponseDto;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
