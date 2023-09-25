@@ -37,8 +37,7 @@ public class RoleService {
     }
 
     public RoleResponseDto saveRole(RoleRequestDto roleRequestDto) {
-        Role role = new Role();
-        role.setRole(roleRequestDto);
+        Role role = new Role(roleRequestDto);
         Role savedRole = roleRepository.save(role);
         return RoleResponseDto.builder()
                 .role_id(savedRole.getRole_id())
@@ -51,7 +50,7 @@ public class RoleService {
     @Transactional
     public RoleResponseDto updateRole(Long id, RoleRequestDto roleRequestDto) {
         Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        found_role.setRole(id, roleRequestDto);
+        found_role.setRole(roleRequestDto);
         Role update_role = roleRepository.save(found_role);
         return RoleResponseDto.builder()
                 .role_id(update_role.getRole_id())

@@ -19,14 +19,14 @@ public class Role extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long role_id;
+
     private String role_name;
 
-    public void setRole(RoleRequestDto roleRequestDto) {
+    public Role(RoleRequestDto roleRequestDto) {
         this.role_name = roleRequestDto.getRole_name();
     }
 
-    public void setRole(Long id, RoleRequestDto roleRequestDto) {
-        this.role_id = id;
+    public void setRole(RoleRequestDto roleRequestDto) {
         this.role_name = roleRequestDto.getRole_name();
     }
 
@@ -34,6 +34,8 @@ public class Role extends BaseTimeEntity {
         return RoleResponseDto.builder()
                 .role_id(role.getRole_id())
                 .role_name(role.getRole_name())
+                .lastModifiedDate(role.getLastModifiedDate())
+                .createdDate(role.getCreatedDate())
                 .build();
     }
 }

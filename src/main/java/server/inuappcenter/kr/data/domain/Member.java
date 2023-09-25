@@ -60,6 +60,8 @@ public class Member extends BaseTimeEntity {
                 .blogLink(member.getBlogLink())
                 .email(member.getEmail())
                 .gitRepositoryLink(member.getGitRepositoryLink())
+                .lastModifiedDate(member.getLastModifiedDate())
+                .createdDate(member.getCreatedDate())
                 .build();
     }
 }

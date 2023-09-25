@@ -54,6 +54,8 @@ public class Group extends BaseTimeEntity {
                 .role(group.getRole().getRole_name())
                 .part(group.getPart())
                 .year(group.getYear())
+                .lastModifiedDate(group.getLastModifiedDate())
+                .createdDate(group.getCreatedDate())
                 .build();
     }
 }
