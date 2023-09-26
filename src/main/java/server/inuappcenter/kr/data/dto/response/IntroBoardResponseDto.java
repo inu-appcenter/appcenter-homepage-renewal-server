@@ -10,19 +10,19 @@ public class IntroBoardResponseDto<T> {
     public final String title;
     public final String subTitle;
     public final String androidStoreLink;
-    public final String iOSStoreLink;
+    public final String appleStoreLink;
     public final String body;
     private final T images;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
 
-    public IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String iOSStoreLink, String body, T images,
+    public IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String appleStoreLink, String body, T images,
                                   LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
         this.androidStoreLink = androidStoreLink;
-        this.iOSStoreLink = iOSStoreLink;
+        this.appleStoreLink = appleStoreLink;
         this.body = body;
         this.images = images;
         this.createdDate = createdDate;

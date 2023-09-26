@@ -36,9 +36,9 @@ public class IntroBoardRequestDto {
 
     @Schema(
             example = "https://...",
-            description = "앱 스토어 링크"
+            description = "앱스토어 링크"
     )
-    private String iOSStoreLink;
+    private String appleStoreLink;
 
     @Schema(
             example = "This Application is...",
