@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain.board;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
@@ -9,7 +10,7 @@ import javax.persistence.Entity;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FaqBoard extends Board {
 
     private String part;

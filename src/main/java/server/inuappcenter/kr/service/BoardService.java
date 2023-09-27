@@ -59,7 +59,7 @@ public class BoardService {
         boardRepository.save(introBoard);
 
         // imageRequestDto에 포함된 List<MultiPartFile>을 List<Image>로 변환 / 매핑을 위해 introBoard도 포함하여 함께 저장
-        List<Image> imageList = new <IntroBoard>Image().toImageListWithMapping(introBoardRequestDto.getMultipartFiles(), introBoard);
+        List<Image> imageList = Image.toImageListWithMapping(introBoardRequestDto.getMultipartFiles(), introBoard);
         List<Image> savedImage = imageRepository.saveAll(imageList);
         return new IntroBoardResponseDto<>(
                 introBoard.getId(),
@@ -143,7 +143,7 @@ public class BoardService {
     @Transactional
     public PhotoBoardResponseDto<List<Long>> savePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
         PhotoBoard photoBoard = new PhotoBoard(photoBoardRequestDto);
-        List<Image> imageList = new <PhotoBoard>Image().toImageListWithMapping(photoBoardRequestDto.getMultipartFiles(), photoBoard);
+        List<Image> imageList = Image.toImageListWithMapping(photoBoardRequestDto.getMultipartFiles(), photoBoard);
         boardRepository.save(photoBoard);
         List<Image> savedImage = imageRepository.saveAll(imageList);
         return new PhotoBoardResponseDto<>(

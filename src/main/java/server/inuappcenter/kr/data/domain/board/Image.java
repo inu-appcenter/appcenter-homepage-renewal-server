@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain.board;
 
+import lombok.AccessLevel;
 import server.inuappcenter.kr.data.utils.ImageUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image {
 
     @Id
@@ -64,7 +65,7 @@ public class Image {
     }
 
     // 제네릭 메소드를 이용하여 두가지 보드 타입을 처리하였음
-    public <T> List<Image> toImageListWithMapping(List<MultipartFile> multipartFileList, T board) {
+    public static <T> List<Image> toImageListWithMapping(List<MultipartFile> multipartFileList, T board) {
         List<Image> imageEntityList = new ArrayList<>();
         for (MultipartFile file: multipartFileList) {
             try {

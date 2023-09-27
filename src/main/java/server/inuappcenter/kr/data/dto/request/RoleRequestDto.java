@@ -1,6 +1,7 @@
 package server.inuappcenter.kr.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoleRequestDto {
     @Schema(
             example = "파트장",

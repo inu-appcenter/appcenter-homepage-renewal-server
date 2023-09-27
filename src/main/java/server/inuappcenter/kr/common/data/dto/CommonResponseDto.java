@@ -1,10 +1,11 @@
 package server.inuappcenter.kr.common.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-@AllArgsConstructor
 public class CommonResponseDto {
-    private String msg;
+    private final String msg;
+    public CommonResponseDto (String msg) {
+        this.msg = msg;
+    }
 }

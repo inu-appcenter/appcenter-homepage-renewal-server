@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain;
 
+import lombok.AccessLevel;
 import server.inuappcenter.kr.common.data.domain.BaseTimeEntity;
 import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
@@ -9,9 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Table(name = "appcenter_group")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Group extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +54,8 @@ public class Group extends BaseTimeEntity {
                 .role(group.getRole().getRole_name())
                 .part(group.getPart())
                 .year(group.getYear())
+                .lastModifiedDate(group.getLastModifiedDate())
+                .createdDate(group.getCreatedDate())
                 .build();
     }
 }

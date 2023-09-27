@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.domain.board;
 
+import lombok.AccessLevel;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class IntroBoard extends Board {
     public String title;
     public String subTitle;
