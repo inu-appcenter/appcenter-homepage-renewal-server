@@ -18,7 +18,7 @@ public class IntroBoard extends Board {
     public String title;
     public String subTitle;
     public String androidStoreLink;
-    public String iOSStoreLink;
+    public String appleStoreLink;
     public String body;
 
     @OneToMany(mappedBy = "introBoard")
@@ -28,7 +28,7 @@ public class IntroBoard extends Board {
         this.title = introBoardRequestDto.getTitle();
         this.subTitle = introBoardRequestDto.getSubTitle();
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
-        this.iOSStoreLink = introBoardRequestDto.getIOSStoreLink();
+        this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
         this.body = introBoardRequestDto.getBody();
     }
 
@@ -36,7 +36,7 @@ public class IntroBoard extends Board {
         this.title = introBoardRequestDto.getTitle();
         this.subTitle = introBoardRequestDto.getSubTitle();
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
-        this.iOSStoreLink = introBoardRequestDto.getIOSStoreLink();
+        this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
         this.body = introBoardRequestDto.getBody();
     }
 
@@ -46,7 +46,7 @@ public class IntroBoard extends Board {
                 introBoard.getTitle(),
                 introBoard.getSubTitle(),
                 introBoard.getAndroidStoreLink(),
-                introBoard.getIOSStoreLink(),
+                introBoard.getAppleStoreLink(),
                 introBoard.getBody(),
                 image,
                 introBoard.getCreatedDate(),
