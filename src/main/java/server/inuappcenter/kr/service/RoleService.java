@@ -68,7 +68,6 @@ public class RoleService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public CommonResponseDto deleteRole(Long id) {
         Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_groups = groupRepository.findAllByRole(found_role);

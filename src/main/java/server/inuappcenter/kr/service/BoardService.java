@@ -251,7 +251,6 @@ public class BoardService {
         );
     }
 
-    @Transactional(readOnly = true)
     public CommonResponseDto deleteFaqBoard(Long id) {
         faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         faqRepository.deleteById(id);
