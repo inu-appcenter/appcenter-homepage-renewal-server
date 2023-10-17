@@ -80,7 +80,6 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public CommonResponseDto deleteMember(Long id) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_group = groupRepository.findAllByMember(found_member);
