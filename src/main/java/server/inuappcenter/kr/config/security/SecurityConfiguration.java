@@ -20,9 +20,6 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
 
     private static final String[] PERMIT_URI_ARRAY = {
             "/sign/sign-in",
-            "/sign/sign-up",
-            "/sign/refresh",
-            "/sign/exception",
             "/v3/api-docs/**",
             "/swagger-ui/**"
     };
