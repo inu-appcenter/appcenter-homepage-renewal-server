@@ -19,6 +19,12 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String[] PERMIT_URI_ARRAY = {
+            "/groups/*",
+            "/groups/all-groups-members",
+            "/faqs/*",
+            "/faqs/all-faq-boards",
+            "/image/photo/*",
+            "/roles/*",
             "/sign/sign-in",
             "/v3/api-docs/**",
             "/swagger-ui/**"
@@ -32,6 +38,8 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
+                .antMatchers(HttpMethod.DELETE, PERMIT_URI_ARRAY).denyAll()
+                .antMatchers(HttpMethod.PUT, PERMIT_URI_ARRAY).denyAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers(PERMIT_URI_ARRAY).permitAll()
                 .antMatchers(HttpMethod.GET, "*").permitAll()
