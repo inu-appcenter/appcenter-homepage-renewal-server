@@ -1,5 +1,9 @@
 package server.inuappcenter.kr.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.board.*;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
@@ -11,10 +15,6 @@ import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 import server.inuappcenter.kr.data.repository.*;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

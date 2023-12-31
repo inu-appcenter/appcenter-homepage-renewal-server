@@ -1,10 +1,10 @@
 package server.inuappcenter.kr.data.domain.board;
 
 import lombok.AccessLevel;
-import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
-import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -22,7 +22,7 @@ public class IntroBoard extends Board {
     public String body;
 
     @OneToMany(mappedBy = "introBoard")
-    private List<Image> Images = new ArrayList<>();
+    private final List<Image> Images = new ArrayList<>();
 
     public IntroBoard(IntroBoardRequestDto introBoardRequestDto) {
         this.title = introBoardRequestDto.getTitle();

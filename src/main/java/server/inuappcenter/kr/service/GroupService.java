@@ -1,5 +1,8 @@
 package server.inuappcenter.kr.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Member;
@@ -10,9 +13,6 @@ import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,5 +100,10 @@ public class GroupService {
     public CommonResponseDto deleteGroup(Long id) {
         groupRepository.deleteById(id);
         return new CommonResponseDto("id: " + id + " has been successfully deleted.");
+    }
+
+    public CommonResponseDto deleteMultipleGroups(List<Long> id) {
+        groupRepository.deleteAllById(id);
+        return new CommonResponseDto("id: " + id + " have been successfully deleted.");
     }
 }

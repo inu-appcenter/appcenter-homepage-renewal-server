@@ -2,7 +2,6 @@ package server.inuappcenter.kr.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import server.inuappcenter.kr.config.security.JwtTokenProvider;
 import server.inuappcenter.kr.data.domain.User;
@@ -18,7 +17,6 @@ public class SignService {
 
     public SignInResponseDto signIn(String id, String password) {
         User user = userRepository.getByUid(id);
-        log.info("비밀번호 판정 " + String.valueOf(password.equals(user.getPassword())));
         if (!password.equals(user.getPassword())) {
             throw new RuntimeException();
         }

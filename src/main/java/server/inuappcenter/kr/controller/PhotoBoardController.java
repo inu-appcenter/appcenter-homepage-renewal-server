@@ -1,10 +1,5 @@
 package server.inuappcenter.kr.controller;
 
-import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
-import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
-import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
-import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
-import server.inuappcenter.kr.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
+import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
+import server.inuappcenter.kr.service.BoardService;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -3,7 +3,6 @@ package server.inuappcenter.kr.data.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 
-
 import java.time.LocalDateTime;
 
 @Getter

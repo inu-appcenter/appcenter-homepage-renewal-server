@@ -1,6 +1,6 @@
 package server.inuappcenter.kr.common.data.dto;
 
-import lombok.*;
+import lombok.Getter;
 
 @Getter
 public class CommonResponseDto {

@@ -1,10 +1,10 @@
 package server.inuappcenter.kr.data.domain.board;
 
 import lombok.AccessLevel;
-import server.inuappcenter.kr.data.utils.ImageUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.utils.ImageUtils;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
