@@ -80,4 +80,12 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @Operation(summary = "동아리원 이름으로 소속된 그룹들을 찾기", description = "동아리원의 이름을 입력해주세요")
+    @GetMapping("/groups/{name}")
+    public ResponseEntity<List<GroupResponseDto>> searchByMemberName(final @PathVariable("name") String name) {
+        log.info("사용자가 이름이 " + name + "인 Group들을 찾도록 요청했습니다.");
+        List<GroupResponseDto> result = groupService.searchByMemberName(name);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
 }

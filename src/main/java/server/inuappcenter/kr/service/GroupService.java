@@ -106,4 +106,11 @@ public class GroupService {
         groupRepository.deleteAllByIdInBatch(id);
         return new CommonResponseDto("id: " + id + " have been successfully deleted.");
     }
+
+    public List<GroupResponseDto> searchByMemberName(String name) {
+        List<Group> foundGroups = groupRepository.findAllByMember_Name(name);
+        return foundGroups.stream()
+                .map(data -> data.toGroupResponseDto(data))
+                .collect(Collectors.toList());
+    }
 }
