@@ -103,7 +103,7 @@ public class GroupService {
     }
 
     public CommonResponseDto deleteMultipleGroups(List<Long> id) {
-        groupRepository.deleteAllById(id);
+        groupRepository.deleteAllByIdInBatch(id);
         return new CommonResponseDto("id: " + id + " have been successfully deleted.");
     }
 }

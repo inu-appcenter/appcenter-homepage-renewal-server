@@ -7,12 +7,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: 'true'
+    show-sql: true
     open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
   servlet:
     multipart:
-      maxFileSize: 500MB
-      maxRequestSize: 500MB
-springboot:
-  jwt:
-    secret: flature!@#flature!@#flature!@#flature!@#flature!@#flature!@#
+      maxFileSize: 50MB
+      maxRequestSize: 50MB
