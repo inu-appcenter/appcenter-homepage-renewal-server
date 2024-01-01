@@ -97,6 +97,7 @@ public class GroupService {
                 .build();
     }
 
+
     public CommonResponseDto deleteGroup(Long id) {
         groupRepository.deleteById(id);
         return new CommonResponseDto("id: " + id + " has been successfully deleted.");
