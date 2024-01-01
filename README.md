@@ -72,15 +72,15 @@ GET /photo-boards/all-photo-boards : 게시글 (전체) 가져오기
 <h3> faq-board-controller (/faq-boards) </h3>
 FAQ 게시판 컨트롤러: FAQ 게시판을 위한 컨트롤러입니다.<br>
 
-**⚠️예정 GET /faq-boards: 게시글 (1개) 조회하기**
+GET /faq-boards: 게시글 (1개) 조회하기
 
-**⚠️예정 POST /faq-boards: 게시글 (1개) 등록하기**
+POST /faq-boards: 게시글 (1개) 등록하기
 
-**⚠️예정 DELETE /faq-boards: 게시글 (1개) 삭제하기**
+DELETE /faq-boards: 게시글 (1개) 삭제하기
 
-**⚠️예정 PATCH /faq-boards: 게시글 (1개) 수정하기**
+예정 PATCH /faq-boards: 게시글 (1개) 수정하기
 
-**⚠️예정 GET /faq-boards/all-faq-boards : 게시글 (전체) 가져오기**
+예정 GET /faq-boards/all-faq-boards : 게시글 (전체) 가져오기
 
 <h3> image-controller (/image) </h3>
 이미지 컨트롤러: 업로드 된 이미지에 접근할 수 있는 URL을 제공하는 컨트롤러 입니다.<br>
