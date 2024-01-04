@@ -6,7 +6,7 @@ spring:
     password: test1234
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: 'true'
     open-in-view: false
   servlet:

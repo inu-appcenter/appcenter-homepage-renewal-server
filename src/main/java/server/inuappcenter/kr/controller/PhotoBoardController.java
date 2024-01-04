@@ -28,7 +28,7 @@ public class PhotoBoardController {
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<PhotoBoardResponseDto<List<String>>> getBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 요청했습니다.");
         PhotoBoardResponseDto<List<String>> photoBoardResponseDto = boardService.getPhotoBoard(id);
@@ -76,7 +76,7 @@ public class PhotoBoardController {
     }
 
     @Operation(summary = "사진 글 (전체) 조회", description = "사진 글을 모두 반환합니다.")
-    @GetMapping("/all-boards-contents")
+    @GetMapping("/public/all-boards-contents")
     public ResponseEntity<List<PhotoBoardResponseDto<String>>> findAllBoard() {
         log.info("사용자가 전체 PhotoBoard 목록을 요청했습니다.");
         List<PhotoBoardResponseDto<String>> dto_list = boardService.findAllPhotoBoard();
