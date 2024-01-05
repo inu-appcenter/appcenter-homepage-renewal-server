@@ -12,12 +12,12 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PhotoBoardRequestDto {
+public class PhotoBoardRequestDto extends BoardRequestDto{
     @Schema(
             example = "안녕하세요",
             description = "본문"
     )
-    @NotBlank(message = "본문이 비어있을 수 업습니다.")
+    @NotBlank(message = "본문이 비어있을 수 없습니다.")
     String body;
 
     @Schema(

@@ -3,7 +3,11 @@ package server.inuappcenter.kr.data.domain.board;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
+import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
+import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.utils.ImageUtils;
 
 import javax.persistence.*;
@@ -15,6 +19,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Image {
 
     @Id
@@ -22,11 +27,11 @@ public class Image {
     @Column(name = "image_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "intro_board_id")
     private IntroBoard introBoard;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "photo_board_id")
     private PhotoBoard photoBoard ;
 
@@ -42,14 +47,14 @@ public class Image {
     @Column(name = "is_thumbnail")
     private Boolean isThumbnail = false;
 
-    public <T>Image(String originalFileName, byte[] imageData, Long fileSize, T board) {
+    public Image(String originalFileName, byte[] imageData, Long fileSize, Board board) {
         this.originalFileName = originalFileName;
         this.imageData = ImageUtils.compressImage(imageData);
         this.fileSize = fileSize;
 
         if (board instanceof IntroBoard) {
             this.introBoard = (IntroBoard) board;
-        } else {
+        } else if (board instanceof PhotoBoard){
             this.photoBoard = (PhotoBoard) board;
         }
     }
@@ -64,12 +69,12 @@ public class Image {
         }
     }
 
-    // 제네릭 메소드를 이용하여 두가지 보드 타입을 처리하였음
-    public static <T> List<Image> toImageListWithMapping(List<MultipartFile> multipartFileList, T board) {
+    public static List<Image> mappingPhotoAndEntity(BoardRequestDto boardRequestDto) {
         List<Image> imageEntityList = new ArrayList<>();
-        for (MultipartFile file: multipartFileList) {
+        Board board = createBoardFromDto(boardRequestDto);
+        for (MultipartFile file: boardRequestDto.getMultipartFiles()) {
             try {
-                imageEntityList.add(new <T>Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), board));
+                imageEntityList.add(new Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), board));
             } catch (IOException e) {
                 throw new RuntimeException("파일을 불러오는데 실패하였습니다.");
             }
@@ -79,7 +84,15 @@ public class Image {
         return imageEntityList;
     }
 
-    // 실행시 이미지가 Thumbnail 속성을 가지고 있다는 것에 표시가 됨
+    public static Board createBoardFromDto(BoardRequestDto boardRequestDto) {
+        if (boardRequestDto instanceof PhotoBoardRequestDto) {
+            return new PhotoBoard((PhotoBoardRequestDto) boardRequestDto);
+        } else {
+            return new IntroBoard((IntroBoardRequestDto) boardRequestDto);
+        }
+    }
+
+    // 호출시 이미지가 Thumbnail 속성을 가지고 있다는 것에 표시가 됨
     public void isThumbnail() {
         this.isThumbnail = true;
     }

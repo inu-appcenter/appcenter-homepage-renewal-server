@@ -2,6 +2,7 @@ package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import server.inuappcenter.kr.data.domain.Member;
 
 import java.time.LocalDateTime;
 
@@ -29,5 +30,19 @@ public class MemberResponseDto {
         this.gitRepositoryLink = gitRepositoryLink;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public static MemberResponseDto entityToDto(Member member) {
+        return MemberResponseDto.builder()
+                .member_id(member.getMember_id())
+                .name(member.getName())
+                .description(member.getDescription())
+                .profileImage(member.getProfileImage())
+                .blogLink(member.getBlogLink())
+                .email(member.getEmail())
+                .gitRepositoryLink(member.getGitRepositoryLink())
+                .createdDate(member.getCreatedDate())
+                .lastModifiedDate(member.getLastModifiedDate())
+                .build();
     }
 }

@@ -2,6 +2,7 @@ package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import server.inuappcenter.kr.data.domain.Group;
 
 import java.time.LocalDateTime;
 
@@ -35,5 +36,21 @@ public class GroupResponseDto {
         this.year = year;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public static GroupResponseDto entityToDto(Group group) {
+        return new GroupResponseDto.GroupResponseDtoBuilder()
+                .group_id(group.getGroup_id())
+                .member(group.getMember().getName())
+                .profileImage(group.getMember().getProfileImage())
+                .email(group.getMember().getEmail())
+                .blogLink(group.getMember().getBlogLink())
+                .gitRepositoryLink(group.getMember().getGitRepositoryLink())
+                .role(group.getRole().getRole_name())
+                .part(group.getPart())
+                .year(group.getYear())
+                .createdDate(group.getCreatedDate())
+                .lastModifiedDate(group.getLastModifiedDate())
+                .build();
     }
 }

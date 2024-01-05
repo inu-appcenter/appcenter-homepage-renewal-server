@@ -25,33 +25,13 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        return MemberResponseDto.builder()
-                .member_id(member.getMember_id())
-                .name(member.getName())
-                .description(member.getDescription())
-                .profileImage(member.getProfileImage())
-                .blogLink(member.getBlogLink())
-                .email(member.getEmail())
-                .gitRepositoryLink(member.getGitRepositoryLink())
-                .createdDate(member.getCreatedDate())
-                .lastModifiedDate(member.getLastModifiedDate())
-                .build();
+        return MemberResponseDto.entityToDto(member);
     }
 
     public MemberResponseDto saveMember(MemberRequestDto memberRequestDto) {
         Member member = new Member(memberRequestDto);
-        Member saved_member = memberRepository.save(member);
-        return MemberResponseDto.builder()
-                .member_id(saved_member.getMember_id())
-                .name(saved_member.getName())
-                .description(saved_member.getDescription())
-                .profileImage(saved_member.getProfileImage())
-                .blogLink(saved_member.getBlogLink())
-                .email(saved_member.getEmail())
-                .gitRepositoryLink(saved_member.getGitRepositoryLink())
-                .createdDate(saved_member.getCreatedDate())
-                .lastModifiedDate(saved_member.getLastModifiedDate())
-                .build();
+        Member savedMember = memberRepository.save(member);
+        return MemberResponseDto.entityToDto(savedMember);
     }
 
     @Transactional
@@ -59,17 +39,7 @@ public class MemberService {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         found_member.setMember(id, memberRequestDto);
         Member saved_member = memberRepository.save(found_member);
-        return MemberResponseDto.builder()
-                .member_id(saved_member.getMember_id())
-                .name(saved_member.getName())
-                .description(saved_member.getDescription())
-                .profileImage(saved_member.getProfileImage())
-                .blogLink(saved_member.getBlogLink())
-                .email(saved_member.getEmail())
-                .gitRepositoryLink(saved_member.getGitRepositoryLink())
-                .createdDate(saved_member.getCreatedDate())
-                .lastModifiedDate(saved_member.getLastModifiedDate())
-                .build();
+        return MemberResponseDto.entityToDto(saved_member);
     }
 
     @Transactional(readOnly = true)

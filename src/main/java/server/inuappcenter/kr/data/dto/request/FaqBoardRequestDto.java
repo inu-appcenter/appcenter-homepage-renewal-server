@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class FaqBoardRequestDto {
+public class FaqBoardRequestDto extends BoardRequestDto{
     @Schema(
             example = "서버",
             description = "파트"

@@ -1,6 +1,7 @@
 package server.inuappcenter.kr.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
     private final BoardRepository<Board> boardRepository;
 
@@ -33,49 +35,22 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     // (앱) 게시글 조회하기
-    public IntroBoardResponseDto<List<String>> getIntroBoard(Long id) {
+    public IntroBoardResponseDto getIntroBoard(Long id) {
         IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        List<Image> ImageList = foundBoard.getImages();
 
-        return new IntroBoardResponseDto<>(
-                foundBoard.getId(),
-                foundBoard.getTitle(),
-                foundBoard.getSubTitle(),
-                foundBoard.getAndroidStoreLink(),
-                foundBoard.getAppleStoreLink(),
-                foundBoard.getBody(),
-                BoardUtils.returnImageURL(request, ImageList),
-                foundBoard.getCreatedDate(),
-                foundBoard.getLastModifiedDate()
-        );
+        return IntroBoardResponseDto.entityToDto(request, foundBoard);
     }
 
     @Transactional
     // (앱) 게시글 저장하기
-    public IntroBoardResponseDto<List<Long>> saveIntroBoard(IntroBoardRequestDto introBoardRequestDto) {
-        // IntroBoardRequestDTO 내용이 담긴 IntroBoard 타입의 인스턴스를 생성
-        IntroBoard introBoard = new IntroBoard(introBoardRequestDto);
-        // introBoard를 저장
-        boardRepository.save(introBoard);
-
+    public CommonResponseDto saveIntroBoard(IntroBoardRequestDto introBoardRequestDto) {
         // imageRequestDto에 포함된 List<MultiPartFile>을 List<Image>로 변환 / 매핑을 위해 introBoard도 포함하여 함께 저장
-        List<Image> imageList = Image.toImageListWithMapping(introBoardRequestDto.getMultipartFiles(), introBoard);
-        List<Image> savedImage = imageRepository.saveAll(imageList);
-        return new IntroBoardResponseDto<>(
-                introBoard.getId(),
-                introBoard.getTitle(),
-                introBoard.getSubTitle(),
-                introBoard.getAndroidStoreLink(),
-                introBoard.getAppleStoreLink(),
-                introBoard.getBody(),
-                BoardUtils.returnImageId(savedImage),
-                introBoard.getCreatedDate(),
-                introBoard.getLastModifiedDate()
-        );
+        imageRepository.saveAll(Image.mappingPhotoAndEntity(introBoardRequestDto));
+        return new CommonResponseDto("Board has been successfully saved.");
     }
 
     @Transactional
-    public IntroBoardResponseDto<List<Long>> updateIntroBoard(IntroBoardRequestDto introBoardRequestDto, Long board_id) {
+    public IntroBoardResponseDto updateIntroBoard(IntroBoardRequestDto introBoardRequestDto, Long board_id) {
         IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateBoard(introBoardRequestDto);
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
@@ -89,17 +64,7 @@ public class BoardService {
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
         List<Image> savedImage = imageRepository.saveAll(foundImg);
 
-        return new IntroBoardResponseDto<>(
-                        introBoard.getId(),
-                        introBoard.getTitle(),
-                        introBoard.getSubTitle(),
-                        introBoard.getAndroidStoreLink(),
-                        introBoard.getAppleStoreLink(),
-                        introBoard.getBody(),
-                        BoardUtils.returnImageId(savedImage),
-                        introBoard.getCreatedDate(),
-                        introBoard.getLastModifiedDate()
-                        );
+        return IntroBoardResponseDto.entityToDto(request, introBoard);
     }
 
     @Transactional(readOnly = true)
@@ -119,7 +84,7 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<IntroBoardResponseDto<String>> findAllIntroBoard() {
+    public List<IntroBoardResponseDto> findAllIntroBoard() {
         List<IntroBoard> boardList = introBoardRepository.findAll();
 
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();
@@ -128,35 +93,22 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public PhotoBoardResponseDto<List<String>> getPhotoBoard(Long id) {
+    public PhotoBoardResponseDto getPhotoBoard(Long id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        List<Image> ImageList = foundBoard.getImages();
-        return new PhotoBoardResponseDto<>(
-                foundBoard.getId(),
-                foundBoard.getBody(),
-                BoardUtils.returnImageURL(request, ImageList),
-                foundBoard.getCreatedDate(),
-                foundBoard.getLastModifiedDate()
-        );
+
+        return PhotoBoardResponseDto.entityToDto(request, foundBoard);
     }
 
     @Transactional
-    public PhotoBoardResponseDto<List<Long>> savePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
-        PhotoBoard photoBoard = new PhotoBoard(photoBoardRequestDto);
-        List<Image> imageList = Image.toImageListWithMapping(photoBoardRequestDto.getMultipartFiles(), photoBoard);
-        boardRepository.save(photoBoard);
+    public CommonResponseDto savePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
+        photoBoardRepository.save(new PhotoBoard(photoBoardRequestDto));
+        List<Image> imageList = Image.mappingPhotoAndEntity(photoBoardRequestDto);
         List<Image> savedImage = imageRepository.saveAll(imageList);
-        return new PhotoBoardResponseDto<>(
-                photoBoard.getId(),
-                photoBoard.getBody(),
-                BoardUtils.returnImageId(savedImage),
-                photoBoard.getCreatedDate(),
-                photoBoard.getLastModifiedDate()
-        );
+        return new CommonResponseDto(savedImage + "Board has been successfully saved.");
     }
 
     @Transactional
-    public PhotoBoardResponseDto<List<Long>> updatePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto, Long board_id) {
+    public PhotoBoardResponseDto updatePhotoBoard(PhotoBoardRequestDto photoBoardRequestDto, Long board_id) {
         PhotoBoard foundBoard = photoBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateBoard(photoBoardRequestDto);
         List<Image> foundImg = imageRepository.findByPhotoBoard(foundBoard);
@@ -171,13 +123,7 @@ public class BoardService {
         PhotoBoard photoBoard = photoBoardRepository.save(foundBoard);
         List<Image> savedImage = imageRepository.saveAll(foundImg);
 
-        return new PhotoBoardResponseDto<>(
-                photoBoard.getId(),
-                photoBoard.getBody(),
-                BoardUtils.returnImageId(savedImage),
-                photoBoard.getCreatedDate(),
-                photoBoard.getLastModifiedDate()
-        );
+        return PhotoBoardResponseDto.entityToDto(request, photoBoard);
     }
 
     @Transactional(readOnly = true)
@@ -197,7 +143,7 @@ public class BoardService {
     }
 
     @Transactional
-    public List<PhotoBoardResponseDto<String>> findAllPhotoBoard() {
+    public List<PhotoBoardResponseDto> findAllPhotoBoard() {
         List<PhotoBoard> boardList = photoBoardRepository.findAll();
 
         List<Image> thumbnailList = imageRepository.findAllByIsThumbnailTrue();
@@ -208,14 +154,7 @@ public class BoardService {
     @Transactional(readOnly = true)
     public FaqBoardResponseDto getFaqBoard(Long id) {
         FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        return new FaqBoardResponseDto(
-                foundBoard.getId(),
-                foundBoard.getPart(),
-                foundBoard.getQuestion(),
-                foundBoard.getAnswer(),
-                foundBoard.getCreatedDate(),
-                foundBoard.getLastModifiedDate()
-        );
+        return FaqBoardResponseDto.entityToDto(foundBoard);
     }
 
     @Transactional(readOnly = true)
@@ -227,28 +166,14 @@ public class BoardService {
     @Transactional
     public FaqBoardResponseDto saveFaqBoard(FaqBoardRequestDto faqBoardRequestDto) {
         FaqBoard savedBoard = faqRepository.save(new FaqBoard(faqBoardRequestDto));
-        return new FaqBoardResponseDto(
-                savedBoard.getId(),
-                savedBoard.getPart(),
-                savedBoard.getQuestion(),
-                savedBoard.getAnswer(),
-                savedBoard.getCreatedDate(),
-                savedBoard.getLastModifiedDate()
-        );
+        return FaqBoardResponseDto.entityToDto(savedBoard);
     }
 
     @Transactional
     public FaqBoardResponseDto updateFaqBoard(Long id, FaqBoardRequestDto faqBoardRequestDto) {
         FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateFaqBoard(faqBoardRequestDto);
-        return new FaqBoardResponseDto(
-                foundBoard.getId(),
-                foundBoard.getPart(),
-                foundBoard.getQuestion(),
-                foundBoard.getAnswer(),
-                foundBoard.getCreatedDate(),
-                foundBoard.getLastModifiedDate()
-        );
+        return FaqBoardResponseDto.entityToDto(foundBoard);
     }
 
     public CommonResponseDto deleteFaqBoard(Long id) {

@@ -7,9 +7,12 @@ import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Entity
@@ -18,24 +21,29 @@ public class PhotoBoard extends Board {
 
     private String body;
 
-    @OneToMany(mappedBy = "photoBoard")
+    @OneToMany
+    @JoinColumn(name = "photo_board_id")
     private final List<Image> images = new ArrayList<>();
 
     public PhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
         this.body = photoBoardRequestDto.getBody();
     }
 
+
     public void updateBoard(PhotoBoardRequestDto photoBoardRequestDto) {
         this.body = photoBoardRequestDto.getBody();
     }
 
-    public PhotoBoardResponseDto<String> toBoardResponseDto(PhotoBoard photoBoard, String image) {
-        return new PhotoBoardResponseDto<>(
-                photoBoard.getId(),
-                photoBoard.getBody(),
-                image,
-                photoBoard.getCreatedDate(),
-                photoBoard.getLastModifiedDate()
-        );
+    public PhotoBoardResponseDto toBoardResponseDto(PhotoBoard photoBoard, String image) {
+        Map<Long,String> imageMap = new HashMap<>();
+        imageMap.put(1L, image);
+        return PhotoBoardResponseDto.builder()
+                .board_id(photoBoard.getId())
+                .images(imageMap)
+                .createdDate(photoBoard.getCreatedDate())
+                .lastModifiedDate(photoBoard.getLastModifiedDate())
+                .build();
     }
+
+
 }

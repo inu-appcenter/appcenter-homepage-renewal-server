@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class IntroBoardRequestDto {
+public class IntroBoardRequestDto extends BoardRequestDto{
     @Schema(
             example = "Test Application",
             description = "앱 제목"

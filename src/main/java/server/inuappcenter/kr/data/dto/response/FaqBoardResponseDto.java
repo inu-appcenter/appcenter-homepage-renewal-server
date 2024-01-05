@@ -1,6 +1,7 @@
 package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Getter;
+import server.inuappcenter.kr.data.domain.board.FaqBoard;
 
 import java.time.LocalDateTime;
 
@@ -20,5 +21,16 @@ public class FaqBoardResponseDto {
         this.answer = answer;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public static FaqBoardResponseDto entityToDto(FaqBoard faqBoard) {
+        return new FaqBoardResponseDto(
+                faqBoard.getId(),
+                faqBoard.getPart(),
+                faqBoard.getQuestion(),
+                faqBoard.getAnswer(),
+                faqBoard.getCreatedDate(),
+                faqBoard.getLastModifiedDate()
+        );
     }
 }
