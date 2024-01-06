@@ -17,6 +17,11 @@ public class BoardService {
     private final BoardRepository<Board> boardRepository;
 
     @Transactional
+    public Board getBoard(Long id) {
+        return boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("해당되는 Board를 찾을 수 없습니다."));
+    }
+
+    @Transactional
     public CommonResponseDto saveBoard(BoardRequestDto boardRequestDto) {
         Board savedBoard = boardRepository.save(boardRequestDto.createBoard());
         return new CommonResponseDto(savedBoard.getId() + " Board has been successfully saved.");

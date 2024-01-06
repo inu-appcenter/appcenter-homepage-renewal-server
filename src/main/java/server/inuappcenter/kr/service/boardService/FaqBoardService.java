@@ -18,11 +18,11 @@ import java.util.List;
 @Slf4j
 public class FaqBoardService {
     private final FaqRepository faqRepository;
+    private final BoardService boardService;
 
     @Transactional(readOnly = true)
     public FaqBoardResponseDto getFaqBoard(Long id) {
-        FaqBoard foundBoard = faqRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        return FaqBoardResponseDto.entityToDto(foundBoard);
+        return FaqBoardResponseDto.entityToDto(boardService.getBoard(id));
     }
 
     @Transactional(readOnly = true)

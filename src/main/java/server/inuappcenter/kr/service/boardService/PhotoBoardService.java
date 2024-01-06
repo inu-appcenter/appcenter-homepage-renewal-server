@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
@@ -22,13 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class PhotoBoardService {
+    private final BoardService boardService;
     private final PhotoBoardRepository photoBoardRepository;
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
 
     @Transactional(readOnly = true)
     public PhotoBoardResponseDto getPhotoBoard(Long id) {
-        PhotoBoard foundBoard = photoBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        Board foundBoard = boardService.getBoard(id);
         return PhotoBoardResponseDto.entityToDto(request, foundBoard);
     }
 

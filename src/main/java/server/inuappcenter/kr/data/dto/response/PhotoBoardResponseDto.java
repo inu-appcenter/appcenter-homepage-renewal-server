@@ -2,6 +2,7 @@ package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 
@@ -26,7 +27,8 @@ public class PhotoBoardResponseDto {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public static PhotoBoardResponseDto entityToDto(HttpServletRequest request, PhotoBoard photoBoard) {
+    public static PhotoBoardResponseDto entityToDto(HttpServletRequest request, Board board) {
+        PhotoBoard photoBoard = createBoard(board);
         return PhotoBoardResponseDto.builder()
                 .board_id(photoBoard.getId())
                 .body(photoBoard.getBody())
@@ -34,5 +36,9 @@ public class PhotoBoardResponseDto {
                 .createdDate(photoBoard.getCreatedDate())
                 .lastModifiedDate(photoBoard.getLastModifiedDate())
                 .build();
+    }
+
+    public static PhotoBoard createBoard(Board board) {
+        return (PhotoBoard) board;
     }
 }
