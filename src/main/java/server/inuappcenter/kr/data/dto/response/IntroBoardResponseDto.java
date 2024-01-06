@@ -2,6 +2,7 @@ package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 
@@ -35,7 +36,8 @@ public class IntroBoardResponseDto {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public static IntroBoardResponseDto entityToDto(HttpServletRequest request, IntroBoard introBoard) {
+    public static IntroBoardResponseDto entityToDto(HttpServletRequest request, Board board) {
+        IntroBoard introBoard = createIntroBoardResponse(board);
         return IntroBoardResponseDto.builder()
                 .id(introBoard.getId())
                 .title(introBoard.getTitle())
@@ -47,5 +49,9 @@ public class IntroBoardResponseDto {
                 .createdDate(introBoard.getCreatedDate())
                 .lastModifiedDate(introBoard.getLastModifiedDate())
                 .build();
+    }
+
+    public static IntroBoard createIntroBoardResponse(Board board) {
+        return (IntroBoard) board;
     }
 }
