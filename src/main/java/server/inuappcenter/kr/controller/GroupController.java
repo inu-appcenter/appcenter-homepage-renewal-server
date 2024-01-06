@@ -24,7 +24,7 @@ public class GroupController {
     private final GroupService groupService;
 
     @Operation(summary = "그룹 멤버 (1명) 조회", description = "조회할 group_id을 입력해주세요")
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<GroupResponseDto> getGroup(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Grop을 요청했습니다.");
         GroupResponseDto groupResponseDto = groupService.getGroup(id);
@@ -32,7 +32,7 @@ public class GroupController {
     }
 
     @Operation(summary = "그룹 멤버 (전체) 조회", description = "전체 그룹 멤버를 반환합니다.")
-    @GetMapping("/all-groups-members")
+    @GetMapping("/public/all-groups-members")
     public ResponseEntity<List<GroupResponseDto>> findAllGroup() {
         log.info("사용자가 전체 Grop 목록을 요청했습니다.");
         List<GroupResponseDto> dto_list = groupService.findAllGroup();

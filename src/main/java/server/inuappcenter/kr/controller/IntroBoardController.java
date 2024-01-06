@@ -31,8 +31,8 @@ public class IntroBoardController {
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id", required = true)
-    @GetMapping("/{id}")
-    public ResponseEntity<IntroBoardResponseDto> getBoard(final @PathVariable("id") Long id) {
+    @GetMapping("/public/{id}")
+    public ResponseEntity<IntroBoardResponseDto<List<String>>> getBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 요청했습니다.");
         IntroBoardResponseDto boardResponseDto = introBoardService.getIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
@@ -60,8 +60,8 @@ public class IntroBoardController {
     }
 
     @Operation(summary = "앱 소개 글 (전체) 조회", description = "앱 소개 글을 모두 반환합니다.")
-    @GetMapping("/all-boards-contents")
-    public ResponseEntity<List<IntroBoardResponseDto>> findAllBoard() {
+    @GetMapping("/public/all-boards-contents")
+    public ResponseEntity<List<IntroBoardResponseDto<String>>> findAllBoard() {
         log.info("사용자가 전체 IntroBoard 목록을 요청했습니다.");
         List<IntroBoardResponseDto> dto_list = introBoardService.findAllIntroBoard();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
