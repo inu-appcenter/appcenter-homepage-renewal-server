@@ -5,17 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
-import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
-import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
-import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.utils.ImageUtils;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,12 +21,12 @@ public class Image {
     @Column(name = "image_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "intro_board_id")
+    @ManyToOne
+    @JoinColumn(name = "intro_board_id", updatable = false, insertable = false)
     private IntroBoard introBoard;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_board_id")
+    @ManyToOne
+    @JoinColumn(name = "photo_board_id", updatable = false, insertable = false)
     private PhotoBoard photoBoard ;
 
     @Column(name = "original_file_name")
@@ -47,16 +41,10 @@ public class Image {
     @Column(name = "is_thumbnail")
     private Boolean isThumbnail = false;
 
-    public Image(String originalFileName, byte[] imageData, Long fileSize, Board board) {
-        this.originalFileName = originalFileName;
-        this.imageData = ImageUtils.compressImage(imageData);
-        this.fileSize = fileSize;
-
-        if (board instanceof IntroBoard) {
-            this.introBoard = (IntroBoard) board;
-        } else if (board instanceof PhotoBoard){
-            this.photoBoard = (PhotoBoard) board;
-        }
+    public Image(String originalFilename, byte[] bytes, long size) {
+        this.originalFileName = originalFilename;
+        this.imageData = bytes;
+        this.fileSize = size;
     }
 
     public void setImage(MultipartFile multipartFile) {
@@ -69,37 +57,18 @@ public class Image {
         }
     }
 
-    public static List<Image> mappingPhotoAndEntity(BoardRequestDto boardRequestDto) {
-        List<Image> imageEntityList = new ArrayList<>();
-        Board board = createBoardFromDto(boardRequestDto);
-        for (MultipartFile file: boardRequestDto.getMultipartFiles()) {
-            try {
-                imageEntityList.add(new Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), board));
-            } catch (IOException e) {
-                throw new RuntimeException("파일을 불러오는데 실패하였습니다.");
-            }
-        }
-        // 첫번째 이미지는 isThumbnail을 true로 변경
-        imageEntityList.get(0).isThumbnail();
-        return imageEntityList;
-    }
-
-    public static Board createBoardFromDto(BoardRequestDto boardRequestDto) {
-        if (boardRequestDto instanceof PhotoBoardRequestDto) {
-            return new PhotoBoard((PhotoBoardRequestDto) boardRequestDto);
-        } else {
-            return new IntroBoard((IntroBoardRequestDto) boardRequestDto);
-        }
-    }
-
     // 호출시 이미지가 Thumbnail 속성을 가지고 있다는 것에 표시가 됨
     public void isThumbnail() {
         this.isThumbnail = true;
     }
 
-    // 현재 위치를 반환하는 메소드
+    // 자원의 현재 위치를 반환하는 메소드
     public String getLocation(HttpServletRequest request, Image image) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +  "/image/photo/" + image.getId().toString();
+    }
+
+    public Image returnMultipartToEntity(MultipartFile multipartFile) throws IOException {
+        return new Image(multipartFile.getOriginalFilename(), multipartFile.getBytes(), multipartFile.getSize());
     }
 
 

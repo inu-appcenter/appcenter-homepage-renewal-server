@@ -13,7 +13,8 @@ import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
-import server.inuappcenter.kr.service.BoardService;
+import server.inuappcenter.kr.service.boardService.BoardService;
+import server.inuappcenter.kr.service.boardService.IntroBoardService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,13 +27,14 @@ import java.util.Objects;
 public class IntroBoardController {
 
     public final BoardService boardService;
+    public final IntroBoardService introBoardService;
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id", required = true)
     @GetMapping("/{id}")
     public ResponseEntity<IntroBoardResponseDto> getBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 요청했습니다.");
-        IntroBoardResponseDto boardResponseDto = boardService.getIntroBoard(id);
+        IntroBoardResponseDto boardResponseDto = introBoardService.getIntroBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
     }
     @Operation(summary = "게시글 (1개) 저장하기", description = "1개의 사진이 필수적으로 필요합니다.")
@@ -44,7 +46,7 @@ public class IntroBoardController {
         } else {
             log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                     "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
-            return ResponseEntity.status(HttpStatus.OK).body(boardService.saveIntroBoard(introBoardRequestDto));
+            return ResponseEntity.status(HttpStatus.OK).body(boardService.saveBoard(introBoardRequestDto));
         }
     }
 
@@ -53,7 +55,7 @@ public class IntroBoardController {
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponseDto> deleteBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 삭제하도록 요청했습니다.");
-        CommonResponseDto result = boardService.deleteIntroBoard(id);
+        CommonResponseDto result = boardService.deleteBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -61,7 +63,7 @@ public class IntroBoardController {
     @GetMapping("/all-boards-contents")
     public ResponseEntity<List<IntroBoardResponseDto>> findAllBoard() {
         log.info("사용자가 전체 IntroBoard 목록을 요청했습니다.");
-        List<IntroBoardResponseDto> dto_list = boardService.findAllIntroBoard();
+        List<IntroBoardResponseDto> dto_list = introBoardService.findAllIntroBoard();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 
@@ -78,7 +80,7 @@ public class IntroBoardController {
         log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
 
-        IntroBoardResponseDto introBoardResponseDto = boardService.updateIntroBoard(introBoardRequestDto, id);
+        IntroBoardResponseDto introBoardResponseDto = introBoardService.updateIntroBoard(introBoardRequestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
     }
 

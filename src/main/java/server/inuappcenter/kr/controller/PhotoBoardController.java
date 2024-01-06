@@ -13,7 +13,8 @@ import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
-import server.inuappcenter.kr.service.BoardService;
+import server.inuappcenter.kr.service.boardService.BoardService;
+import server.inuappcenter.kr.service.boardService.PhotoBoardService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,13 +26,14 @@ import java.util.Objects;
 @Slf4j
 public class PhotoBoardController {
     private final BoardService boardService;
+    private final PhotoBoardService photoBoardService;
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping("/{id}")
     public ResponseEntity<PhotoBoardResponseDto> getBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 요청했습니다.");
-        PhotoBoardResponseDto photoBoardResponseDto = boardService.getPhotoBoard(id);
+        PhotoBoardResponseDto photoBoardResponseDto = photoBoardService.getPhotoBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
     }
 
@@ -44,7 +46,7 @@ public class PhotoBoardController {
         } else {
             log.info("사용자가 PhotoBoard를 저장하도록 요청했습니다.\n" +
                     "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
-            return ResponseEntity.status(HttpStatus.OK).body(boardService.savePhotoBoard(photoBoardRequestDto));
+            return ResponseEntity.status(HttpStatus.OK).body(boardService.saveBoard(photoBoardRequestDto));
         }
     }
 
@@ -60,7 +62,7 @@ public class PhotoBoardController {
         } else {
             log.info("사용자가 id: "+ id + "을(를) 가진 PhotoBoard를 수정하도록 요청했습니다.\n" +
                     "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
-            PhotoBoardResponseDto photoBoardResponseDto = boardService.updatePhotoBoard(photoBoardRequestDto, id);
+            PhotoBoardResponseDto photoBoardResponseDto = photoBoardService.updatePhotoBoard(photoBoardRequestDto, id);
             return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
         }
     }
@@ -70,7 +72,7 @@ public class PhotoBoardController {
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponseDto> deleteBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 삭제하도록 요청했습니다.");
-        CommonResponseDto result = boardService.deletePhotoBoard(id);
+        CommonResponseDto result = boardService.deleteBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -78,7 +80,7 @@ public class PhotoBoardController {
     @GetMapping("/all-boards-contents")
     public ResponseEntity<List<PhotoBoardResponseDto>> findAllBoard() {
         log.info("사용자가 전체 PhotoBoard 목록을 요청했습니다.");
-        List<PhotoBoardResponseDto> dto_list = boardService.findAllPhotoBoard();
+        List<PhotoBoardResponseDto> dto_list = photoBoardService.findAllPhotoBoard();
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 
