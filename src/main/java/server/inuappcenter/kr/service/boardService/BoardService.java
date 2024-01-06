@@ -39,7 +39,7 @@ public class BoardService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CommonResponseDto deleteBoard(Long id) {
         boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
         boardRepository.deleteById(id);
