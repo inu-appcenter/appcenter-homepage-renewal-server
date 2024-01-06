@@ -1,20 +1,19 @@
 package server.inuappcenter.kr.data.domain.board;
 
 import lombok.AccessLevel;
-import server.inuappcenter.kr.data.utils.ImageUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.utils.ImageUtils;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Image {
 
     @Id
@@ -23,11 +22,11 @@ public class Image {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "intro_board_id")
+    @JoinColumn(name = "intro_board_id", updatable = false, insertable = false)
     private IntroBoard introBoard;
 
     @ManyToOne
-    @JoinColumn(name = "photo_board_id")
+    @JoinColumn(name = "photo_board_id", updatable = false, insertable = false)
     private PhotoBoard photoBoard ;
 
     @Column(name = "original_file_name")
@@ -42,16 +41,10 @@ public class Image {
     @Column(name = "is_thumbnail")
     private Boolean isThumbnail = false;
 
-    public <T>Image(String originalFileName, byte[] imageData, Long fileSize, T board) {
-        this.originalFileName = originalFileName;
-        this.imageData = ImageUtils.compressImage(imageData);
-        this.fileSize = fileSize;
-
-        if (board instanceof IntroBoard) {
-            this.introBoard = (IntroBoard) board;
-        } else {
-            this.photoBoard = (PhotoBoard) board;
-        }
+    public Image(String originalFilename, byte[] bytes, long size) {
+        this.originalFileName = originalFilename;
+        this.imageData = bytes;
+        this.fileSize = size;
     }
 
     public void setImage(MultipartFile multipartFile) {
@@ -64,29 +57,18 @@ public class Image {
         }
     }
 
-    // 제네릭 메소드를 이용하여 두가지 보드 타입을 처리하였음
-    public static <T> List<Image> toImageListWithMapping(List<MultipartFile> multipartFileList, T board) {
-        List<Image> imageEntityList = new ArrayList<>();
-        for (MultipartFile file: multipartFileList) {
-            try {
-                imageEntityList.add(new <T>Image(file.getOriginalFilename(), file.getBytes(), file.getSize(), board));
-            } catch (IOException e) {
-                throw new RuntimeException("파일을 불러오는데 실패하였습니다.");
-            }
-        }
-        // 첫번째 이미지는 isThumbnail을 true로 변경
-        imageEntityList.get(0).isThumbnail();
-        return imageEntityList;
-    }
-
-    // 실행시 이미지가 Thumbnail 속성을 가지고 있다는 것에 표시가 됨
+    // 호출시 이미지가 Thumbnail 속성을 가지고 있다는 것에 표시가 됨
     public void isThumbnail() {
         this.isThumbnail = true;
     }
 
-    // 현재 위치를 반환하는 메소드
+    // 자원의 현재 위치를 반환하는 메소드
     public String getLocation(HttpServletRequest request, Image image) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +  "/image/photo/" + image.getId().toString();
+    }
+
+    public Image returnMultipartToEntity(MultipartFile multipartFile) throws IOException {
+        return new Image(multipartFile.getOriginalFilename(), multipartFile.getBytes(), multipartFile.getSize());
     }
 
 

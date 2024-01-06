@@ -1,5 +1,9 @@
 package server.inuappcenter.kr.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Role;
@@ -8,10 +12,6 @@ import server.inuappcenter.kr.data.dto.response.RoleResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +68,7 @@ public class RoleService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public CommonResponseDto deleteRole(Long id) {
         Role found_role = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_groups = groupRepository.findAllByRole(found_role);

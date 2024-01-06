@@ -1,12 +1,12 @@
 package server.inuappcenter.kr.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.utils.ImageUtils;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

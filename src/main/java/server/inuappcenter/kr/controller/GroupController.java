@@ -1,9 +1,5 @@
 package server.inuappcenter.kr.controller;
 
-import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
-import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
-import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
-import server.inuappcenter.kr.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -12,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
+import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
+import server.inuappcenter.kr.service.GroupService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -69,6 +69,22 @@ public class GroupController {
     public ResponseEntity<CommonResponseDto> deleteGroup(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 Group을 삭제하도록 요청했습니다.");
         CommonResponseDto result = groupService.deleteGroup(id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @Operation(summary = "그룹 멤버 여러명 삭제", description = "삭제할 Group id를 입력해주세요")
+    @DeleteMapping("/all-groups-members/{id}")
+    public ResponseEntity<CommonResponseDto> deleteMultipleGroups(final @PathVariable("id") List<Long> id) {
+        log.info("사용자가 id: " + id + "을(를) 가진 Group들을 삭제하도록 요청했습니다.");
+        CommonResponseDto result = groupService.deleteMultipleGroups(id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @Operation(summary = "동아리원 이름으로 소속된 그룹들을 찾기", description = "동아리원의 이름을 입력해주세요")
+    @GetMapping("/members/{name}")
+    public ResponseEntity<List<GroupResponseDto>> searchByMemberName(final @PathVariable("name") String name) {
+        log.info("사용자가 이름이 " + name + "인 Group들을 찾도록 요청했습니다.");
+        List<GroupResponseDto> result = groupService.searchByMemberName(name);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
