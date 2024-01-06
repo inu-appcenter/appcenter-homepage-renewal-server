@@ -24,7 +24,7 @@ public class FaqController {
     private final FaqBoardService faqBoardService;
 
     @Operation(summary = "FAQ 한 개 가져오기", description = "조회할 faq_id를 입력해주세요")
-    @GetMapping("/{id}")
+    @GetMapping("public/{id}")
     public ResponseEntity<FaqBoardResponseDto> getFaqBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 FAQ를 요청했습니다.");
         FaqBoardResponseDto faqBoardResponseDto = faqBoardService.getFaqBoard(id);
@@ -32,7 +32,7 @@ public class FaqController {
     }
 
     @Operation(summary = "FAQ 전체 가져오기", description = "전체 FAQ 목록을 가져옵니다.")
-    @GetMapping("/all-faq-boards")
+    @GetMapping("public/all-faq-boards")
     public ResponseEntity<List<FaqBoardResponseDto>> getFaqBoardList() {
         log.info("사용자가 전체 FAQ 목록을 요청했습니다.");
         List<FaqBoardResponseDto> faqBoardResponseDtoList = faqBoardService.getFaqBoardList();
