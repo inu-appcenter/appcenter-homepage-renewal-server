@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import server.inuappcenter.kr.data.domain.board.Board;
+import server.inuappcenter.kr.data.domain.board.FaqBoard;
 
 import javax.validation.constraints.NotNull;
 
@@ -32,4 +34,9 @@ public class FaqBoardRequestDto extends BoardRequestDto{
     )
     @NotNull
     private String answer;
+
+    @Override
+    public Board createBoard() {
+        return new FaqBoard(this);
+    }
 }

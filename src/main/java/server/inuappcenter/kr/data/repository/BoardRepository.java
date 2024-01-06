@@ -2,6 +2,7 @@ package server.inuappcenter.kr.data.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import server.inuappcenter.kr.data.domain.board.Board;
+import server.inuappcenter.kr.data.domain.board.FaqBoard;
 
 public interface BoardRepository<T extends Board> extends JpaRepository<T, Long> {
 }

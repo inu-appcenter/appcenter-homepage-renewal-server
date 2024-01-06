@@ -3,6 +3,8 @@ package server.inuappcenter.kr.data.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.domain.board.Board;
+import server.inuappcenter.kr.data.domain.board.IntroBoard;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -52,4 +54,8 @@ public class IntroBoardRequestDto extends BoardRequestDto{
     @NotNull(message = "이미지가 최소 1개 이상 필요합니다. (첫번째 이미지는 썸네일입니다.)")
     private List<MultipartFile> multipartFiles;
 
+    @Override
+    public Board createBoard() {
+        return new IntroBoard(this);
+    }
 }
