@@ -1,8 +1,6 @@
 package server.inuappcenter.kr.data.dto.request;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
