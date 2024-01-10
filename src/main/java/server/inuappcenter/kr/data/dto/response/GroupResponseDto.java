@@ -46,7 +46,7 @@ public class GroupResponseDto {
                 .email(group.getMember().getEmail())
                 .blogLink(group.getMember().getBlogLink())
                 .gitRepositoryLink(group.getMember().getGitRepositoryLink())
-                .role(group.getRole().getRole_name())
+                .role(group.getRole().getRoleName())
                 .part(group.getPart())
                 .year(group.getYear())
                 .createdDate(group.getCreatedDate())

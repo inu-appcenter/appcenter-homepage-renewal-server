@@ -18,22 +18,22 @@ import javax.persistence.Id;
 public class Role extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long role_id;
+    private Long id;
 
-    private String role_name;
+    private String roleName;
 
     public Role(RoleRequestDto roleRequestDto) {
-        this.role_name = roleRequestDto.getRole_name();
+        this.roleName = roleRequestDto.getRole_name();
     }
 
     public void setRole(RoleRequestDto roleRequestDto) {
-        this.role_name = roleRequestDto.getRole_name();
+        this.roleName = roleRequestDto.getRole_name();
     }
 
     public RoleResponseDto toRoleResponseDto(Role role) {
         return RoleResponseDto.builder()
-                .role_id(role.getRole_id())
-                .role_name(role.getRole_name())
+                .role_id(role.getId())
+                .role_name(role.getRoleName())
                 .lastModifiedDate(role.getLastModifiedDate())
                 .createdDate(role.getCreatedDate())
                 .build();

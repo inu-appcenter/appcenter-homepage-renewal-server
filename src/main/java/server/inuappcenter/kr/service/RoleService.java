@@ -29,8 +29,8 @@ public class RoleService {
     public RoleResponseDto getRole(Long id) {
         Role getRole = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return RoleResponseDto.builder()
-                .role_id(getRole.getRole_id())
-                .role_name(getRole.getRole_name())
+                .role_id(getRole.getId())
+                .role_name(getRole.getRoleName())
                 .createdDate(getRole.getCreatedDate())
                 .lastModifiedDate(getRole.getLastModifiedDate())
                 .build();
@@ -40,8 +40,8 @@ public class RoleService {
         Role role = new Role(roleRequestDto);
         Role savedRole = roleRepository.save(role);
         return RoleResponseDto.builder()
-                .role_id(savedRole.getRole_id())
-                .role_name(savedRole.getRole_name())
+                .role_id(savedRole.getId())
+                .role_name(savedRole.getRoleName())
                 .createdDate(savedRole.getCreatedDate())
                 .lastModifiedDate(savedRole.getLastModifiedDate())
                 .build();
@@ -53,8 +53,8 @@ public class RoleService {
         found_role.setRole(roleRequestDto);
         Role update_role = roleRepository.save(found_role);
         return RoleResponseDto.builder()
-                .role_id(update_role.getRole_id())
-                .role_name(update_role.getRole_name())
+                .role_id(update_role.getId())
+                .role_name(update_role.getRoleName())
                 .createdDate(update_role.getCreatedDate())
                 .lastModifiedDate(update_role.getLastModifiedDate())
                 .build();
@@ -78,5 +78,13 @@ public class RoleService {
         } else {
             return new CommonResponseDto("The role [" + id + "] is part of a Group. Please delete the Group first");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<RoleResponseDto> findIdByName(String name) {
+        List<Role> foundGroups = roleRepository.findAllByRoleName(name);
+        return foundGroups.stream()
+                .map(data -> data.toRoleResponseDto(data))
+                .collect(Collectors.toList());
     }
 }

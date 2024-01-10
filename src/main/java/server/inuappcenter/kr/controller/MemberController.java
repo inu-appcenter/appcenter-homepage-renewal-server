@@ -69,4 +69,10 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @Operation(summary = "동아리원ID 이름으로 찾기", description = "동아리원 ID를 이름으로 찾을 수 있습니다.")
+    @Parameter(name = "name", description = "동아리원 이름", required = true)
+    @GetMapping("/id/{name}")
+    public ResponseEntity<List<MemberResponseDto>> findIdByName(final @PathVariable("name") String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.findIdByName(name));
+    }
 }

@@ -69,4 +69,11 @@ public class RoleController {
         CommonResponseDto result = roleService.deleteRole(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    @Operation(summary = "역할 이름으로 ID 찾기", description = "이름이 같은 역할들을 보여줍니다.")
+    @Parameter(name = "name", description = "역할 이름", required = true)
+    @GetMapping("/id/{name}")
+    public ResponseEntity<List<RoleResponseDto>> findIdByName(final @PathVariable("name") String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(roleService.findIdByName(name));
+    }
 }
