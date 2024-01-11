@@ -34,7 +34,7 @@ public class MemberResponseDto {
 
     public static MemberResponseDto entityToDto(Member member) {
         return MemberResponseDto.builder()
-                .member_id(member.getMember_id())
+                .member_id(member.getId())
                 .name(member.getName())
                 .description(member.getDescription())
                 .profileImage(member.getProfileImage())

@@ -60,4 +60,12 @@ public class MemberService {
             return new CommonResponseDto("The member [" + id + "] is part of a Group. Please delete the Group first");
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<MemberResponseDto> findIdByName(String name) {
+        List<Member> foundMembers = memberRepository.findAllByName(name);
+        return foundMembers.stream()
+                .map(data -> data.toMemberResponseDto(data))
+                .collect(Collectors.toList());
+    }
 }

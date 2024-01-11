@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long member_id;
+    private Long id;
 
     private String name;
 
@@ -42,7 +42,7 @@ public class Member extends BaseTimeEntity {
     }
 
     public void setMember(Long id, MemberRequestDto memberRequestDto) {
-        this.member_id = id;
+        this.id = id;
         this.name = memberRequestDto.getName();
         this.description = memberRequestDto.getDescription();
         this.profileImage = memberRequestDto.getProfileImage();
@@ -53,7 +53,7 @@ public class Member extends BaseTimeEntity {
 
     public MemberResponseDto toMemberResponseDto(Member member) {
         return MemberResponseDto.builder()
-                .member_id(member.getMember_id())
+                .member_id(member.getId())
                 .name(member.getName())
                 .description(member.getDescription())
                 .profileImage(member.getProfileImage())

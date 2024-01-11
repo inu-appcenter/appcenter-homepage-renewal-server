@@ -44,6 +44,7 @@ public class PhotoBoard extends Board {
         return PhotoBoardResponseDto.builder()
                 .board_id(photoBoard.getId())
                 .images(imageMap)
+                .body(photoBoard.getBody())
                 .createdDate(photoBoard.getCreatedDate())
                 .lastModifiedDate(photoBoard.getLastModifiedDate())
                 .build();

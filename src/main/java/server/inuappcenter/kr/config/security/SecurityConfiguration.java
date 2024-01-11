@@ -48,7 +48,8 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable();
+                .csrf().disable()
+                .cors();
         return httpSecurity.build();
     }
 

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class IntroBoardService {
-
+    private final BoardService boardService;
     private final IntroBoardRepository introBoardRepository;
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
@@ -31,7 +32,7 @@ public class IntroBoardService {
     @Transactional(readOnly = true)
     // (앱) 게시글 조회하기
     public IntroBoardResponseDto getIntroBoard(Long id) {
-        IntroBoard foundBoard = introBoardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        Board foundBoard = boardService.getBoard(id);
         return IntroBoardResponseDto.entityToDto(request, foundBoard);
     }
 

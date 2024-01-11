@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public abstract class BoardRequestDto {
     @Hidden
-    String body;
+    private String body;
     @Hidden
     private List<MultipartFile> multipartFiles;
     public abstract Board createBoard();
