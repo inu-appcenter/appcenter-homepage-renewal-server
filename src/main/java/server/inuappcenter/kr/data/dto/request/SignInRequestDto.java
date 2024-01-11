@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,14 +14,14 @@ public class SignInRequestDto {
             example = "id",
             description = "아이디"
     )
-    @NotNull
+    @NotBlank
     private String id;
 
     @Schema(
             example = "password",
             description = "비밀번호"
     )
-    @NotNull
+    @NotBlank
     private String password;
 
 }
