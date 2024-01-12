@@ -24,4 +24,5 @@ public class SignInRequestDto {
     @NotBlank
     private String password;
 
+
 }

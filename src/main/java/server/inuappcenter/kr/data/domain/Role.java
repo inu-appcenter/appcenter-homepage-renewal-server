@@ -22,18 +22,23 @@ public class Role extends BaseTimeEntity {
 
     private String roleName;
 
+    public Role(Long id, String roleName) {
+        this.id = id;
+        this.roleName = roleName;
+    }
+
     public Role(RoleRequestDto roleRequestDto) {
-        this.roleName = roleRequestDto.getRole_name();
+        this.roleName = roleRequestDto.getRoleName();
     }
 
     public void setRole(RoleRequestDto roleRequestDto) {
-        this.roleName = roleRequestDto.getRole_name();
+        this.roleName = roleRequestDto.getRoleName();
     }
 
     public RoleResponseDto toRoleResponseDto(Role role) {
         return RoleResponseDto.builder()
-                .role_id(role.getId())
-                .role_name(role.getRoleName())
+                .roleId(role.getId())
+                .roleName(role.getRoleName())
                 .lastModifiedDate(role.getLastModifiedDate())
                 .createdDate(role.getCreatedDate())
                 .build();

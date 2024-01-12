@@ -29,8 +29,8 @@ public class RoleService {
     public RoleResponseDto getRole(Long id) {
         Role getRole = roleRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return RoleResponseDto.builder()
-                .role_id(getRole.getId())
-                .role_name(getRole.getRoleName())
+                .roleId(getRole.getId())
+                .roleName(getRole.getRoleName())
                 .createdDate(getRole.getCreatedDate())
                 .lastModifiedDate(getRole.getLastModifiedDate())
                 .build();
@@ -40,8 +40,8 @@ public class RoleService {
         Role role = new Role(roleRequestDto);
         Role savedRole = roleRepository.save(role);
         return RoleResponseDto.builder()
-                .role_id(savedRole.getId())
-                .role_name(savedRole.getRoleName())
+                .roleId(savedRole.getId())
+                .roleName(savedRole.getRoleName())
                 .createdDate(savedRole.getCreatedDate())
                 .lastModifiedDate(savedRole.getLastModifiedDate())
                 .build();
@@ -53,8 +53,8 @@ public class RoleService {
         found_role.setRole(roleRequestDto);
         Role update_role = roleRepository.save(found_role);
         return RoleResponseDto.builder()
-                .role_id(update_role.getId())
-                .role_name(update_role.getRoleName())
+                .roleId(update_role.getId())
+                .roleName(update_role.getRoleName())
                 .createdDate(update_role.getCreatedDate())
                 .lastModifiedDate(update_role.getLastModifiedDate())
                 .build();
