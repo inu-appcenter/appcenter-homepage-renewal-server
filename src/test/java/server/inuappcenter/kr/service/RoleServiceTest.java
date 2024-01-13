@@ -7,13 +7,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.domain.Group;
+import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.Role;
+import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
+import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
 import server.inuappcenter.kr.data.dto.response.RoleResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -97,5 +105,73 @@ public class RoleServiceTest {
         assertEquals(exceptedResDto.getRoleName(), result.getRoleName());
         assertEquals(exceptedResDto.getCreatedDate(), result.getCreatedDate());
         assertEquals(exceptedResDto.getLastModifiedDate(), result.getLastModifiedDate());
+    }
+
+    @DisplayName("역할 리스트 가져오기 테스트")
+    @Test
+    public void findAllRoleTest() {
+        // given
+        List<Role> resultEntity = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            resultEntity.add(new Role(Integer.toUnsignedLong(i), "파트장"));
+        }
+        List<RoleResponseDto> expectedDto = resultEntity.stream()
+                .map(data -> data.toRoleResponseDto(data))
+                .collect(Collectors.toList());
+        given(roleRepository.findAll()).willReturn(resultEntity);
+        // when
+        List<RoleResponseDto> result = roleService.findAllRole();
+        // then
+        for (int i = 0; i < 10; i++) {
+            assertEquals(expectedDto.get(i).getRoleId(), result.get(i).getRoleId());
+            assertEquals(expectedDto.get(i).getCreatedDate(), result.get(i).getCreatedDate());
+            assertEquals(expectedDto.get(i).getRoleName(), result.get(i).getRoleName());
+            assertEquals(expectedDto.get(i).getLastModifiedDate(), result.get(i).getLastModifiedDate());
+        }
+    }
+
+    @DisplayName("역할 삭제 테스트")
+    @Test
+    public void deleteRoleTest() {
+        // given
+        Long givenId = 1L;
+        ArrayList<Group> expectedEntity = new ArrayList<>();
+        Role expectedRole = new Role(1L, "파트장");
+        CommonResponseDto expectedResult = new CommonResponseDto("The role [" + givenId + "] is part of a Group. Please delete the Group first");
+        for (int i = 1; i <= 10; i++) {
+            expectedEntity.add(new Group(new Member(new MemberRequestDto(
+                    "홍길동", "안녕하세요 저는....", "https://...", "https://...", "test@inu.ac.kr", "https://..."
+            )), expectedRole, new GroupRequestDto("서버", 14.4)));
+        }
+        given(roleRepository.findById(givenId)).willReturn(Optional.of(expectedRole));
+        given(groupRepository.findAllByRole(expectedRole)).willReturn(expectedEntity);
+        // when
+        CommonResponseDto result = roleService.deleteRole(givenId);
+        // then
+        assertEquals(expectedResult.getMsg(), result.getMsg());
+    }
+
+    @DisplayName("역할 이름으로 ID 찾기 테스트")
+    @Test
+    public void findIdByNameTest() {
+        // given
+        String givenName = "파트장";
+        List<Role> expectedRole = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            expectedRole.add(new Role(Integer.toUnsignedLong(i), "파트장"));
+        }
+        given(roleRepository.findAllByRoleName(givenName)).willReturn(expectedRole);
+        List<RoleResponseDto> expectedResult = expectedRole.stream()
+                .map(data -> data.toRoleResponseDto(data))
+                .collect(Collectors.toList());
+        // when
+        List<RoleResponseDto> result = roleService.findIdByName(givenName);
+        // then
+        for (int i = 0; i < 10; i++){
+            assertEquals(expectedResult.get(0).getRoleId(), result.get(0).getRoleId());
+            assertEquals(expectedResult.get(0).getRoleName(), result.get(0).getRoleName());
+            assertEquals(expectedResult.get(0).getCreatedDate(), result.get(0).getCreatedDate());
+            assertEquals(expectedResult.get(0).getLastModifiedDate(), result.get(0).getLastModifiedDate());
+        }
     }
 }
