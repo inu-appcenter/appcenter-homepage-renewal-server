@@ -51,12 +51,8 @@ public class GroupService {
 
     @Transactional
     public GroupResponseDto updateGroup(GroupRequestDto groupRequestDto, Long id) {
-        // 여기서 외래키까지 다 변경할 수 있게 하려고 했는데, 과한듯
-        // 그룹 객체 찾기
         Group foundGroup = groupRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        // 그룹 객체를 찾고서 내용을 변경한다.
         foundGroup.setGroup(id, groupRequestDto);
-        // 변경된 내용을 저장소에 반영
         Group savedGroup = groupRepository.save(foundGroup);
         return GroupResponseDto.entityToDto(savedGroup);
     }

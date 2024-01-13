@@ -30,7 +30,6 @@ public class IntroBoardService {
 
 
     @Transactional(readOnly = true)
-    // (앱) 게시글 조회하기
     public IntroBoardResponseDto getIntroBoard(Long id) {
         Board foundBoard = boardService.getBoard(id);
         return IntroBoardResponseDto.entityToDto(request, foundBoard);
@@ -41,16 +40,12 @@ public class IntroBoardService {
         IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateBoard(introBoardRequestDto);
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
-
         for(Image image: foundImg) {
             for(MultipartFile multipartFile: introBoardRequestDto.getMultipartFiles()) {
                 image.setImage(multipartFile);
             }
         }
-
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
-        List<Image> savedImage = imageRepository.saveAll(foundImg);
-
         return IntroBoardResponseDto.entityToDto(request, introBoard);
     }
 

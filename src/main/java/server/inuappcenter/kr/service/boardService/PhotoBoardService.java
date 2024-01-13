@@ -39,17 +39,12 @@ public class PhotoBoardService {
         PhotoBoard foundBoard = photoBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateBoard(photoBoardRequestDto);
         List<Image> foundImg = imageRepository.findByPhotoBoard(foundBoard);
-
-        // 찾은 이미지에 내용 대입
         for(Image image: foundImg) {
             for(MultipartFile multipartFile: photoBoardRequestDto.getMultipartFiles()) {
                 image.setImage(multipartFile);
             }
         }
-
         PhotoBoard photoBoard = photoBoardRepository.save(foundBoard);
-        List<Image> savedImage = imageRepository.saveAll(foundImg);
-
         return PhotoBoardResponseDto.entityToDto(request, photoBoard);
     }
 
@@ -64,7 +59,6 @@ public class PhotoBoardService {
                 }
             }
         }
-
         return BoardUtils.returnPhotoBoardResponseDtoList(boardList, thumbnailList, request);
     }
 
