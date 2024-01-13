@@ -40,12 +40,15 @@ public class IntroBoardService {
         IntroBoard foundBoard = introBoardRepository.findById(board_id).orElseThrow(()-> new CustomNotFoundException("The requested ID was not found."));
         foundBoard.updateBoard(introBoardRequestDto);
         List<Image> foundImg = imageRepository.findByIntroBoard(foundBoard);
+
         for(Image image: foundImg) {
             for(MultipartFile multipartFile: introBoardRequestDto.getMultipartFiles()) {
                 image.setImage(multipartFile);
             }
         }
+
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
+        imageRepository.saveAll(foundImg);
         return IntroBoardResponseDto.entityToDto(request, introBoard);
     }
 

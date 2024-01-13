@@ -45,6 +45,7 @@ public class PhotoBoardService {
             }
         }
         PhotoBoard photoBoard = photoBoardRepository.save(foundBoard);
+        imageRepository.saveAll(foundImg);
         return PhotoBoardResponseDto.entityToDto(request, photoBoard);
     }
 
@@ -59,6 +60,7 @@ public class PhotoBoardService {
                 }
             }
         }
+
         return BoardUtils.returnPhotoBoardResponseDtoList(boardList, thumbnailList, request);
     }
 
