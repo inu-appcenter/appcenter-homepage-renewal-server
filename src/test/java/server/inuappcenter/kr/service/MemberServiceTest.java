@@ -16,14 +16,15 @@ import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.response.MemberResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
+import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     @Mock
@@ -68,6 +69,16 @@ public class MemberServiceTest {
         assertEquals(expectedResult.getMember_id(), result.getMember_id());
     }
 
+    @DisplayName("동아리원 이름 가져오기 실패 테스트")
+    @Test
+    public void getMemberFailTest() {
+        // given
+        Long givenId = 2L;
+        given(memberRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class,() -> memberService.getMember(givenId));
+    }
+
     @DisplayName("동아리원 저장 테스트")
     @Test
     public void saveMemberTest() {
@@ -100,6 +111,16 @@ public class MemberServiceTest {
         MemberResponseDto result = memberService.updateMember(givenId,givenDto);
         // then
         assertEquals(givenDto.getName(), result.getName());
+    }
+
+    @DisplayName("동아리원 수정 실패 테스트")
+    @Test
+    public void updateMemberFailTest() {
+        // given
+        Long givenId = 1L;
+        given(memberRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> memberService.updateMember(givenId, givenDto));
     }
 
     @DisplayName("모든 동아리원 목록 가져오기 테스트")
@@ -145,6 +166,17 @@ public class MemberServiceTest {
         // then
         assertEquals(expectedResult.getMsg(), result.getMsg());
     }
+
+    @DisplayName("동아리원 삭제 실패 테스트 (member가 없는 경우)")
+    @Test
+    public void deleteMemberNotFoundExceptionFailTest() {
+        // given
+        Long givenId = 1L;
+        given(memberRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> memberService.deleteMember(givenId));
+    }
+
 
     @DisplayName("동아리원 삭제 테스트")
     @Test
