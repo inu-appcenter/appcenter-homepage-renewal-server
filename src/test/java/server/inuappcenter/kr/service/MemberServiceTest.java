@@ -128,9 +128,9 @@ public class MemberServiceTest {
         }
     }
 
-    @DisplayName("동아리원 삭제 테스트")
+    @DisplayName("동아리원 삭제 실패 테스트")
     @Test
-    public void deleteMemberTest() {
+    public void deleteMemberFailTest() {
         // given
         Long givenId = 1L;
         given(memberRepository.findById(givenId)).willReturn(Optional.ofNullable(expectedEntity));
@@ -140,6 +140,21 @@ public class MemberServiceTest {
         }
         given(groupRepository.findAllByMember(expectedEntity)).willReturn(expectedGrupList);
         CommonResponseDto expectedResult = new CommonResponseDto("The member [" + givenId + "] is part of a Group. Please delete the Group first");
+        // when
+        CommonResponseDto result = memberService.deleteMember(givenId);
+        // then
+        assertEquals(expectedResult.getMsg(), result.getMsg());
+    }
+
+    @DisplayName("동아리원 삭제 테스트")
+    @Test
+    public void deleteMemberTest() {
+        // given
+        Long givenId = 1L;
+        given(memberRepository.findById(givenId)).willReturn(Optional.ofNullable(expectedEntity));
+        ArrayList<Group> expectedGrupList = new ArrayList<>();
+        given(groupRepository.findAllByMember(expectedEntity)).willReturn(expectedGrupList);
+        CommonResponseDto expectedResult = new CommonResponseDto("member id ["+ givenId + "] has been deleted.");
         // when
         CommonResponseDto result = memberService.deleteMember(givenId);
         // then

@@ -132,7 +132,7 @@ public class RoleServiceTest {
 
     @DisplayName("역할 삭제 실패 테스트")
     @Test
-    public void deleteRoleTest() {
+    public void deleteRoleFailTest() {
         // given
         Long givenId = 1L;
         ArrayList<Group> expectedEntity = new ArrayList<>();
@@ -153,7 +153,7 @@ public class RoleServiceTest {
 
     @DisplayName("역할 삭제 테스트")
     @Test
-    public void deleteRoleFailTest() {
+    public void deleteRoleTest() {
         // given
         Long givenId = 1L;
         ArrayList<Group> expectedEntity = new ArrayList<>();
