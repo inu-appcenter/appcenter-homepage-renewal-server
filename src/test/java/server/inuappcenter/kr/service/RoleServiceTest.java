@@ -130,19 +130,35 @@ public class RoleServiceTest {
         }
     }
 
-    @DisplayName("역할 삭제 테스트")
+    @DisplayName("역할 삭제 실패 테스트")
     @Test
     public void deleteRoleTest() {
         // given
         Long givenId = 1L;
         ArrayList<Group> expectedEntity = new ArrayList<>();
-        Role expectedRole = new Role(1L, "파트장");
+        Role expectedRole = new Role(2L, "파트장");
         CommonResponseDto expectedResult = new CommonResponseDto("The role [" + givenId + "] is part of a Group. Please delete the Group first");
         for (int i = 1; i <= 10; i++) {
             expectedEntity.add(new Group(new Member(new MemberRequestDto(
                     "홍길동", "안녕하세요 저는....", "https://...", "https://...", "test@inu.ac.kr", "https://..."
             )), expectedRole, new GroupRequestDto("서버", 14.4)));
         }
+        given(roleRepository.findById(givenId)).willReturn(Optional.of(expectedRole));
+        given(groupRepository.findAllByRole(expectedRole)).willReturn(expectedEntity);
+        // when
+        CommonResponseDto result = roleService.deleteRole(givenId);
+        // then
+        assertEquals(expectedResult.getMsg(), result.getMsg());
+    }
+
+    @DisplayName("역할 삭제 테스트")
+    @Test
+    public void deleteRoleFailTest() {
+        // given
+        Long givenId = 1L;
+        ArrayList<Group> expectedEntity = new ArrayList<>();
+        Role expectedRole = new Role(3L, "파트장");
+        CommonResponseDto expectedResult = new CommonResponseDto("role id [" + givenId + "] has been deleted.");
         given(roleRepository.findById(givenId)).willReturn(Optional.of(expectedRole));
         given(groupRepository.findAllByRole(expectedRole)).willReturn(expectedEntity);
         // when
