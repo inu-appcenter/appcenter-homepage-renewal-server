@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.Role;
@@ -22,6 +23,7 @@ import server.inuappcenter.kr.service.GroupService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -130,5 +132,53 @@ public class GroupServiceTest {
         assertEquals(expectedResDto.getYear(), result.getYear());
         assertEquals(expectedResDto.getCreatedDate(), result.getCreatedDate());
         assertEquals(expectedResDto.getLastModifiedDate(), result.getLastModifiedDate());
+    }
+
+    @DisplayName("그룹 삭제 테스트")
+    @Test
+    public void deleteGroupTest() {
+        // given
+        CommonResponseDto expectedDto = new CommonResponseDto("id: " + givenId + " has been successfully deleted.");
+        // when
+        CommonResponseDto result = groupService.deleteGroup(givenId);
+        // then
+        assertEquals(expectedDto.getMsg(), result.getMsg());
+    }
+
+    @DisplayName("여러 그룹 삭제 테스트")
+    @Test
+    public void deleteMultipleGroupsTest() {
+        // given
+        List<Long> givenLongList = new ArrayList<>();
+        for(int i = 1; i <= 10; i++) {
+            givenLongList.add((long) i);
+        }
+        CommonResponseDto expectedDto = new CommonResponseDto("id: " + givenLongList + " have been successfully deleted.");
+        // when
+        CommonResponseDto result = groupService.deleteMultipleGroups(givenLongList);
+        // then
+        assertEquals(expectedDto.getMsg(), result.getMsg());
+    }
+
+    @DisplayName("동아리원 이름으로 그룹 찾기 테스트")
+    @Test
+    public void searchByMemberNameTest() {
+        // given
+        String givenName = "홍길동";
+        for (int i = 0; i < 10; i++) {
+            expectedEntityList.add(givenEntity);
+        }
+        given(groupRepository.findAllByMember_Name(givenName)).willReturn(expectedEntityList);
+        expectedResList = expectedEntityList.stream()
+                .map(data -> data.toGroupResponseDto(data))
+                .collect(Collectors.toList());
+        // when
+        List<GroupResponseDto> result = groupService.searchByMemberName(givenName);
+        // then
+        for (int i = 0; i < 10; i++) {
+            assertEquals(expectedResList.get(i).getGroup_id(), result.get(i).getGroup_id());
+            assertEquals(expectedResList.get(i).getMember(), result.get(i).getMember());
+            assertEquals(expectedResList.get(i).getRole(), result.get(i).getRole());
+        }
     }
 }
