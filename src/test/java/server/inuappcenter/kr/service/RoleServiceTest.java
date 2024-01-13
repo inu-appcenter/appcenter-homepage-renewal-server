@@ -17,6 +17,7 @@ import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
 import server.inuappcenter.kr.data.dto.response.RoleResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
+import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,6 +59,16 @@ public class RoleServiceTest {
         assertEquals(exceptedResponse.getRoleName(), result.getRoleName());
         assertEquals(exceptedResponse.getCreatedDate(), result.getCreatedDate());
         assertEquals(exceptedResponse.getLastModifiedDate(), result.getLastModifiedDate());
+    }
+
+    @DisplayName("역할 가져오기 실패 테스트")
+    @Test
+    public void getRoleFailTest() {
+        // given
+        Long givenId = 1L;
+        given(roleRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> roleService.getRole(givenId));
     }
 
     @DisplayName("역할 저장 테스트")
@@ -105,6 +117,17 @@ public class RoleServiceTest {
         assertEquals(exceptedResDto.getRoleName(), result.getRoleName());
         assertEquals(exceptedResDto.getCreatedDate(), result.getCreatedDate());
         assertEquals(exceptedResDto.getLastModifiedDate(), result.getLastModifiedDate());
+    }
+
+    @DisplayName("역할 수정 실패 테스트")
+    @Test
+    public void updateRoleFailTest() {
+        // given
+        Long givenId = 1L;
+        RoleRequestDto givenDto = new RoleRequestDto("센터장");
+        given(roleRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> roleService.updateRole(givenId, givenDto));
     }
 
     @DisplayName("역할 리스트 가져오기 테스트")
@@ -165,6 +188,16 @@ public class RoleServiceTest {
         CommonResponseDto result = roleService.deleteRole(givenId);
         // then
         assertEquals(expectedResult.getMsg(), result.getMsg());
+    }
+
+    @DisplayName("역할 삭제 실패 테스트 (id 찾기 예외)")
+    @Test
+    public void deleteRoleNotFoundFailTest() {
+        // given
+        Long givenId = 1L;
+        given(roleRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> roleService.deleteRole(givenId));
     }
 
     @DisplayName("역할 이름으로 ID 찾기 테스트")

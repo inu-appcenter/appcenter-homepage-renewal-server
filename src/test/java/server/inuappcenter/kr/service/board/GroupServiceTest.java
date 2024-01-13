@@ -18,6 +18,7 @@ import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
+import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 import server.inuappcenter.kr.service.GroupService;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,6 +65,15 @@ public class GroupServiceTest {
         assertEquals(expectedResult.getGroup_id(), result.getGroup_id());
         assertEquals(expectedResult.getRole(), result.getRole());
         assertEquals(expectedResult.getMember(), result.getMember());
+    }
+
+    @DisplayName("그룹 가져오기 실패 테스트")
+    @Test
+    public void getGroupFailTest() {
+        // given
+        given(groupRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> groupService.getGroup(givenId));
     }
 
     @DisplayName("모든 그룹 가져오기 테스트")
@@ -111,6 +122,25 @@ public class GroupServiceTest {
         assertEquals(expectedResDto.getLastModifiedDate(), result.getLastModifiedDate());
     }
 
+    @DisplayName("그룹 저장 실패 테스트")
+    @Test
+    public void assignGroupFailTest() {
+        // given
+        given(memberRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> groupService.assignGroup(givenId, givenId, givenDto));
+
+        // case 2
+        // given
+        Member expectedMember = new Member(new MemberRequestDto(
+                "홍길동", "안녕하세요...", "https://...", "https://...", "test@test.com",
+                "https://..."));
+        given(memberRepository.findById(givenId)).willReturn(Optional.of(expectedMember));
+        given(roleRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> groupService.assignGroup(givenId, givenId, givenDto));
+    }
+
     @DisplayName("그룹 내용 수정 테스트")
     @Test
     public void updateGroup() {
@@ -132,6 +162,15 @@ public class GroupServiceTest {
         assertEquals(expectedResDto.getYear(), result.getYear());
         assertEquals(expectedResDto.getCreatedDate(), result.getCreatedDate());
         assertEquals(expectedResDto.getLastModifiedDate(), result.getLastModifiedDate());
+    }
+
+    @DisplayName("그룹 내용 수정 실패 테스트")
+    @Test
+    public void updateFailGroup() {
+        // given
+        given(groupRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> groupService.updateGroup(givenDto, givenId));
     }
 
     @DisplayName("그룹 삭제 테스트")
