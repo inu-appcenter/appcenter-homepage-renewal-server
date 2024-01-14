@@ -77,7 +77,7 @@ public class FaqServiceTest {
         }
     }
 
-    @DisplayName("FAQ 게시글 가져오기 테스트")
+    @DisplayName("FAQ 게시글 수정 테스트")
     @Test
     public void updateFaqBoardTest() {
         // given

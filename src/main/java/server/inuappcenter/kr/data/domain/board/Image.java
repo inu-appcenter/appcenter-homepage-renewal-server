@@ -47,6 +47,10 @@ public class Image {
         this.fileSize = size;
     }
 
+    public void updateIdForTest(Long id) {
+        this.id = id;
+    }
+
     public void setImage(MultipartFile multipartFile) {
         try {
             this.originalFileName = multipartFile.getOriginalFilename();
