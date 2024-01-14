@@ -49,6 +49,22 @@ public class IntroBoardServiceTest {
 
     private final Long givenId = 1L;
 
+    public List<MultipartFile> makeMockMultipartFile() throws IOException {
+        String imagePath = "test/image.jpg";
+        ClassPathResource resource = new ClassPathResource(imagePath);
+        MultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test/image.jpg",
+                "image/jpeg",
+                resource.getInputStream().readAllBytes()
+        );
+        List<MultipartFile> imageFileList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            imageFileList.add(imageFile);
+        }
+        return imageFileList;
+    }
+
 
     @DisplayName("앱 게시글 가져오기 테스트")
     @Test
