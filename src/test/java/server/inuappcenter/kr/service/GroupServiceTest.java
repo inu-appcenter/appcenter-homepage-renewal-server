@@ -1,4 +1,4 @@
-package server.inuappcenter.kr.service.board;
+package server.inuappcenter.kr.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
-import server.inuappcenter.kr.service.GroupService;
 
 import java.util.ArrayList;
 import java.util.List;
