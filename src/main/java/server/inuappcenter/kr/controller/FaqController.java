@@ -41,7 +41,7 @@ public class FaqController {
 
     @Operation(summary = "FAQ 한 개 작성", description = "저장할 FAQ JSON을 보내주세요")
     @PostMapping
-    public ResponseEntity<CommonResponseDto> assignGroup(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto) {
+    public ResponseEntity<CommonResponseDto> saveFaq(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto) {
         log.info("사용자가 FAQ를 저장하도록 요청했습니다.\n" +
                 "FaqBoardRequestDto의 내용: "+ faqBoardRequestDto.toString());
         CommonResponseDto commonResponseDto = boardService.saveBoard(faqBoardRequestDto);
