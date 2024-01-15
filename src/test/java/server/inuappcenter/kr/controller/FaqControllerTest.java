@@ -3,7 +3,6 @@ package server.inuappcenter.kr.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,13 +22,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,7 +51,6 @@ public class FaqControllerTest {
             1L, "서버", "질문입니다.", "답변입니다.", LocalDateTime.now(), LocalDateTime.now()
     );
     CommonResponseDto expectedCommonSaveResult = new CommonResponseDto( givenId + " Board has been successfully saved.");
-    FaqBoard expectedEntity = new FaqBoard(givenDto);
 
     ResponseEntity<FaqBoardResponseDto> expectedResult = ResponseEntity.status(HttpStatus.OK).body(expectedDto);
     @WithMockUser(username = "appcenter")
@@ -115,6 +111,40 @@ public class FaqControllerTest {
                 .andDo(print());
         // then
         verify(boardService).saveBoard(any(FaqBoardRequestDto.class));
+    }
+
+    @WithMockUser(username = "appcenter")
+    @DisplayName("FAQ 한 개 수정 테스트")
+    @Test
+    public void updateFaqTest() throws Exception {
+        // given
+        given(faqBoardService.updateFaqBoard(eq(givenId), any(FaqBoardRequestDto.class))).willReturn(expectedDto);
+        String givenJson = objectMapper.writeValueAsString(givenDto);
+        // when
+        mockMvc.perform(patch("/faqs?id="+ givenId).content(givenJson).contentType(MediaType.APPLICATION_JSON).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.part").exists())
+                .andExpect(jsonPath("$.question").exists())
+                .andExpect(jsonPath("$.answer").exists())
+                .andExpect(jsonPath("$.createdDate").exists())
+                .andExpect(jsonPath("$.lastModifiedDate").exists())
+                .andDo(print());
+        // then
+        verify(faqBoardService).updateFaqBoard(eq(givenId), any(FaqBoardRequestDto.class));
+    }
+
+    @WithMockUser(username = "appcenter")
+    @DisplayName("FAQ 한 개 삭제 테스트")
+    @Test
+    public void deleteFaqTest() throws Exception {
+        // given
+        // when
+        mockMvc.perform(delete("/faqs/" + givenId).with(csrf()))
+                .andExpect(status().isOk())
+                .andDo(print());
+        // then
+        verify(boardService).deleteBoard(givenId);
     }
 
 }

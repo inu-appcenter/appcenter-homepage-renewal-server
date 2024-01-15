@@ -11,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
@@ -21,7 +20,6 @@ import server.inuappcenter.kr.data.repository.PhotoBoardRepository;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 import server.inuappcenter.kr.service.boardService.BoardService;
-import server.inuappcenter.kr.service.boardService.IntroBoardService;
 import server.inuappcenter.kr.service.boardService.PhotoBoardService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,16 +66,6 @@ public class PhotoBoardServiceTest{
     public List<Image> makeMockImageEntity() throws IOException {
         String imagePath = "test/image.jpg";
         ClassPathResource resource = new ClassPathResource(imagePath);
-        MultipartFile imageFile = new MockMultipartFile(
-                "image",
-                "test/image.jpg",
-                "image/jpeg",
-                resource.getInputStream().readAllBytes()
-        );
-        List<MultipartFile> imageFileList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            imageFileList.add(imageFile);
-        }
         Image expectedImage = new Image(resource.getFilename(), resource.getInputStream().readAllBytes(), 100L);
         expectedImage.updateIdForTest(givenId);
         List<Image> expectedImageList = new ArrayList<>();

@@ -50,7 +50,7 @@ public class FaqController {
 
     @Operation(summary = "FAQ 한 개 수정", description = "수정할 FAQ JSON을 보내주세요")
     @PatchMapping
-    public ResponseEntity<FaqBoardResponseDto> updateGroup(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto,
+    public ResponseEntity<FaqBoardResponseDto> updateFaq(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto,
                                                         final Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 FAQ를 수정하도록 요청했습니다.\n" +
                 "FaqBoardRequestDto의 내용: "+ faqBoardRequestDto.toString());
@@ -60,7 +60,7 @@ public class FaqController {
 
     @Operation(summary = "FAQ 한 개 삭제", description = "삭제할 faq_id를 입력해주세요")
     @DeleteMapping("/{id}")
-    public ResponseEntity<CommonResponseDto> deleteGroup(final @PathVariable("id") Long id) {
+    public ResponseEntity<CommonResponseDto> deleteFaq(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 FAQ를 삭제하도록 요청했습니다.");
         CommonResponseDto result = boardService.deleteBoard(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
