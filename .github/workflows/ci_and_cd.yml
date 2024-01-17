@@ -27,6 +27,12 @@ jobs:
         echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
         find src
 
+    - name: Download SQL
+      run: |
+        mkdir -p src/main/resources
+        echo "${{ secrets.DATA_SQL }}" | base64 --decode > src/main/resources/data.sql
+        find src
+
     - name: Gradle build
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
