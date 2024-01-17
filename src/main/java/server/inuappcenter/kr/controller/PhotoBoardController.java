@@ -46,7 +46,7 @@ public class PhotoBoardController {
         } else {
             log.info("사용자가 PhotoBoard를 저장하도록 요청했습니다.\n" +
                     "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
-            return ResponseEntity.status(HttpStatus.OK).body(boardService.saveBoard(photoBoardRequestDto));
+            return ResponseEntity.status(HttpStatus.CREATED).body(boardService.saveBoard(photoBoardRequestDto));
         }
     }
 

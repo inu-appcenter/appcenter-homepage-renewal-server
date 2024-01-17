@@ -46,7 +46,7 @@ public class IntroBoardController {
         } else {
             log.info("사용자가 IntroBoard를 저장하도록 요청했습니다.\n" +
                     "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
-            return ResponseEntity.status(HttpStatus.OK).body(boardService.saveBoard(introBoardRequestDto));
+            return ResponseEntity.status(HttpStatus.CREATED).body(boardService.saveBoard(introBoardRequestDto));
         }
     }
 

@@ -40,6 +40,10 @@ public class IntroBoard extends Board {
         this.body = introBoardRequestDto.getBody();
     }
 
+    public void InjectImageListForTest(List<Image> images) {
+        this.images = images;
+    }
+
     public void updateBoard(IntroBoardRequestDto introBoardRequestDto) {
         this.title = introBoardRequestDto.getTitle();
         this.subTitle = introBoardRequestDto.getSubTitle();

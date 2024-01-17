@@ -33,6 +33,9 @@ public class PhotoBoard extends Board {
         this.images = mappingPhotoAndEntity(photoBoardRequestDto.getMultipartFiles());
     }
 
+    public void InjectImageListForTest(List<Image> images) {
+        this.images = images;
+    }
 
     public void updateBoard(PhotoBoardRequestDto photoBoardRequestDto) {
         this.body = photoBoardRequestDto.getBody();
