@@ -21,6 +21,14 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
+    - name: Setup MySQL
+      uses: samin/mysql-action@v1
+      with:
+          character set server: 'utf8'
+          mysql database: 'homepage'
+          mysql user: 'wonjeong'
+          mysql password: ${{ secrets.MYSQL_PWD }}
+
     - name: Download application YML
       run: |
         mkdir -p src/main/resources
