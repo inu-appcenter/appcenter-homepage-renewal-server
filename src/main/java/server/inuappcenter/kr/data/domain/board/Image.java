@@ -72,7 +72,7 @@ public class Image {
     }
 
     public Image returnMultipartToEntity(MultipartFile multipartFile) throws IOException {
-        return new Image(multipartFile.getOriginalFilename(), multipartFile.getBytes(), multipartFile.getSize());
+        return new Image(multipartFile.getOriginalFilename(), ImageUtils.compressImage(multipartFile.getBytes()), multipartFile.getSize());
     }
 
 
