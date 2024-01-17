@@ -21,13 +21,12 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Setup MySQL
-      uses: samin/mysql-action@v1
+    - uses: mirromutth/mysql-action@v1.1
       with:
-        character set server: 'utf8'
+        host port: 3306
+        container port: 3306
         mysql database: 'appcenter'
-        mysql user: 'root'
-        mysql password: ${{ secrets.MYSQL_PWD }}
+        mysql root password: ${{ secrets.MYSQL_PWD }}
 
     - name: Download application YML
       run: |
