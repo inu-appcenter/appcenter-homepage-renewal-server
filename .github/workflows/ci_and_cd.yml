@@ -71,4 +71,5 @@ jobs:
         port: 22
         script_stop: true
         script: |
-          sh /home/serverking/appcenter-homepage/deploy.sh
+          cd /home/serverking/appcenter-homepage
+          sh deploy.sh
