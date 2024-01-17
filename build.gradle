@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.14'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'jacoco'
 }
 
 group = 'home.inuappcenter.kr'
@@ -40,9 +41,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-log4j2"
     // @Vaild 어노테이션을 위한 의존성
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.0'
-    // Spring Security
+    // Spring Security & Test
     implementation 'org.springframework.boot:spring-boot-starter-security:2.7.14'
-    // JWT TOKEN
+    testImplementation 'org.springframework.security:spring-security-test'
+    // JW TOKEN
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
@@ -55,4 +57,69 @@ tasks.named('test') {
 bootRun {
     String activeProfile = System.properties['spring.profiles.active']
     systemProperty "spring.profiles.active", activeProfile
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHTML')
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ["**/exception/*",
+                              "**/UserDetailsServiceImpl.class",
+                              "**/SignService.class",
+                              "**/ImageService.class",
+                              "**/data/*",
+                              "**/common/data/*",
+                              "**/config/*", "**/controller/ImageController.class", "**/controller/SignController.class",
+                              "**/HomepageApplication.class"])
+        }))
+    }
+
+    dependsOn test
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.5
+            }
+        }
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ["**/exception/*",
+                              "**/UserDetailsServiceImpl.class",
+                              "**/SignService.class",
+                              "**/ImageService.class",
+                              "**/data/*",
+                              "**/common/data/*",
+                              "**/config/*", "**/controller/ImageController.class", "**/controller/SignController.class",
+                              "**/HomepageApplication.class"])
+        }))
+    }
 }

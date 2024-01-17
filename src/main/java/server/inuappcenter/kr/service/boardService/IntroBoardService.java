@@ -30,7 +30,6 @@ public class IntroBoardService {
 
 
     @Transactional(readOnly = true)
-    // (앱) 게시글 조회하기
     public IntroBoardResponseDto getIntroBoard(Long id) {
         Board foundBoard = boardService.getBoard(id);
         return IntroBoardResponseDto.entityToDto(request, foundBoard);
@@ -49,8 +48,7 @@ public class IntroBoardService {
         }
 
         IntroBoard introBoard = introBoardRepository.save(foundBoard);
-        List<Image> savedImage = imageRepository.saveAll(foundImg);
-
+        imageRepository.saveAll(foundImg);
         return IntroBoardResponseDto.entityToDto(request, introBoard);
     }
 

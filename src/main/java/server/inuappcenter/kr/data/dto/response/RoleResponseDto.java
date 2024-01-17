@@ -7,16 +7,16 @@ import java.time.LocalDateTime;
 
 @Getter
 public class RoleResponseDto {
-    private final Long role_id;
-    private final String role_name;
+    private final Long roleId;
+    private final String roleName;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
 
     @Builder
-    private RoleResponseDto(Long role_id, String role_name,
-                            LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
-        this.role_id = role_id;
-        this.role_name = role_name;
+    public RoleResponseDto(Long roleId, String roleName,
+                           LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+        this.roleId = roleId;
+        this.roleName = roleName;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
     }
