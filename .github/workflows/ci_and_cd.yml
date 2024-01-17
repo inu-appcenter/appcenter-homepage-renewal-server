@@ -29,6 +29,12 @@ jobs:
         mysql user: 'root'
         mysql password: ${{ secrets.MYSQL_PWD }}
 
+    - name: Download application YML
+      run: |
+        mkdir -p src/main/resources
+        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
+        find src
+
     - name: Download SQL
       run: |
         mkdir -p src/main/resources
