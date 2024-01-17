@@ -24,10 +24,10 @@ jobs:
     - name: Setup MySQL
       uses: samin/mysql-action@v1
       with:
-          character set server: 'utf8'
-          mysql database: 'appcenter'
-          mysql user: 'root'
-          mysql password: ${{ secrets.MYSQL_PWD }}
+        character set server: 'utf8'
+        mysql database: 'appcenter'
+        mysql user: 'root'
+        mysql password: ${{ secrets.MYSQL_PWD }}
 
     - name: Download application YML
       run: |
