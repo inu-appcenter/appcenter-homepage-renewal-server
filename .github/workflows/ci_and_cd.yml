@@ -25,8 +25,8 @@ jobs:
       uses: samin/mysql-action@v1
       with:
           character set server: 'utf8'
-          mysql database: 'homepage'
-          mysql user: 'wonjeong'
+          mysql database: 'appcenter'
+          mysql user: 'root'
           mysql password: ${{ secrets.MYSQL_PWD }}
 
     - name: Download application YML

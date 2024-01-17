@@ -1,8 +1,8 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: dev
-    url: jdbc:mysql://192.168.55.22/appcenter
+    username: root
+    url: jdbc:mysql://127.0.0.1/appcenter
     password: test1234
   jpa:
     hibernate:
