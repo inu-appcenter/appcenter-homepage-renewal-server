@@ -25,8 +25,8 @@ jobs:
       with:
         host port: 3306
         container port: 3306
-        mysql database: 'homepage'
-        mysql user: 'wonjeong'
+        mysql database: 'appcenter'
+        mysql user: 'root'
         mysql password: ${{ secrets.MYSQL_PWD }}
 
     - name: Download application YML
