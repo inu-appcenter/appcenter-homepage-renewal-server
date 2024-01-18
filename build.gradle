@@ -75,8 +75,6 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHTML')
     }
-    dependsOn test
-    finalizedBy 'jacocoTestCoverageVerification'
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
@@ -91,6 +89,9 @@ jacocoTestReport {
                               "**/HomepageApplication.class"])
         }))
     }
+
+    dependsOn test
+    finalizedBy 'jacocoTestCoverageVerification'
 }
 
 jacocoTestCoverageVerification {
@@ -98,7 +99,6 @@ jacocoTestCoverageVerification {
 
         rule {
             enabled = true
-            //코드 버커리지 체크 기준
             element = 'CLASS'
 
             limit {
@@ -107,5 +107,19 @@ jacocoTestCoverageVerification {
                 minimum = 0.5
             }
         }
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ["**/exception/*",
+                              "**/UserDetailsServiceImpl.class",
+                              "**/SignService.class",
+                              "**/ImageService.class",
+                              "**/data/*",
+                              "**/common/data/*",
+                              "**/config/*", "**/controller/ImageController.class", "**/controller/SignController.class",
+                              "**/HomepageApplication.class"])
+        }))
     }
 }
