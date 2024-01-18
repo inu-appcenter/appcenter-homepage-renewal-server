@@ -50,21 +50,20 @@ public class PhotoBoardController {
         }
     }
 
-    @Operation(summary = "게시글 (1개) 수정", description = "1개의 사진이 필수적으로 필요합니다.")
-    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<PhotoBoardResponseDto> updateBoard(
+    @Operation(summary = "게시글 수정 테스트")
+    @PatchMapping(path = {"/{photo_ids}", "/"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<CommonResponseDto> updateBoard(
+            final @PathVariable(name = "photo_ids", required = false) List<Long> photo_ids,
             final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
             BindingResult bindingResult,
-            final @Parameter(name = "id", description = "게시판 ID", required = true) Long id) {
-
+            final @Parameter(name = "board_id") Long board_id) {
         if(bindingResult.hasErrors()) {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
-        } else {
-            log.info("사용자가 id: "+ id + "을(를) 가진 PhotoBoard를 수정하도록 요청했습니다.\n" +
-                    "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
-            PhotoBoardResponseDto photoBoardResponseDto = photoBoardService.updatePhotoBoard(photoBoardRequestDto, id);
-            return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
         }
+        log.info("사용자가 id: "+ board_id + "을(를) 가진 PhotoBoard를 수정하도록 요청했습니다.\n" +
+                "PhotoBoardRequestDto의 내용: "+ photoBoardRequestDto.toString());
+        CommonResponseDto commonResponseDto = boardService.updateBoard(board_id, photo_ids, photoBoardRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseDto);
     }
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")

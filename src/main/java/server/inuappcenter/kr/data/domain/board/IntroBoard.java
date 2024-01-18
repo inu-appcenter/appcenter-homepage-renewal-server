@@ -4,13 +4,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,8 +25,6 @@ public class IntroBoard extends Board {
     public String appleStoreLink;
     public String body;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "intro_board_id")
     private List<Image> images = new ArrayList<>();
 
     public IntroBoard(IntroBoardRequestDto introBoardRequestDto) {
@@ -68,6 +64,7 @@ public class IntroBoard extends Board {
                 .build();
     }
 
+    // 새 이미지 객체를 만들어 PhotoBoard(부모객체)와 매핑시킵니다.
     public List<Image> mappingPhotoAndEntity(List<MultipartFile> multipartFiles) {
         List<Image> imageEntityList = new ArrayList<>();
         for (MultipartFile file: multipartFiles) {
@@ -79,5 +76,16 @@ public class IntroBoard extends Board {
         }
         imageEntityList.get(0).isThumbnail();
         return imageEntityList;
+    }
+
+    @Override
+    public void modifyBoard(BoardRequestDto boardRequestDto) {
+        // updateBoard 메소드를 통해 IntroBoard의 내용을 업데이트 합니다.
+        this.updateBoard((IntroBoardRequestDto) boardRequestDto);
+    }
+
+    @Override
+    public void updateImage(List<Image> images) {
+        this.images.addAll(images);
     }
 }

@@ -22,12 +22,8 @@ public class Image {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "intro_board_id", updatable = false, insertable = false)
-    private IntroBoard introBoard;
-
-    @ManyToOne
-    @JoinColumn(name = "photo_board_id", updatable = false, insertable = false)
-    private PhotoBoard photoBoard ;
+    @JoinColumn(name = "board_id", updatable = false, insertable = false)
+    private Board board;
 
     @Column(name = "original_file_name")
     private String originalFileName;
@@ -45,6 +41,17 @@ public class Image {
         this.originalFileName = originalFilename;
         this.imageData = bytes;
         this.fileSize = size;
+    }
+
+    public Image(MultipartFile multipartFile) {
+        try {
+            this.originalFileName = multipartFile.getOriginalFilename();
+            this.imageData = ImageUtils.compressImage(multipartFile.getBytes());
+            this.fileSize = multipartFile.getSize();
+        } catch (IOException e) {
+            throw new RuntimeException("사진을 처리하던 중 오류가 발생했습니다.");
+        }
+
     }
 
     public void updateIdForTest(Long id) {
@@ -73,6 +80,16 @@ public class Image {
 
     public Image returnMultipartToEntity(MultipartFile multipartFile) throws IOException {
         return new Image(multipartFile.getOriginalFilename(), ImageUtils.compressImage(multipartFile.getBytes()), multipartFile.getSize());
+    }
+
+    public void updateImage(MultipartFile multipartFile) {
+        try {
+            this.imageData = ImageUtils.compressImage(multipartFile.getBytes());
+            this.fileSize = multipartFile.getSize();
+            this.originalFileName = multipartFile.getOriginalFilename();
+        } catch (IOException e) {
+            throw new RuntimeException("사진을 처리하던 중 오류가 발생했습니다.");
+        }
     }
 
 
