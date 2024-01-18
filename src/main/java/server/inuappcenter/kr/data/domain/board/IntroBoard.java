@@ -27,7 +27,7 @@ public class IntroBoard extends Board {
     public String appleStoreLink;
     public String body;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "intro_board_id")
     private List<Image> images = new ArrayList<>();
 
@@ -68,6 +68,7 @@ public class IntroBoard extends Board {
                 .build();
     }
 
+    // 새 이미지 객체를 만들어 PhotoBoard(부모객체)와 매핑시킵니다.
     public List<Image> mappingPhotoAndEntity(List<MultipartFile> multipartFiles) {
         List<Image> imageEntityList = new ArrayList<>();
         for (MultipartFile file: multipartFiles) {
