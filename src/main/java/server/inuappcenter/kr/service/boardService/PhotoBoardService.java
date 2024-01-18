@@ -8,7 +8,6 @@ import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
-import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.repository.PhotoBoardRepository;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 
