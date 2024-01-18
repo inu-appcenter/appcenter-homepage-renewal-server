@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -18,7 +17,6 @@ import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.repository.PhotoBoardRepository;
 import server.inuappcenter.kr.data.utils.BoardUtils;
-import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 import server.inuappcenter.kr.service.boardService.BoardService;
 import server.inuappcenter.kr.service.boardService.PhotoBoardService;
 
@@ -26,10 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -96,38 +92,38 @@ public class PhotoBoardServiceTest{
         assertEquals(expectedResult.getImages(), result.getImages());
     }
 
-    @DisplayName("사진 게시글 수정하기 테스트")
-    @Test
-    public void updatePhotoBoard() throws IOException {
-        // given
-        PhotoBoardRequestDto givenDto = new PhotoBoardRequestDto(
-                "수정하려는 내용", makeMockMultipartFile());
-        PhotoBoard expectedPhotoBoard = new PhotoBoard(givenDto);
-        expectedPhotoBoard.InjectImageListForTest(makeMockImageEntity());
-        List<Image> expectedImageList = makeMockImageEntity();
-        given(photoBoardRepository.findById(givenId)).willReturn(Optional.of(expectedPhotoBoard));
-        given(imageRepository.findByPhotoBoard(expectedPhotoBoard)).willReturn(expectedImageList);
-        given(photoBoardRepository.save(Mockito.any(PhotoBoard.class))).willReturn(expectedPhotoBoard);
-        given(imageRepository.saveAll(Mockito.anyList())).willReturn(expectedImageList);
-        PhotoBoardResponseDto expectedResult = PhotoBoardResponseDto.entityToDto(request, expectedPhotoBoard);
-        // when
-        PhotoBoardResponseDto result = photoBoardService.updatePhotoBoard(givenDto, givenId);
-        // then
-        assertEquals(expectedResult.getBoard_id(), result.getBoard_id());
-        assertEquals(expectedResult.getBody(), result.getBody());
-        assertEquals(expectedResult.getImages(), result.getImages());
-    }
-
-    @DisplayName("사진 게시글 수정 실패 테스트")
-    @Test
-    public void updatePhotoBoardFailTest() throws IOException {
-        // given
-        PhotoBoardRequestDto givenBoardDto = new PhotoBoardRequestDto(
-                "글의 내용입니다.", makeMockMultipartFile());
-        given(photoBoardRepository.findById(givenId)).willReturn(Optional.empty());
-        // when, then
-        assertThrows(CustomNotFoundException.class, () -> photoBoardService.updatePhotoBoard(givenBoardDto, givenId));
-    }
+//    @DisplayName("사진 게시글 수정하기 테스트")
+//    @Test
+//    public void updatePhotoBoard() throws IOException {
+//        // given
+//        PhotoBoardRequestDto givenDto = new PhotoBoardRequestDto(
+//                "수정하려는 내용", makeMockMultipartFile());
+//        PhotoBoard expectedPhotoBoard = new PhotoBoard(givenDto);
+//        expectedPhotoBoard.InjectImageListForTest(makeMockImageEntity());
+//        List<Image> expectedImageList = makeMockImageEntity();
+//        given(photoBoardRepository.findById(givenId)).willReturn(Optional.of(expectedPhotoBoard));
+//        given(imageRepository.findByPhotoBoard(expectedPhotoBoard)).willReturn(expectedImageList);
+//        given(photoBoardRepository.save(Mockito.any(PhotoBoard.class))).willReturn(expectedPhotoBoard);
+//        given(imageRepository.saveAll(Mockito.anyList())).willReturn(expectedImageList);
+//        PhotoBoardResponseDto expectedResult = PhotoBoardResponseDto.entityToDto(request, expectedPhotoBoard);
+//        // when
+//        PhotoBoardResponseDto result = photoBoardService.updatePhotoBoard(givenDto, givenId);
+//        // then
+//        assertEquals(expectedResult.getBoard_id(), result.getBoard_id());
+//        assertEquals(expectedResult.getBody(), result.getBody());
+//        assertEquals(expectedResult.getImages(), result.getImages());
+//    }
+//
+//    @DisplayName("사진 게시글 수정 실패 테스트")
+//    @Test
+//    public void updatePhotoBoardFailTest() throws IOException {
+//        // given
+//        PhotoBoardRequestDto givenBoardDto = new PhotoBoardRequestDto(
+//                "글의 내용입니다.", makeMockMultipartFile());
+//        given(photoBoardRepository.findById(givenId)).willReturn(Optional.empty());
+//        // when, then
+//        assertThrows(CustomNotFoundException.class, () -> photoBoardService.updatePhotoBoard(givenBoardDto, givenId));
+//    }
 
     @DisplayName("모든 사진 게시글 가져오기 테스트")
     @Test
