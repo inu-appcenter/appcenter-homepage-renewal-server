@@ -28,11 +28,13 @@ public class IntroBoard extends Board {
     private List<Image> images = new ArrayList<>();
 
     public IntroBoard(IntroBoardRequestDto introBoardRequestDto) {
+        if (introBoardRequestDto.getMultipartFiles() != null) {
+            this.images = mappingPhotoAndEntity(introBoardRequestDto.getMultipartFiles());
+        }
         this.title = introBoardRequestDto.getTitle();
         this.subTitle = introBoardRequestDto.getSubTitle();
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
         this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
-        this.images = mappingPhotoAndEntity(introBoardRequestDto.getMultipartFiles());
         this.body = introBoardRequestDto.getBody();
     }
 

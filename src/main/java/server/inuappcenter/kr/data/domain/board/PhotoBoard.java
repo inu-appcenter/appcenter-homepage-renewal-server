@@ -25,8 +25,10 @@ public class PhotoBoard extends Board {
     private List<Image> images = new ArrayList<>();
 
     public PhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
+        if (photoBoardRequestDto.getMultipartFiles() != null) {
+            this.images = mappingPhotoAndEntity(photoBoardRequestDto.getMultipartFiles());
+        }
         this.body = photoBoardRequestDto.getBody();
-        this.images = mappingPhotoAndEntity(photoBoardRequestDto.getMultipartFiles());
     }
 
     public void InjectImageListForTest(List<Image> images) {
