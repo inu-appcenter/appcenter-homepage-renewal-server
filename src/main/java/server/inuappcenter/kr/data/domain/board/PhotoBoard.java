@@ -4,13 +4,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,8 +22,6 @@ public class PhotoBoard extends Board {
 
     private String body;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_board_id")
     private List<Image> images = new ArrayList<>();
 
     public PhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
@@ -67,4 +63,13 @@ public class PhotoBoard extends Board {
     }
 
 
+    @Override
+    public void modifyBoard(BoardRequestDto photoBoardRequestDto) {
+        this.updateBoard((PhotoBoardRequestDto) photoBoardRequestDto);
+    }
+
+    @Override
+    public void updateImage(List<Image> images) {
+        this.images = images;
+    }
 }

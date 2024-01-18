@@ -7,7 +7,6 @@ import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -49,9 +48,8 @@ public class IntroBoardRequestDto extends BoardRequestDto{
     private String body;
 
     @Schema(
-            description = "이미지를 배열로 받습니다."
+            description = "이미지를 배열로 받습니다. '첫번째 요소는 아이콘입니다.'"
     )
-    @NotNull(message = "이미지가 최소 1개 이상 필요합니다. (첫번째 이미지는 썸네일입니다.)")
     private List<MultipartFile> multipartFiles;
 
     @Override

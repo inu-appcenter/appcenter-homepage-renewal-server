@@ -50,12 +50,12 @@ public class FaqController {
 
     @Operation(summary = "FAQ 한 개 수정", description = "수정할 FAQ JSON을 보내주세요")
     @PatchMapping
-    public ResponseEntity<FaqBoardResponseDto> updateFaq(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto,
+    public ResponseEntity<CommonResponseDto> updateFaq(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto,
                                                         final Long id) {
         log.info("사용자가 id: "+ id + "을(를) 가진 FAQ를 수정하도록 요청했습니다.\n" +
                 "FaqBoardRequestDto의 내용: "+ faqBoardRequestDto.toString());
-        FaqBoardResponseDto faqBoardResponseDto = faqBoardService.updateFaqBoard(id, faqBoardRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(faqBoardResponseDto);
+        CommonResponseDto commonResponseDto = boardService.updateBoard(id, null, faqBoardRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseDto);
     }
 
     @Operation(summary = "FAQ 한 개 삭제", description = "삭제할 faq_id를 입력해주세요")

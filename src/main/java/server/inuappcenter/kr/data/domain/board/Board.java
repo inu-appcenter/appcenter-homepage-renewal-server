@@ -2,8 +2,11 @@ package server.inuappcenter.kr.data.domain.board;
 
 import lombok.Getter;
 import server.inuappcenter.kr.common.data.domain.BaseTimeEntity;
+import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,4 +18,12 @@ public abstract class Board extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String body;
+
+    public abstract void modifyBoard(BoardRequestDto boardRequestDto);
+
+    public abstract void updateImage(List<Image> images);
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "board_id")
+    private List<Image> images = new ArrayList<>();
 }

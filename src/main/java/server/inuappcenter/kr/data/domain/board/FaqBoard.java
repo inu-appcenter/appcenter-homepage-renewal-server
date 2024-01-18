@@ -3,10 +3,12 @@ package server.inuappcenter.kr.data.domain.board;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
 
 import javax.persistence.Entity;
+import java.util.List;
 
 @Getter
 @Entity
@@ -40,4 +42,12 @@ public class FaqBoard extends Board {
        );
     }
 
+    @Override
+    public void modifyBoard(BoardRequestDto boardRequestDto) {
+        this.updateFaqBoard((FaqBoardRequestDto) boardRequestDto);
+    }
+
+    @Override
+    public void updateImage(List<Image> image) {
+    }
 }

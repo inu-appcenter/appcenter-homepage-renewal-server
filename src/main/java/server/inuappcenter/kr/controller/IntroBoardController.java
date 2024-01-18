@@ -67,21 +67,21 @@ public class IntroBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(dto_list);
     }
 
-    @Operation(summary = "게시글 (1개) 수정")
-    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<IntroBoardResponseDto> updateBoard(
-                                         final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
-                                         BindingResult bindingResult,
-                                         final @Parameter(name = "id", description = "그룹 ID", required = true) Long id) {
+
+    @Operation(summary = "게시글 수정 테스트")
+    @PatchMapping(path = {"/{photo_ids}", "/"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<CommonResponseDto> updateBoard(
+            final @PathVariable(name = "photo_ids", required = false) List<Long> photo_ids,
+            final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
+            BindingResult bindingResult,
+            final @Parameter(name = "board_id") Long board_id) {
         if(bindingResult.hasErrors()) {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
-
-        log.info("사용자가 id: "+ id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
+        log.info("사용자가 id: "+ board_id + "을(를) 가진 IntroBoard를 수정하도록 요청했습니다.\n" +
                 "IntroBoardRequestDto의 내용: "+ introBoardRequestDto.toString());
-
-        IntroBoardResponseDto introBoardResponseDto = introBoardService.updateIntroBoard(introBoardRequestDto, id);
-        return ResponseEntity.status(HttpStatus.OK).body(introBoardResponseDto);
+        CommonResponseDto commonResponseDto = boardService.updateBoard(board_id, photo_ids, introBoardRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseDto);
     }
 
 }
