@@ -3,8 +3,10 @@ package server.inuappcenter.kr.data.domain.board;
 import lombok.Getter;
 import server.inuappcenter.kr.common.data.domain.BaseTimeEntity;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,8 @@ public abstract class Board extends BaseTimeEntity {
     public abstract void modifyBoard(BoardRequestDto boardRequestDto);
 
     public abstract void updateImage(List<Image> images);
+
+    public abstract BoardResponseDto createResponse(HttpServletRequest request);
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "board_id")

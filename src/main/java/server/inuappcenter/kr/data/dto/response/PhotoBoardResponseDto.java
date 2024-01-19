@@ -11,16 +11,12 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
-public class PhotoBoardResponseDto {
-    private final Long board_id;
-    private final String body;
+public class PhotoBoardResponseDto extends BoardResponseDto{
     private final Map<Long, String> images;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime lastModifiedDate;
 
     @Builder
-    private PhotoBoardResponseDto (Long board_id, String body, Map<Long, String> images, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
-        this.board_id = board_id;
+    private PhotoBoardResponseDto (Long id, String body, Map<Long, String> images, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+        this.id = id;
         this.body = body;
         this.images = images;
         this.createdDate = createdDate;
@@ -30,7 +26,7 @@ public class PhotoBoardResponseDto {
     public static PhotoBoardResponseDto entityToDto(HttpServletRequest request, Board board) {
         PhotoBoard photoBoard = createBoard(board);
         return PhotoBoardResponseDto.builder()
-                .board_id(photoBoard.getId())
+                .id(photoBoard.getId())
                 .body(photoBoard.getBody())
                 .images(BoardUtils.returnImageURL(request, photoBoard.getImages()))
                 .createdDate(photoBoard.getCreatedDate())

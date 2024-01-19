@@ -11,16 +11,12 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
-public class IntroBoardResponseDto {
-    private final Long id;
+public class IntroBoardResponseDto extends BoardResponseDto {
     public final String title;
     public final String subTitle;
     public final String androidStoreLink;
     public final String appleStoreLink;
-    public final String body;
     private final Map<Long, String> images;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime lastModifiedDate;
 
     @Builder
     private IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String appleStoreLink, String body, Map<Long, String> images,

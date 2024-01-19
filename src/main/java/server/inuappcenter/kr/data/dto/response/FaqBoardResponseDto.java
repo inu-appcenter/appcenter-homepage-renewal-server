@@ -7,13 +7,11 @@ import server.inuappcenter.kr.data.domain.board.FaqBoard;
 import java.time.LocalDateTime;
 
 @Getter
-public class FaqBoardResponseDto {
-    private final Long id;
+public class FaqBoardResponseDto extends BoardResponseDto{
     private final String part;
     private final String question;
     private final String answer;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime lastModifiedDate;
+
 
     public FaqBoardResponseDto(Long id, String part, String question, String answer, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
         this.id = id;

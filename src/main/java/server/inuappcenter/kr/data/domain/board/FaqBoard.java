@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
 
 import javax.persistence.Entity;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Getter
@@ -31,17 +33,6 @@ public class FaqBoard extends Board {
         this.answer = faqBoardRequestDto.getAnswer();
     }
 
-    public FaqBoardResponseDto toResponseDto(FaqBoard faqBoard) {
-       return new FaqBoardResponseDto(
-               faqBoard.getId(),
-               faqBoard.getPart(),
-               faqBoard.getQuestion(),
-               faqBoard.getAnswer(),
-               faqBoard.getCreatedDate(),
-               faqBoard.getLastModifiedDate()
-       );
-    }
-
     @Override
     public void modifyBoard(BoardRequestDto boardRequestDto) {
         this.updateFaqBoard((FaqBoardRequestDto) boardRequestDto);
@@ -49,5 +40,12 @@ public class FaqBoard extends Board {
 
     @Override
     public void updateImage(List<Image> image) {
+    }
+
+    @Override
+    public BoardResponseDto createResponse(HttpServletRequest request) {
+        return new FaqBoardResponseDto(
+                this.getId(), this.part, this.question, this.answer, this.getCreatedDate(), this.getLastModifiedDate()
+        );
     }
 }

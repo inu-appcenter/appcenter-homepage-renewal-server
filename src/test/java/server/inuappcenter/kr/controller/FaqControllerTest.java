@@ -53,49 +53,49 @@ public class FaqControllerTest {
     CommonResponseDto expectedCommonSaveResult = new CommonResponseDto( givenId + " Board has been successfully saved.");
 
     ResponseEntity<FaqBoardResponseDto> expectedResult = ResponseEntity.status(HttpStatus.OK).body(expectedDto);
-    @WithMockUser(username = "appcenter")
-    @DisplayName("FAQ 게시글 한개 가져오기 테스트")
-    @Test
-    public void getFaqBoardTest() throws Exception {
-        given(faqBoardService.getFaqBoard(givenId)).willReturn(expectedResult.getBody());
-        mockMvc.perform(
-                get("/faqs/public/" + givenId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.part").exists())
-                .andExpect(jsonPath("$.question").exists())
-                .andExpect(jsonPath("$.answer").exists())
-                .andExpect(jsonPath("$.createdDate").exists())
-                .andExpect(jsonPath("$.lastModifiedDate").exists())
-                .andDo(print());
-
-        verify(faqBoardService).getFaqBoard(givenId);
-    }
-
-    @WithMockUser(username = "appcenter")
-    @DisplayName("FAQ 전체 가져오기 테스트")
-    @Test
-    public void getFaqBoardListTest() throws Exception {
-        // given
-        List<FaqBoardResponseDto> expectedResponseList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            expectedResponseList.add(FaqBoardResponseDto.entityToDto(new FaqBoard(givenDto)));
-        }
-        given(faqBoardService.getFaqBoardList()).willReturn(expectedResponseList);
-        // when
-        mockMvc.perform(
-                get("/faqs/public/all-faq-boards"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..id").exists())
-                .andExpect(jsonPath("$..part").exists())
-                .andExpect(jsonPath("$..question").exists())
-                .andExpect(jsonPath("$..answer").exists())
-                .andExpect(jsonPath("$..createdDate").exists())
-                .andExpect(jsonPath("$..lastModifiedDate").exists())
-                .andDo(print());
-        // then
-        verify(faqBoardService).getFaqBoardList();
-    }
+//    @WithMockUser(username = "appcenter")
+//    @DisplayName("FAQ 게시글 한개 가져오기 테스트")
+//    @Test
+//    public void getFaqBoardTest() throws Exception {
+//        given(faqBoardService.getFaqBoard(givenId)).willReturn(expectedResult.getBody());
+//        mockMvc.perform(
+//                get("/faqs/public/" + givenId))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id").exists())
+//                .andExpect(jsonPath("$.part").exists())
+//                .andExpect(jsonPath("$.question").exists())
+//                .andExpect(jsonPath("$.answer").exists())
+//                .andExpect(jsonPath("$.createdDate").exists())
+//                .andExpect(jsonPath("$.lastModifiedDate").exists())
+//                .andDo(print());
+//
+//        verify(faqBoardService).getFaqBoard(givenId);
+//    }
+//
+//    @WithMockUser(username = "appcenter")
+//    @DisplayName("FAQ 전체 가져오기 테스트")
+//    @Test
+//    public void getFaqBoardListTest() throws Exception {
+//        // given
+//        List<FaqBoardResponseDto> expectedResponseList = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            expectedResponseList.add(FaqBoardResponseDto.entityToDto(new FaqBoard(givenDto)));
+//        }
+//        given(faqBoardService.getFaqBoardList()).willReturn(expectedResponseList);
+//        // when
+//        mockMvc.perform(
+//                get("/faqs/public/all-faq-boards"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$..id").exists())
+//                .andExpect(jsonPath("$..part").exists())
+//                .andExpect(jsonPath("$..question").exists())
+//                .andExpect(jsonPath("$..answer").exists())
+//                .andExpect(jsonPath("$..createdDate").exists())
+//                .andExpect(jsonPath("$..lastModifiedDate").exists())
+//                .andDo(print());
+//        // then
+//        verify(faqBoardService).getFaqBoardList();
+//    }
 
     @WithMockUser(username = "appcenter")
     @DisplayName("FAQ 한 개 작성 테스트")

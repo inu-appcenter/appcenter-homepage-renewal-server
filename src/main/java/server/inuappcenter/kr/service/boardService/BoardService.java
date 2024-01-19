@@ -9,10 +9,12 @@ import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +24,12 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository<Board> boardRepository;
     private final ImageRepository imageRepository;
+    private final HttpServletRequest request;
 
-    @Transactional
-    public Board getBoard(Long id) {
-        return boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("해당되는 Board를 찾을 수 없습니다."));
+    @Transactional(readOnly = true)
+    public BoardResponseDto findBoard(Long id) {
+        Board result = boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
+        return result.createResponse(request);
     }
 
     @Transactional
@@ -70,14 +74,18 @@ public class BoardService {
                     missingImageIds.add(id);
                 }
             }
-            // 존재하지 않는 ID 목록 수 만큼 새로운 이미지 객체를 만들어줌
-            List<Image> newImageList = new ArrayList<>();
-            for (int i = 0; i < missingImageIds.size(); i++) {
-                newImageList.add(new Image(boardRequestDto.getMultipartFiles().get(i)));
+            // 만약에 새로운 아이디(존재하지 않는 아이디)가 존재한다면
+            if (!missingImageIds.isEmpty()) {
+                // 존재하지 않는 ID 목록 수 만큼 새로운 이미지 객체를 만들어줌
+                List<Image> newImageList = new ArrayList<>();
+                for (int i = 0; i < missingImageIds.size(); i++) {
+                    newImageList.add(new Image(boardRequestDto.getMultipartFiles().get(i)));
+                }
+                // 이 이미지 객체는 Board와 매핑되어 저장되어야 함
+                // 따라서 새로운 이미지를 수정할 Board와 매핑시킨다.
+                foundBoard.updateImage(newImageList);
             }
-            // 이 이미지 객체는 Board와 매핑되어 저장되어야 함
-            // 따라서 새로운 이미지를 수정할 Board와 매핑시킨다.
-            foundBoard.updateImage(newImageList);
+
             // 변경된 이미지 정보를 저장
             imageRepository.saveAll(foundImageList);
         }

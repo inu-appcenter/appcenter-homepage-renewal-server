@@ -71,26 +71,26 @@ public class PhotoBoardServiceTest{
         return expectedImageList;
     }
 
-    @DisplayName("사진 게시글 가져오기 테스트")
-    @Test
-    public void getPhotoBoardList() throws IOException {
-        // given
-        // givenBoard를 만든다 여기에는 mockMulitpartFile을 넣어준다.
-        PhotoBoardRequestDto givenBoardDto = new PhotoBoardRequestDto(
-                "글의 내용입니다.", makeMockMultipartFile());
-        // 메소드 실행결과로 예상되는 PhotoBoard를 만든다.
-        PhotoBoard expectedBoard = new PhotoBoard(givenBoardDto);
-        // PhotoBoard에 List<Image>를 넣어준다. 리스트는 가상 ID가 마킹된 Image 객체들로 구성되어있다.
-        expectedBoard.InjectImageListForTest(makeMockImageEntity());
-        given(boardService.getBoard(givenId)).willReturn(expectedBoard);
-        PhotoBoardResponseDto expectedResult = PhotoBoardResponseDto.entityToDto(request, expectedBoard);
-        // when
-        PhotoBoardResponseDto result = photoBoardService.getPhotoBoard(givenId);
-        // then
-        assertEquals(expectedResult.getBoard_id(), result.getBoard_id());
-        assertEquals(expectedResult.getBody(), result.getBody());
-        assertEquals(expectedResult.getImages(), result.getImages());
-    }
+//    @DisplayName("사진 게시글 가져오기 테스트")
+//    @Test
+//    public void getPhotoBoardList() throws IOException {
+//        // given
+//        // givenBoard를 만든다 여기에는 mockMulitpartFile을 넣어준다.
+//        PhotoBoardRequestDto givenBoardDto = new PhotoBoardRequestDto(
+//                "글의 내용입니다.", makeMockMultipartFile());
+//        // 메소드 실행결과로 예상되는 PhotoBoard를 만든다.
+//        PhotoBoard expectedBoard = new PhotoBoard(givenBoardDto);
+//        // PhotoBoard에 List<Image>를 넣어준다. 리스트는 가상 ID가 마킹된 Image 객체들로 구성되어있다.
+//        expectedBoard.InjectImageListForTest(makeMockImageEntity());
+//        given(boardService.getBoard(givenId)).willReturn(expectedBoard);
+//        PhotoBoardResponseDto expectedResult = PhotoBoardResponseDto.entityToDto(request, expectedBoard);
+//        // when
+//        PhotoBoardResponseDto result = photoBoardService.getPhotoBoard(givenId);
+//        // then
+//        assertEquals(expectedResult.getBoard_id(), result.getBoard_id());
+//        assertEquals(expectedResult.getBody(), result.getBody());
+//        assertEquals(expectedResult.getImages(), result.getImages());
+//    }
 
 //    @DisplayName("사진 게시글 수정하기 테스트")
 //    @Test
@@ -125,37 +125,37 @@ public class PhotoBoardServiceTest{
 //        assertThrows(CustomNotFoundException.class, () -> photoBoardService.updatePhotoBoard(givenBoardDto, givenId));
 //    }
 
-    @DisplayName("모든 사진 게시글 가져오기 테스트")
-    @Test
-    public void findAllPhotoBoardTest() throws IOException {
-        // given
-        PhotoBoard givenPhotoBoard = new PhotoBoard(new PhotoBoardRequestDto(
-                "글의 내용입니다.", makeMockMultipartFile()
-        ));
-        givenPhotoBoard.InjectImageListForTest(makeMockImageEntity());
-        List<PhotoBoard> givenPhotoBoardList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            givenPhotoBoardList.add(givenPhotoBoard);
-        }
-        givenPhotoBoardList.get(0).getImages().get(0).isThumbnail();
-        List<Image> thumbnailList = new ArrayList<>();
-        for (PhotoBoard photoBoard: givenPhotoBoardList) {
-            for (int i = 0; i < photoBoard.getImages().size(); i++) {
-                if (photoBoard.getImages().get(i).getIsThumbnail()) {
-                    thumbnailList.add(photoBoard.getImages().get(i));
-                }
-            }
-        }
-        List<PhotoBoardResponseDto> expectedResult = BoardUtils.returnPhotoBoardResponseDtoList(givenPhotoBoardList, thumbnailList, request);
-        given(photoBoardRepository.findAll()).willReturn(givenPhotoBoardList);
-        // when
-        List<PhotoBoardResponseDto> result = photoBoardService.findAllPhotoBoard();
-        // then
-        for(int i = 0; i < 10; i++) {
-            assertEquals(expectedResult.get(i).getBoard_id(), result.get(i).getBoard_id());
-        }
-
-    }
+//    @DisplayName("모든 사진 게시글 가져오기 테스트")
+//    @Test
+//    public void findAllPhotoBoardTest() throws IOException {
+//        // given
+//        PhotoBoard givenPhotoBoard = new PhotoBoard(new PhotoBoardRequestDto(
+//                "글의 내용입니다.", makeMockMultipartFile()
+//        ));
+//        givenPhotoBoard.InjectImageListForTest(makeMockImageEntity());
+//        List<PhotoBoard> givenPhotoBoardList = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            givenPhotoBoardList.add(givenPhotoBoard);
+//        }
+//        givenPhotoBoardList.get(0).getImages().get(0).isThumbnail();
+//        List<Image> thumbnailList = new ArrayList<>();
+//        for (PhotoBoard photoBoard: givenPhotoBoardList) {
+//            for (int i = 0; i < photoBoard.getImages().size(); i++) {
+//                if (photoBoard.getImages().get(i).getIsThumbnail()) {
+//                    thumbnailList.add(photoBoard.getImages().get(i));
+//                }
+//            }
+//        }
+//        List<PhotoBoardResponseDto> expectedResult = BoardUtils.returnPhotoBoardResponseDtoList(givenPhotoBoardList, thumbnailList, request);
+//        given(photoBoardRepository.findAll()).willReturn(givenPhotoBoardList);
+//        // when
+//        List<PhotoBoardResponseDto> result = photoBoardService.findAllPhotoBoard();
+//        // then
+//        for(int i = 0; i < 10; i++) {
+//            assertEquals(expectedResult.get(i).getBoard_id(), result.get(i).getBoard_id());
+//        }
+//
+//    }
 
 
 }

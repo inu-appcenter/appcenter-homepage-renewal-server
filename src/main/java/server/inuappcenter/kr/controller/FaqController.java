@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
-import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.service.boardService.BoardService;
 import server.inuappcenter.kr.service.boardService.FaqBoardService;
 
@@ -25,18 +25,16 @@ public class FaqController {
 
     @Operation(summary = "FAQ 한 개 가져오기", description = "조회할 faq_id를 입력해주세요")
     @GetMapping("public/{id}")
-    public ResponseEntity<FaqBoardResponseDto> getFaqBoard(final @PathVariable("id") Long id) {
+    public ResponseEntity<BoardResponseDto> getFaqBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 FAQ를 요청했습니다.");
-        FaqBoardResponseDto faqBoardResponseDto = faqBoardService.getFaqBoard(id);
-        return ResponseEntity.status(HttpStatus.OK).body(faqBoardResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.findBoard(id));
     }
 
     @Operation(summary = "FAQ 전체 가져오기", description = "전체 FAQ 목록을 가져옵니다.")
     @GetMapping("public/all-faq-boards")
-    public ResponseEntity<List<FaqBoardResponseDto>> getFaqBoardList() {
+    public ResponseEntity<List<BoardResponseDto>> getFaqBoardList() {
         log.info("사용자가 전체 FAQ 목록을 요청했습니다.");
-        List<FaqBoardResponseDto> faqBoardResponseDtoList = faqBoardService.getFaqBoardList();
-        return ResponseEntity.status(HttpStatus.OK).body(faqBoardResponseDtoList);
+        return ResponseEntity.status(HttpStatus.OK).body(faqBoardService.findFaqBoardList());
     }
 
     @Operation(summary = "FAQ 한 개 작성", description = "저장할 FAQ JSON을 보내주세요")

@@ -6,14 +6,15 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
+import server.inuappcenter.kr.data.utils.BoardUtils;
 
 import javax.persistence.Entity;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Entity
@@ -28,7 +29,7 @@ public class PhotoBoard extends Board {
         if (photoBoardRequestDto.getMultipartFiles() != null) {
             this.images = mappingPhotoAndEntity(photoBoardRequestDto.getMultipartFiles());
         }
-        this.body = photoBoardRequestDto.getBody();
+        body = photoBoardRequestDto.getBody();
     }
 
     public void InjectImageListForTest(List<Image> images) {
@@ -37,18 +38,6 @@ public class PhotoBoard extends Board {
 
     public void updateBoard(PhotoBoardRequestDto photoBoardRequestDto) {
         this.body = photoBoardRequestDto.getBody();
-    }
-
-    public PhotoBoardResponseDto toBoardResponseDto(PhotoBoard photoBoard, String image) {
-        Map<Long,String> imageMap = new HashMap<>();
-        imageMap.put(1L, image);
-        return PhotoBoardResponseDto.builder()
-                .board_id(photoBoard.getId())
-                .images(imageMap)
-                .body(photoBoard.getBody())
-                .createdDate(photoBoard.getCreatedDate())
-                .lastModifiedDate(photoBoard.getLastModifiedDate())
-                .build();
     }
 
     public List<Image> mappingPhotoAndEntity(List<MultipartFile> multipartFiles) {
@@ -73,5 +62,16 @@ public class PhotoBoard extends Board {
     @Override
     public void updateImage(List<Image> images) {
         this.images = images;
+    }
+
+    @Override
+    public BoardResponseDto createResponse(HttpServletRequest request) {
+        return PhotoBoardResponseDto.builder()
+                .id(this.getId())
+                .body(this.body)
+                .images(BoardUtils.returnImageURL(request, this.images))
+                .createdDate(this.getCreatedDate())
+                .lastModifiedDate(this.getLastModifiedDate())
+                .build();
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
-import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
 import server.inuappcenter.kr.service.boardService.BoardService;
 import server.inuappcenter.kr.service.boardService.IntroBoardService;
@@ -32,10 +32,9 @@ public class IntroBoardController {
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id", required = true)
     @GetMapping("/public/{id}")
-    public ResponseEntity<IntroBoardResponseDto> getBoard(final @PathVariable("id") Long id) {
+    public ResponseEntity<BoardResponseDto> getBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 IntroBoard를 요청했습니다.");
-        IntroBoardResponseDto boardResponseDto = introBoardService.getIntroBoard(id);
-        return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.findBoard(id));
     }
     @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다. (첫번째 사진은 게시글의 썸네일로 사용됩니다.)")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -61,10 +60,9 @@ public class IntroBoardController {
 
     @Operation(summary = "앱 소개 글 (전체) 조회", description = "앱 소개 글을 모두 반환합니다.")
     @GetMapping("/public/all-boards-contents")
-    public ResponseEntity<List<IntroBoardResponseDto>> findAllBoard() {
+    public ResponseEntity<List<BoardResponseDto>> findAllBoard() {
         log.info("사용자가 전체 IntroBoard 목록을 요청했습니다.");
-        List<IntroBoardResponseDto> dto_list = introBoardService.findAllIntroBoard();
-        return ResponseEntity.status(HttpStatus.OK).body(dto_list);
+        return ResponseEntity.status(HttpStatus.OK).body(introBoardService.findIntroBoardList());
     }
 
 

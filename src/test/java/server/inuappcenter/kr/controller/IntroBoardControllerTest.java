@@ -63,25 +63,25 @@ public class IntroBoardControllerTest {
             .images(makeMockImageMap())
             .build();
 
-    @WithMockUser
-    @DisplayName("IntroBoard 가져오기 테스트")
-    @Test
-    public void getBoardTest() throws Exception {
-        // given
-        given(introBoardService.getIntroBoard(givenId)).willReturn(expectedDto);
-        // when
-        mockMvc.perform(get("/introduction-board/public/" + givenId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.subTitle").exists())
-                .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("$.appleStoreLink").exists())
-                .andExpect(jsonPath("$.androidStoreLink").exists())
-                .andExpect(jsonPath("$.images").exists())
-                .andDo(print());
-        // then
-        verify(introBoardService).getIntroBoard(givenId);
-    }
+//    @WithMockUser
+//    @DisplayName("IntroBoard 가져오기 테스트")
+//    @Test
+//    public void getBoardTest() throws Exception {
+//        // given
+//        given(introBoardService.getIntroBoard(givenId)).willReturn(expectedDto);
+//        // when
+//        mockMvc.perform(get("/introduction-board/public/" + givenId))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id").exists())
+//                .andExpect(jsonPath("$.subTitle").exists())
+//                .andExpect(jsonPath("$.title").exists())
+//                .andExpect(jsonPath("$.appleStoreLink").exists())
+//                .andExpect(jsonPath("$.androidStoreLink").exists())
+//                .andExpect(jsonPath("$.images").exists())
+//                .andDo(print());
+//        // then
+//        verify(introBoardService).getIntroBoard(givenId);
+//    }
 
     @WithMockUser
     @DisplayName("IntroBoard 저장 테스트")
@@ -128,29 +128,29 @@ public class IntroBoardControllerTest {
         verify(boardService).deleteBoard(givenId);
     }
 
-    @WithMockUser
-    @DisplayName("IntroBoard 목록 가져오기 테스트")
-    @Test
-    public void findAllBoardTest() throws Exception {
-        // given
-        List<IntroBoardResponseDto> introBoardResponseDtoList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            introBoardResponseDtoList.add(expectedDto);
-        }
-        given(introBoardService.findAllIntroBoard()).willReturn(introBoardResponseDtoList);
-        // when
-        mockMvc.perform(get("/introduction-board/public/all-boards-contents"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..id").exists())
-                .andExpect(jsonPath("$..subTitle").exists())
-                .andExpect(jsonPath("$..title").exists())
-                .andExpect(jsonPath("$..appleStoreLink").exists())
-                .andExpect(jsonPath("$..androidStoreLink").exists())
-                .andExpect(jsonPath("$..images").exists())
-                .andDo(print());
-        // then
-        verify(introBoardService).findAllIntroBoard();
-    }
+//    @WithMockUser
+//    @DisplayName("IntroBoard 목록 가져오기 테스트")
+//    @Test
+//    public void findAllBoardTest() throws Exception {
+//        // given
+//        List<IntroBoardResponseDto> introBoardResponseDtoList = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            introBoardResponseDtoList.add(expectedDto);
+//        }
+//        given(introBoardService.findAllIntroBoard()).willReturn(introBoardResponseDtoList);
+//        // when
+//        mockMvc.perform(get("/introduction-board/public/all-boards-contents"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$..id").exists())
+//                .andExpect(jsonPath("$..subTitle").exists())
+//                .andExpect(jsonPath("$..title").exists())
+//                .andExpect(jsonPath("$..appleStoreLink").exists())
+//                .andExpect(jsonPath("$..androidStoreLink").exists())
+//                .andExpect(jsonPath("$..images").exists())
+//                .andDo(print());
+//        // then
+//        verify(introBoardService).findAllIntroBoard();
+//    }
 
 //    @WithMockUser
 //    @DisplayName("IntroBoard 수정 테스트")

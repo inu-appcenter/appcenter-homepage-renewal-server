@@ -11,7 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
-import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
 import server.inuappcenter.kr.service.boardService.BoardService;
 import server.inuappcenter.kr.service.boardService.PhotoBoardService;
@@ -31,10 +31,9 @@ public class PhotoBoardController {
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @GetMapping("/public/{id}")
-    public ResponseEntity<PhotoBoardResponseDto> getBoard(final @PathVariable("id") Long id) {
+    public ResponseEntity<BoardResponseDto> getBoard(final @PathVariable("id") Long id) {
         log.info("사용자가 id: " + id + "을(를) 가진 PhotoBoard를 요청했습니다.");
-        PhotoBoardResponseDto photoBoardResponseDto = photoBoardService.getPhotoBoard(id);
-        return ResponseEntity.status(HttpStatus.OK).body(photoBoardResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.findBoard(id));
     }
 
     @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다. (첫번째 사진은 게시글의 썸네일로 사용됩니다.)")
@@ -77,10 +76,9 @@ public class PhotoBoardController {
 
     @Operation(summary = "사진 글 (전체) 조회", description = "사진 글을 모두 반환합니다.")
     @GetMapping("/public/all-boards-contents")
-    public ResponseEntity<List<PhotoBoardResponseDto>> findAllBoard() {
+    public ResponseEntity<List<BoardResponseDto>> findAllBoard() {
         log.info("사용자가 전체 PhotoBoard 목록을 요청했습니다.");
-        List<PhotoBoardResponseDto> dto_list = photoBoardService.findAllPhotoBoard();
-        return ResponseEntity.status(HttpStatus.OK).body(dto_list);
+        return ResponseEntity.status(HttpStatus.OK).body(photoBoardService.findPhotoBoardList());
     }
 
 }
