@@ -20,8 +20,8 @@ public class SwaggerConfig {
                 .components(new Components().addSecuritySchemes("basicAuth", apikey))
                 .addSecurityItem(securityItem)
                 .info(new Info().title("Appcenter Homepage Application")
-                        .description("앱센터 홈페이지 애플리케이션 서버를 잘 확인하고 사용해주세요")
-                        .version("0.1.5-SNAPSHOT"));
+                        .description("앱센터 홈페이지 애플리케이션입니다.")
+                        .version("0.5.0-SNAPSHOT"));
     }
 
 

@@ -1,14 +1,16 @@
 package server.inuappcenter.kr.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.FaqBoard;
 
 import javax.validation.constraints.NotNull;
 
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class FaqBoardRequestDto extends BoardRequestDto{

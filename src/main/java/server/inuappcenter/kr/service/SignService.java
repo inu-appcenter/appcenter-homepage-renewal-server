@@ -8,6 +8,8 @@ import server.inuappcenter.kr.data.domain.User;
 import server.inuappcenter.kr.data.dto.request.SignInRequestDto;
 import server.inuappcenter.kr.data.dto.response.SignInResponseDto;
 import server.inuappcenter.kr.data.repository.UserRepository;
+import server.inuappcenter.kr.exception.customExceptions.CustomPasswordMisMatchException;
+import server.inuappcenter.kr.exception.customExceptions.CustomUsernameMisMatchException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,20 +20,15 @@ public class SignService {
 
     public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
         User user = userRepository.getByUid(signInRequestDto.getId());
+        if (user == null) {
+            throw new CustomUsernameMisMatchException();
+        }
         if (!signInRequestDto.getPassword().equals(user.getPassword())) {
-            throw new RuntimeException();
+            throw new CustomPasswordMisMatchException();
         }
         userRepository.save(user);
-        return SignInResponseDto.builder()
-                .success(true)
-                .code(200)
-                .msg("로그인에 성공하였습니다.")
-                .token(new String[]{
-                        jwtTokenProvider.createAccessToken(String.valueOf(user.getUid()))
-                })
-                .build();
-
-
-
+        return new SignInResponseDto(new String[]{
+                jwtTokenProvider.createAccessToken(String.valueOf(user.getUid()))
+        });
     }
 }

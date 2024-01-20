@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
+import server.inuappcenter.kr.exception.customExceptions.CustomPasswordMisMatchException;
+import server.inuappcenter.kr.exception.customExceptions.CustomUsernameMisMatchException;
 
 import java.util.Objects;
 
@@ -15,16 +17,13 @@ import java.util.Objects;
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
-    // Controller에서 발생한 에러를 처리해줍니다.
 
-    // Service에서 Id를 찾지 못했을 경우
     @ExceptionHandler(CustomNotFoundException.class)
     public ResponseEntity<String> notFoundException(CustomNotFoundException e) {
         log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    // @Vaild 검증 실패
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> InvalidObjects(MethodArgumentNotValidException e) {
         log.error("서버로 전송된 데이터를 검증하는데 실패했습니다. 원인: " + Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
@@ -33,6 +32,18 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomModelAttributeException.class)
     public ResponseEntity<String> modelAttributeException(CustomModelAttributeException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CustomUsernameMisMatchException.class)
+    public ResponseEntity<String> userNameMisMatchException(CustomUsernameMisMatchException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CustomPasswordMisMatchException.class)
+    public ResponseEntity<String> passwordMisMatchException(CustomPasswordMisMatchException e) {
         log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }

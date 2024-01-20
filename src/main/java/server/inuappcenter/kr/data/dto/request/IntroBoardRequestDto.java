@@ -1,7 +1,10 @@
 package server.inuappcenter.kr.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
@@ -10,7 +13,6 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IntroBoardRequestDto extends BoardRequestDto{
