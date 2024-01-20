@@ -17,7 +17,7 @@ import server.inuappcenter.kr.controller.boardController.PhotoBoardController;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 import server.inuappcenter.kr.service.boardService.BoardService;
-import server.inuappcenter.kr.service.boardService.PhotoBoardService;
+import server.inuappcenter.kr.service.boardService.impl.PhotoBoardServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class PhotoBoardControllerTest {
     @MockBean
     private BoardService boardService;
     @MockBean
-    private PhotoBoardService photoBoardService;
+    private PhotoBoardServiceImpl photoBoardServiceImpl;
 
 
     public Map<Long, String> makeMockImageMap() {

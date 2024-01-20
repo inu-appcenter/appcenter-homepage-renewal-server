@@ -41,7 +41,7 @@ public class Member extends BaseTimeEntity {
         this.gitRepositoryLink = memberRequestDto.getGitRepositoryLink();
     }
 
-    public void setMember(Long id, MemberRequestDto memberRequestDto) {
+    public void updateMember(Long id, MemberRequestDto memberRequestDto) {
         this.id = id;
         this.name = memberRequestDto.getName();
         this.description = memberRequestDto.getDescription();

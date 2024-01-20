@@ -37,7 +37,7 @@ public class MemberService {
     @Transactional
     public MemberResponseDto updateMember(Long id, MemberRequestDto memberRequestDto) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        found_member.setMember(id, memberRequestDto);
+        found_member.updateMember(id, memberRequestDto);
         Member saved_member = memberRepository.save(found_member);
         return MemberResponseDto.entityToDto(saved_member);
     }

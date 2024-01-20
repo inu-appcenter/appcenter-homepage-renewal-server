@@ -12,7 +12,7 @@ import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.repository.PhotoBoardRepository;
 import server.inuappcenter.kr.service.boardService.BoardService;
-import server.inuappcenter.kr.service.boardService.PhotoBoardService;
+import server.inuappcenter.kr.service.boardService.impl.PhotoBoardServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class PhotoBoardServiceTest{
+public class PhotoBoardServiceImplTest {
     @Mock
     private BoardService boardService;
     @Mock
@@ -30,7 +30,7 @@ public class PhotoBoardServiceTest{
     @Mock
     private HttpServletRequest request = new MockHttpServletRequest();
     @InjectMocks
-    private PhotoBoardService photoBoardService;
+    private PhotoBoardServiceImpl photoBoardServiceImpl;
 
     private final Long givenId = 1L;
 

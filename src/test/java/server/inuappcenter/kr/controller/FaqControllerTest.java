@@ -16,7 +16,7 @@ import server.inuappcenter.kr.controller.boardController.FaqController;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
 import server.inuappcenter.kr.service.boardService.BoardService;
-import server.inuappcenter.kr.service.boardService.FaqBoardService;
+import server.inuappcenter.kr.service.boardService.impl.FaqBoardServiceImpl;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +42,7 @@ public class FaqControllerTest {
     BoardService boardService;
 
     @MockBean
-    FaqBoardService faqBoardService;
+    FaqBoardServiceImpl faqBoardServiceImpl;
 
     private final Long givenId = 1L;
     FaqBoardRequestDto givenDto = new FaqBoardRequestDto("서버", "질문입니다.", "답변입니다.");

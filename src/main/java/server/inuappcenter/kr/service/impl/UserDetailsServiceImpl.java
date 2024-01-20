@@ -1,4 +1,4 @@
-package server.inuappcenter.kr.service;
+package server.inuappcenter.kr.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

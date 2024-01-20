@@ -3,7 +3,7 @@ package server.inuappcenter.kr.controller.boardController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,21 +13,25 @@ import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
+import server.inuappcenter.kr.service.boardService.AdditionalBoardService;
 import server.inuappcenter.kr.service.boardService.BoardService;
-import server.inuappcenter.kr.service.boardService.IntroBoardService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/introduction-board")
 @Tag(name = "[Intro] 애플리케이션 소개 게시판")
 public class IntroBoardController {
 
     public final BoardService boardService;
-    public final IntroBoardService introBoardService;
+    public final AdditionalBoardService additionalBoardService;
+
+    public IntroBoardController(BoardService boardService, @Qualifier(value = "IntroBoardServiceImpl") AdditionalBoardService additionalBoardService) {
+        this.boardService = boardService;
+        this.additionalBoardService = additionalBoardService;
+    }
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id", required = true)
@@ -56,7 +60,7 @@ public class IntroBoardController {
     @Operation(summary = "앱 소개 글 (전체) 조회", description = "앱 소개 글을 모두 반환합니다.")
     @GetMapping("/public/all-boards-contents")
     public ResponseEntity<List<BoardResponseDto>> findAllBoard() {
-        return ResponseEntity.status(HttpStatus.OK).body(introBoardService.findIntroBoardList());
+        return ResponseEntity.status(HttpStatus.OK).body(additionalBoardService.findBoardList());
     }
 
 

@@ -105,7 +105,7 @@ public class MemberServiceTest {
                 "김길동", "안녕하세요 제 이름은...", "https://...", "https://...",
                 "test@test.com", "https://...");
         given(memberRepository.findById(givenId)).willReturn(Optional.ofNullable(expectedEntity));
-        expectedEntity.setMember(givenId, givenDto);
+        expectedEntity.updateMember(givenId, givenDto);
         given(memberRepository.save(Mockito.any(Member.class))).willReturn(expectedEntity);
         // when
         MemberResponseDto result = memberService.updateMember(givenId,givenDto);
