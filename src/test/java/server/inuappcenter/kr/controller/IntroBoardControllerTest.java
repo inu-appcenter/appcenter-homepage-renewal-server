@@ -17,7 +17,7 @@ import server.inuappcenter.kr.controller.boardController.IntroBoardController;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.service.boardService.BoardService;
-import server.inuappcenter.kr.service.boardService.IntroBoardService;
+import server.inuappcenter.kr.service.boardService.impl.IntroBoardServiceImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class IntroBoardControllerTest {
     @MockBean
     private BoardService boardService;
     @MockBean
-    private IntroBoardService introBoardService;
+    private IntroBoardServiceImpl introBoardServiceImpl;
 
 
     public Map<Long, String> makeMockImageMap() {
