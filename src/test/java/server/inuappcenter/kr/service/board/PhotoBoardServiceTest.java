@@ -1,7 +1,5 @@
 package server.inuappcenter.kr.service.board;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -11,12 +9,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.data.domain.board.Image;
-import server.inuappcenter.kr.data.domain.board.PhotoBoard;
-import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
-import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.repository.PhotoBoardRepository;
-import server.inuappcenter.kr.data.utils.BoardUtils;
 import server.inuappcenter.kr.service.boardService.BoardService;
 import server.inuappcenter.kr.service.boardService.PhotoBoardService;
 
@@ -24,9 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class PhotoBoardServiceTest{
