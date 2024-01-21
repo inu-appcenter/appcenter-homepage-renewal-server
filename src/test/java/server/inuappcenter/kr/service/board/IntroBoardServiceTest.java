@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.repository.IntroBoardRepository;
 import server.inuappcenter.kr.service.boardService.BoardService;
-import server.inuappcenter.kr.service.boardService.IntroBoardService;
+import server.inuappcenter.kr.service.boardService.impl.IntroBoardServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class IntroBoardServiceTest {
     @Mock
     private ImageRepository imageRepository;
     @InjectMocks
-    private IntroBoardService introBoardService;
+    private IntroBoardServiceImpl introBoardService;
 
     @Mock
     private HttpServletRequest request = new MockHttpServletRequest();
