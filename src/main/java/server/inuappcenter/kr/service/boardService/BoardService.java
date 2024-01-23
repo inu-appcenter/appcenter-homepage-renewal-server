@@ -2,6 +2,7 @@ package server.inuappcenter.kr.service.boardService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class BoardService {
     private final BoardRepository<Board> boardRepository;
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
+    private final CacheManager cacheManager;
 
     @Transactional(readOnly = true)
     public BoardResponseDto findBoard(Long id) {
@@ -47,9 +50,12 @@ public class BoardService {
 
     @Transactional
     public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto) {
+        for (Long id: image_id) {
+            Objects.requireNonNull(cacheManager.getCache("image")).evict(id);
+        }
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         // 사용자가 multipart를 같이 보냈는지 확인
-        if (boardRequestDto.getMultipartFiles() != null || image_id != null) {
+        if (boardRequestDto.getMultipartFiles() != null || !image_id.isEmpty()) {
             // 이미지 레포지토리에서 사용자가 보낸 ID로 조회를 먼저 진행하여, 찾아진 이미지 목록을 가짐
             List<Image> foundImageList = imageRepository.findByImageIdsAndBoard(image_id, foundBoard);
             // multipart에서 이미지를 가져와 데이터와 정보를 해당 image에 업데이트
