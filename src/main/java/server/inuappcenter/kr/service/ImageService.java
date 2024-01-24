@@ -15,7 +15,6 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "image", key = "#id", cacheManager = "contentCacheManager")
     public byte[] getImage(Long id) {
         Image foundImage = imageRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return ImageUtils.decompressImage(foundImage.getImageData());
