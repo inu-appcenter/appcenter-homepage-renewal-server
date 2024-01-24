@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'home.inuappcenter.kr'
-version = '0.1.5-SNAPSHOT'
+version = '0.5.0-SNAPSHOT'
 
 java {
     sourceCompatibility = '11'
@@ -52,6 +52,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.14'
+    // spring cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.14'
 }
 
 tasks.named('test') {

@@ -12,6 +12,7 @@ import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.data.repository.ImageRepository;
+import server.inuappcenter.kr.data.repository.redis.BoardResponseRedisRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +26,18 @@ public class BoardService {
     private final BoardRepository<Board> boardRepository;
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
+    private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
 
     @Transactional(readOnly = true)
     public BoardResponseDto findBoard(Long id) {
-        Board result = boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
-        return result.createResponse(request);
+        return boardResponseRedisRepository.findById(id).orElseGet(
+                () -> {
+                    Board result = boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
+                    BoardResponseDto resultDto = result.createResponse(request);
+                    boardResponseRedisRepository.save(resultDto);
+                    return resultDto;
+                }
+        );
     }
 
     @Transactional
@@ -47,6 +55,7 @@ public class BoardService {
 
     @Transactional
     public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto) {
+        boardResponseRedisRepository.deleteById(board_id);
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         // 사용자가 multipart를 같이 보냈는지 확인
         if (boardRequestDto.getMultipartFiles() != null || image_id != null) {
