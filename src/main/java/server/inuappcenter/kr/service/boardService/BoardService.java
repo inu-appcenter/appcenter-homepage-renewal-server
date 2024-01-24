@@ -55,6 +55,7 @@ public class BoardService {
 
     @Transactional
     public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto) {
+        boardResponseRedisRepository.deleteById(board_id);
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         // 사용자가 multipart를 같이 보냈는지 확인
         if (boardRequestDto.getMultipartFiles() != null || image_id != null) {
