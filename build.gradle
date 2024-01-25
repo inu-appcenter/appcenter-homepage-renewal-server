@@ -54,8 +54,10 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.14'
-    // spring cache
+    // Spring cache
     implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.14'
+    // Snappy Java
+    implementation 'org.xerial.snappy:snappy-java:1.1.10.5'
 }
 
 tasks.named('test') {
