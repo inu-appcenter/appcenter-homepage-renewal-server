@@ -1,11 +1,11 @@
 spring:
   redis:
-    port: 5379
-    host: na2ru2.me
+    port: 6379
+    host: 192.168.55.22
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: dev
-    url: jdbc:mysql://na2ru2.me:6306/appcenter
+    url: jdbc:mysql://192.168.55.22/appcenter
     password: test1234
   jpa:
     hibernate:
@@ -20,5 +20,5 @@ spring:
       mode: always
   servlet:
     multipart:
-      maxFileSize: 50MB
-      maxRequestSize: 50MB
+      maxFileSize: 15MB
+      maxRequestSize: 15MB
