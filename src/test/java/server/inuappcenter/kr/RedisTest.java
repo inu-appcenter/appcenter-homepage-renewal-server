@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
-import server.inuappcenter.kr.data.repository.redis.BoardResponseRedisRepository;
+import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import java.time.LocalDateTime;
