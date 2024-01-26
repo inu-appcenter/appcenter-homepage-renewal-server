@@ -10,9 +10,10 @@ import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
+import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.data.repository.ImageRepository;
-import server.inuappcenter.kr.data.repository.redis.BoardResponseRedisRepository;
+import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ public class BoardService {
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
     private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
+    private final ImageRedisRepository imageRedisRepository;
 
     @Transactional(readOnly = true)
     public BoardResponseDto findBoard(Long id) {
@@ -48,6 +50,7 @@ public class BoardService {
 
     @Transactional
     public CommonResponseDto deleteBoard(Long id) {
+        boardResponseRedisRepository.deleteById(id);
         boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
         boardRepository.deleteById(id);
         return new CommonResponseDto("id: " + id + " has been successfully deleted.");
@@ -55,6 +58,7 @@ public class BoardService {
 
     @Transactional
     public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto) {
+        // 캐시에서 보드를 삭제한다.
         boardResponseRedisRepository.deleteById(board_id);
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         // 사용자가 multipart를 같이 보냈는지 확인
@@ -74,6 +78,10 @@ public class BoardService {
                 // 찾아진 이미지 목록에서 id를 가져와 찾아진 id 목록에 추가함
                 foundImageIds.add(image.getId());
             }
+
+            // 캐시에서 이미지를 삭제한다.
+            imageRedisRepository.deleteAllById(foundImageIds);
+
             // 찾아진 ID 목록에 존재하지 않는 ID를 얻어야 하기 때문에 없는 이미지 ID 목록을 만들어줌
             List<Long> missingImageIds = new ArrayList<>();
             for (Long id : image_id) {

@@ -10,7 +10,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories
+@EnableRedisRepositories(basePackages = "server.inuappcenter.kr.data.redis")
 public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
