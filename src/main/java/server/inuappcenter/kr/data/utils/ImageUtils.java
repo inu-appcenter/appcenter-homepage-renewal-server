@@ -1,48 +1,21 @@
 package server.inuappcenter.kr.data.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
+import org.xerial.snappy.Snappy;
+import java.io.IOException;
+
 
 public class ImageUtils {
 
-    public static byte[] compressImage(byte[] data) {
-        Deflater deflater = new Deflater();
-        deflater.setLevel(Deflater.BEST_COMPRESSION);
-        deflater.setInput(data);
-        deflater.finish();
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4*1024];
-
-        while (!deflater.finished()) {
-            int size = deflater.deflate(tmp);
-            outputStream.write(tmp, 0, size);
-        }
-
-        try {
-            outputStream.close();
-        } catch (Exception ignored) {
-
-        }
-
-        return outputStream.toByteArray();
+    public static byte[] compressImage(byte[] data) throws IOException {
+        return Snappy.compress(data);
     }
 
     public static byte[] decompressImage(byte[] data) {
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputSteam = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4*1024];
-
         try {
-            while (!inflater.finished()) {
-                int count = inflater.inflate(tmp);
-                outputSteam.write(tmp, 0, count);
-            }
-            outputSteam.close();
-        } catch (Exception ignored) {
+            return Snappy.uncompress(data);
+        } catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
-        return outputSteam.toByteArray();
     }
+
 }

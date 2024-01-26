@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.data.utils.ImageUtils;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 @Entity
 @Getter
@@ -71,11 +70,6 @@ public class Image {
     // 호출시 이미지가 Thumbnail 속성을 가지고 있다는 것에 표시가 됨
     public void isThumbnail() {
         this.isThumbnail = true;
-    }
-
-    // 자원의 현재 위치를 반환하는 메소드
-    public String getLocation(HttpServletRequest request, Image image) {
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +  "/image/photo/" + image.getId().toString();
     }
 
     public Image returnMultipartToEntity(MultipartFile multipartFile) throws IOException {
