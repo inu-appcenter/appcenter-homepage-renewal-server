@@ -10,9 +10,10 @@ import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
+import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
+import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.data.repository.ImageRepository;
-import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
