@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
@@ -65,12 +64,12 @@ public class BoardService {
         if (boardRequestDto.getMultipartFiles() != null || image_id != null) {
             // 이미지 레포지토리에서 사용자가 보낸 ID로 조회를 먼저 진행하여, 찾아진 이미지 목록을 가짐
             List<Image> foundImageList = imageRepository.findByImageIdsAndBoard(image_id, foundBoard);
+
             // multipart에서 이미지를 가져와 데이터와 정보를 해당 image에 업데이트
-            for (Image image: foundImageList) {
-                for (MultipartFile multipartFile: boardRequestDto.getMultipartFiles()) {
-                    image.updateImage(multipartFile);
-                }
+            for (int i = 0; i < foundImageList.size(); i++) {
+                foundImageList.get(i).updateImage(boardRequestDto.getMultipartFiles().get(i));
             }
+
             // DB에 저장되지 않은 이미지에 대한 처리들을 진행해야 함
             // 먼저 DB에서 찾아진 ID에 대한 목록을 만들어줌
             List<Long> foundImageIds = new ArrayList<>();
@@ -81,7 +80,7 @@ public class BoardService {
 
             // 캐시에서 이미지를 삭제한다.
             imageRedisRepository.deleteAllById(foundImageIds);
-
+          
             // 찾아진 ID 목록에 존재하지 않는 ID를 얻어야 하기 때문에 없는 이미지 ID 목록을 만들어줌
             List<Long> missingImageIds = new ArrayList<>();
             for (Long id : image_id) {
