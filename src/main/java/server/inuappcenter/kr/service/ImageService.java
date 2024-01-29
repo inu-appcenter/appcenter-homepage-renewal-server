@@ -37,12 +37,6 @@ public class ImageService {
     }
 
     @Transactional
-    public void deleteByImageId(Long id) {
-        imageRedisRepository.deleteById(id);
-        imageRepository.deleteById(id);
-    }
-
-    @Transactional
     public void deleteMultipleImages(Long board_id, List<Long> image_ids) {
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         List<Long> foundImageIds = new ArrayList<>();
