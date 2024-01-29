@@ -26,8 +26,9 @@ public class ImageController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imageService.getImage(id));
     }
 
+    @Operation(summary = "사진 여러장 삭제하기", description = "삭제할 사진들의 ID와 게시판의 ID를 입력해주세요")
     @Parameter(name = "image_id", description = "사진 ID", required = true)
-    @Parameter(name = "board_id", description = "사진 ID", required = true)
+    @Parameter(name = "board_id", description = "게시판 ID", required = true)
     @DeleteMapping("/photo")
     public ResponseEntity<?> deleteMultiplePhotoByIds (
             final @RequestParam(name = "image_id") List<Long> image_id,
