@@ -84,7 +84,7 @@ public class IntroBoard extends Board {
                 .title(this.title)
                 .subTitle(this.subTitle)
                 .androidStoreLink(this.androidStoreLink)
-                .appleStoreLink(this.androidStoreLink)
+                .appleStoreLink(this.appleStoreLink)
                 .images(BoardUtils.returnImageURL(request, this.images))
                 .createdDate(this.getCreatedDate())
                 .lastModifiedDate(this.getLastModifiedDate())
