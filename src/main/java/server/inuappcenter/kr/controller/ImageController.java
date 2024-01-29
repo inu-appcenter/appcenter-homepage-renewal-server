@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.service.ImageService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +24,16 @@ public class ImageController {
     @GetMapping("/photo/{id}")
     public ResponseEntity<?> getPhoto (final @PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imageService.getImage(id));
+    }
+
+    @Parameter(name = "image_id", description = "사진 ID", required = true)
+    @Parameter(name = "board_id", description = "사진 ID", required = true)
+    @DeleteMapping("/photo")
+    public ResponseEntity<?> deleteMultiplePhotoByIds (
+            final @RequestParam(name = "image_id") List<Long> image_id,
+            final @RequestParam(name = "board_id") Long board_id
+    ) {
+        imageService.deleteMultipleImages(board_id, image_id);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto("successfully deleted."));
     }
 }
