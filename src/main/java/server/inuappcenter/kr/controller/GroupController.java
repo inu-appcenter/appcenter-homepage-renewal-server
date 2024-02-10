@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
+import server.inuappcenter.kr.data.dto.response.GroupPartListResponseDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
+import server.inuappcenter.kr.data.dto.response.GroupYearListResponseDto;
 import server.inuappcenter.kr.service.GroupService;
 
 import javax.validation.Valid;
@@ -70,6 +72,25 @@ public class GroupController {
     @GetMapping("/members/{name}")
     public ResponseEntity<List<GroupResponseDto>> searchByMemberName(final @PathVariable("name") String name) {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.searchByMemberName(name));
+    }
+
+    @Operation(summary = "전체 기수 목록 가져오기", description = "서버에 등록된 기수 목록을 가져옵니다.")
+    @GetMapping("/all-groups-years")
+    public ResponseEntity<GroupYearListResponseDto> findAllYears() {
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllYears());
+    }
+
+    @Operation(summary = "기수별 그룹 목록 가져오기", description = "기수와 파트 이름을 통해 기수별 그룹 목록을 가져옵니다.")
+    @GetMapping("/groups-by-year")
+    public ResponseEntity<List<GroupResponseDto>> findAllByYear(final @Parameter Double year,
+                                                                final @Parameter String part) {
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllByYearAndPart(year, part));
+    }
+
+    @Operation(summary = "전체 파트 목록 가져오기", description = "서버에 등록된 파트 목록을 가져옵니다.")
+    @GetMapping("/all-parts")
+    public ResponseEntity<GroupPartListResponseDto> findAllParts() {
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllParts());
     }
 
 }
