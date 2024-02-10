@@ -52,8 +52,9 @@ public class GroupController {
     @Operation(summary = "그룹 멤버 (1명) 수정", description = "수정할 Group id를 입력해주세요")
     @PatchMapping
     public ResponseEntity<GroupResponseDto> updateGroup(final @RequestBody @Valid GroupRequestDto groupRequestDto,
-                                                        final Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(groupService.updateGroup(groupRequestDto, id));
+                                                        final @RequestParam Long groupId,
+                                                        @RequestParam(required = false) Long roleId) {
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.updateGroup(groupRequestDto, groupId, roleId));
     }
 
     @Operation(summary = "그룹 멤버 (1명) 삭제", description = "삭제할 Group id를 입력해주세요")
@@ -82,8 +83,8 @@ public class GroupController {
 
     @Operation(summary = "기수별 그룹 목록 가져오기", description = "기수와 파트 이름을 통해 기수별 그룹 목록을 가져옵니다.")
     @GetMapping("/public/groups-by-year")
-    public ResponseEntity<List<GroupResponseDto>> findAllByYear(final @Parameter Double year,
-                                                                final @Parameter String part) {
+    public ResponseEntity<List<GroupResponseDto>> findAllByYear(final @RequestParam Double year,
+                                                                final @RequestParam String part) {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllByYearAndPart(year, part));
     }
 

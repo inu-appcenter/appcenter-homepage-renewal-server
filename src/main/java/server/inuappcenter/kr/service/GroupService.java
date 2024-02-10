@@ -52,9 +52,13 @@ public class GroupService {
     }
 
     @Transactional
-    public GroupResponseDto updateGroup(GroupRequestDto groupRequestDto, Long id) {
+    public GroupResponseDto updateGroup(GroupRequestDto groupRequestDto, Long id, Long roleId) {
         Group foundGroup = groupRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        foundGroup.setGroup(id, groupRequestDto);
+        if (roleId != null) {
+            Role foundRole = roleRepository.findById(roleId).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+            foundGroup.updateGroup(id, groupRequestDto, foundRole);
+        }
+        foundGroup.updateGroup(id, groupRequestDto, null);
         Group savedGroup = groupRepository.save(foundGroup);
         return GroupResponseDto.entityToDto(savedGroup);
     }
