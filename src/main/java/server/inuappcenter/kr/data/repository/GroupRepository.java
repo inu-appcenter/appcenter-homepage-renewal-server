@@ -1,6 +1,7 @@
 package server.inuappcenter.kr.data.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Member;
@@ -15,5 +16,13 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     ArrayList<Group> findAllByRole(Role role);
 
     List<Group> findAllByMember_Name(String name);
+
+    @Query("SELECT DISTINCT e.year FROM Group e")
+    List<Double> findAllYears();
+
+    List<Group> findAllByYearAndPart(Double year, String Part);
+
+    @Query("SELECT DISTINCT e.part FROM Group e")
+    List<String> findAllParts();
 
 }

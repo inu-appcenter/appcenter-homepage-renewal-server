@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 public class GroupRequestDto {
 
     @Schema(
-            example = "서버",
+            example = "Server",
             description = "서버, 안드로이드, iOS등... 파트 중 하나"
     )
     @NotBlank(message = "파트가 비어있을 수 없습니다.")
