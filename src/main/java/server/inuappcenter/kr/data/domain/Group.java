@@ -37,10 +37,13 @@ public class Group extends BaseTimeEntity {
         this.year = groupRequestDto.getYear();
     }
 
-    public void setGroup(Long group_id, GroupRequestDto groupRequestDto) {
+    public void updateGroup(Long group_id, GroupRequestDto groupRequestDto, Role role) {
         this.group_id = group_id;
         this.part = groupRequestDto.getPart();
         this.year = groupRequestDto.getYear();
+        if (role != null) {
+            this.role = role;
+        }
     }
 
     public GroupResponseDto toGroupResponseDto(Group group) {
