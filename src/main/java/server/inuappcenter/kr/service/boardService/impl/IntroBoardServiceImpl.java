@@ -20,7 +20,7 @@ public class IntroBoardServiceImpl implements AdditionalBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> findBoardList() {
+    public List<BoardResponseDto> findBoardList(String topic) {
         List<BoardResponseDto> responseDtoList= new ArrayList<>();
         for (Board board : introBoardRepository.findAll()) {
             responseDtoList.add(board.createResponse(request));
