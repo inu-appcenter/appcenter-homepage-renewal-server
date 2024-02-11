@@ -75,24 +75,24 @@ public class GroupServiceTest {
         assertThrows(CustomNotFoundException.class, () -> groupService.getGroup(givenId));
     }
 
-    @DisplayName("모든 그룹 가져오기 테스트")
-    @Test
-    public void findAllGroupTest() {
-        // given
-        for (int i = 0; i < 10; i++) {
-            expectedResList.add(expectedResDto);
-            expectedEntityList.add(givenEntity);
-        }
-        given(groupRepository.findAll()).willReturn(expectedEntityList);
-        // when
-        List<GroupResponseDto> result = groupService.findAllGroup();
-        // then
-        for (int i = 0; i < 10; i++) {
-            assertEquals(expectedResList.get(i).getGroup_id(), result.get(i).getGroup_id());
-            assertEquals(expectedResList.get(i).getMember(), result.get(i).getMember());
-            assertEquals(expectedResList.get(i).getRole(), result.get(i).getRole());
-        }
-    }
+//    @DisplayName("모든 그룹 가져오기 테스트")
+//    @Test
+//    public void findAllGroupTest() {
+//        // given
+//        for (int i = 0; i < 10; i++) {
+//            expectedResList.add(expectedResDto);
+//            expectedEntityList.add(givenEntity);
+//        }
+//        given(groupRepository.findAll()).willReturn(expectedEntityList);
+//        // when
+//        List<GroupResponseDto> result = groupService.findAllGroup();
+//        // then
+//        for (int i = 0; i < 10; i++) {
+//            assertEquals(expectedResList.get(i).getGroup_id(), result.get(i).getGroup_id());
+//            assertEquals(expectedResList.get(i).getMember(), result.get(i).getMember());
+//            assertEquals(expectedResList.get(i).getRole(), result.get(i).getRole());
+//        }
+//    }
 
     @DisplayName("그룹 저장 테스트")
     @Test

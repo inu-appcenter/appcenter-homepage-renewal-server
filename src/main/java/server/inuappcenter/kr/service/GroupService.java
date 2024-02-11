@@ -33,11 +33,28 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
-    public List<GroupResponseDto> findAllGroup() {
-        List<Group> found_Groups = groupRepository.findAll();
-        return found_Groups.stream()
-                .map(data -> data.toGroupResponseDto(data))
-                .collect(Collectors.toList());
+    public List<GroupResponseDto> findAllGroup(Double year, String part) {
+        if (year != null && part != null) {
+            List<Group> foundGroups = groupRepository.findAllByYearAndPart(year, part);
+            return foundGroups.stream()
+                    .map(data -> data.toGroupResponseDto(data))
+                    .collect(Collectors.toList());
+        } else if (year != null) {
+            List<Group> foundGroups = groupRepository.findAllByYear(year);
+            return foundGroups.stream()
+                    .map(data -> data.toGroupResponseDto(data))
+                    .collect(Collectors.toList());
+        } else if (part != null) {
+            List<Group> foundGroups = groupRepository.findAllByPart(part);
+            return foundGroups.stream()
+                    .map(data -> data.toGroupResponseDto(data))
+                    .collect(Collectors.toList());
+        } else {
+            List<Group> found_Groups = groupRepository.findAll();
+            return found_Groups.stream()
+                    .map(data -> data.toGroupResponseDto(data))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Transactional
@@ -87,14 +104,6 @@ public class GroupService {
     public GroupYearListResponseDto findAllYears() {
         List<Double> foundYears = groupRepository.findAllYears();
         return new GroupYearListResponseDto(foundYears);
-    }
-
-    @Transactional(readOnly = true)
-    public List<GroupResponseDto> findAllByYearAndPart(Double year, String part) {
-        List<Group> foundGroups = groupRepository.findAllByYearAndPart(year, part);
-        return foundGroups.stream()
-                .map(data -> data.toGroupResponseDto(data))
-                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
