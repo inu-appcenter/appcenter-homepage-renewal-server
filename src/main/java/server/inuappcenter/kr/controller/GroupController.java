@@ -31,10 +31,13 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.getGroup(id));
     }
 
-    @Operation(summary = "그룹 멤버 (전체) 조회", description = "전체 그룹 멤버를 반환합니다.")
+    @Operation(summary = "그룹 멤버 (전체) 조회", description = "전체 그룹 멤버를 반환합니다. year(기수)와 part(파트)를 QueryParameter로 보내면 해당 값으로 검색이 됩니다.")
     @GetMapping("/public/all-groups-members")
-    public ResponseEntity<List<GroupResponseDto>> findAllGroup() {
-        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllGroup());
+    public ResponseEntity<List<GroupResponseDto>> findAllGroup(
+            final @RequestParam(required = false) Double year,
+            final @RequestParam(required = false) String part
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllGroup(year, part));
     }
 
     @Operation(summary = "그룹 멤버 (1명) 편성", description = "저장할 member_id(멤버)와 role_id(역할)을 입력해주세요")
@@ -77,15 +80,8 @@ public class GroupController {
 
     @Operation(summary = "전체 기수 목록 가져오기", description = "서버에 등록된 기수 목록을 가져옵니다.")
     @GetMapping("/public/all-groups-years")
-    public ResponseEntity<GroupYearListResponseDto> findAllYears() {
+    public ResponseEntity<GroupYearListResponseDto> findAllYearsList() {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllYears());
-    }
-
-    @Operation(summary = "기수별 그룹 목록 가져오기", description = "기수와 파트 이름을 통해 기수별 그룹 목록을 가져옵니다.")
-    @GetMapping("/public/groups-by-year")
-    public ResponseEntity<List<GroupResponseDto>> findAllByYear(final @RequestParam Double year,
-                                                                final @RequestParam String part) {
-        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllByYearAndPart(year, part));
     }
 
     @Operation(summary = "전체 파트 목록 가져오기", description = "서버에 등록된 파트 목록을 가져옵니다.")

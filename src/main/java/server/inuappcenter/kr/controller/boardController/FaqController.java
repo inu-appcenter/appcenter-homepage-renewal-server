@@ -37,8 +37,10 @@ public class FaqController {
 
     @Operation(summary = "FAQ 전체 가져오기", description = "전체 FAQ 목록을 가져옵니다.")
     @GetMapping("public/all-faq-boards")
-    public ResponseEntity<List<BoardResponseDto>> getFaqBoardList() {
-        return ResponseEntity.status(HttpStatus.OK).body(additionalBoardService.findBoardList());
+    public ResponseEntity<List<BoardResponseDto>> getFaqBoardList(
+            @RequestParam(value = "topic", required = false) String topic
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(additionalBoardService.findBoardList(topic));
     }
 
     @Operation(summary = "FAQ 한 개 작성", description = "저장할 FAQ JSON을 보내주세요")

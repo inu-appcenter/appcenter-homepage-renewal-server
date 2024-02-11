@@ -22,7 +22,7 @@ public class PhotoBoardServiceImpl implements AdditionalBoardService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoardResponseDto> findBoardList() {
+    public List<BoardResponseDto> findBoardList(String topic) {
         List<BoardResponseDto> responseDtoList= new ArrayList<>();
         for (Board board : photoBoardRepository.findAll()) {
             responseDtoList.add(board.createResponse(request));
