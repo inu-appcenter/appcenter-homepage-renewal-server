@@ -15,12 +15,16 @@ public class MemberResponseDto {
     private final String blogLink;
     private final String email;
     private final String gitRepositoryLink;
+    private final String behanceLink;
+    private final String phoneNumber;
+    private final String studentNumber;
+    private final String department;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
 
     @Builder
     private MemberResponseDto(Long member_id, String name, String description, String profileImage, String blogLink, String email, String gitRepositoryLink,
-                              LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+                              LocalDateTime createdDate, LocalDateTime lastModifiedDate, String behanceLink, String phoneNumber, String studentNumber, String department) {
         this.member_id = member_id;
         this.name = name;
         this.description = description;
@@ -30,6 +34,10 @@ public class MemberResponseDto {
         this.gitRepositoryLink = gitRepositoryLink;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
+        this.behanceLink = behanceLink;
+        this.phoneNumber = phoneNumber;
+        this.studentNumber = studentNumber;
+        this.department = department;
     }
 
     public static MemberResponseDto entityToDto(Member member) {
@@ -43,6 +51,10 @@ public class MemberResponseDto {
                 .gitRepositoryLink(member.getGitRepositoryLink())
                 .createdDate(member.getCreatedDate())
                 .lastModifiedDate(member.getLastModifiedDate())
+                .behanceLink(member.getBehanceLink())
+                .phoneNumber(member.getPhoneNumber())
+                .studentNumber(member.getStudentNumber())
+                .department(member.getDepartment())
                 .build();
     }
 }

@@ -32,6 +32,17 @@ public class Member extends BaseTimeEntity {
     @Column(name = "git_repository_link")
     private String gitRepositoryLink;
 
+    @Column(name = "behance_link")
+    private String behanceLink;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "student_number")
+    private String studentNumber;
+
+    private String department;
+
     public Member (MemberRequestDto memberRequestDto) {
         this.name = memberRequestDto.getName();
         this.description = memberRequestDto.getDescription();
@@ -39,6 +50,10 @@ public class Member extends BaseTimeEntity {
         this.email = memberRequestDto.getEmail();
         this.blogLink = memberRequestDto.getBlogLink();
         this.gitRepositoryLink = memberRequestDto.getGitRepositoryLink();
+        this.behanceLink = memberRequestDto.getBehanceLink();
+        this.phoneNumber = memberRequestDto.getPhoneNumber();
+        this.studentNumber = memberRequestDto.getStudentNumber();
+        this.department = memberRequestDto.getDepartment();
     }
 
     public void updateMember(Long id, MemberRequestDto memberRequestDto) {
@@ -49,6 +64,10 @@ public class Member extends BaseTimeEntity {
         this.email = memberRequestDto.getEmail();
         this.blogLink = memberRequestDto.getBlogLink();
         this.gitRepositoryLink = memberRequestDto.getGitRepositoryLink();
+        this.behanceLink = memberRequestDto.getBehanceLink();
+        this.phoneNumber = memberRequestDto.getPhoneNumber();
+        this.studentNumber = memberRequestDto.getStudentNumber();
+        this.department = memberRequestDto.getDepartment();
     }
 
     public MemberResponseDto toMemberResponseDto(Member member) {
@@ -62,6 +81,10 @@ public class Member extends BaseTimeEntity {
                 .gitRepositoryLink(member.getGitRepositoryLink())
                 .lastModifiedDate(member.getLastModifiedDate())
                 .createdDate(member.getCreatedDate())
+                .behanceLink(member.getBehanceLink())
+                .phoneNumber(member.getPhoneNumber())
+                .studentNumber(member.getStudentNumber())
+                .department(member.getDepartment())
                 .build();
     }
 }

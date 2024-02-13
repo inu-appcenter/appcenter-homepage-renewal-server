@@ -45,14 +45,38 @@ public class MemberRequestDto {
             example = "test@inu.ac.kr",
             description = "이메일"
     )
-    @NotBlank
     @Email
     private String email;
 
     @Schema(
             example = "https://...",
-            description = "Git 저장소 URL"
+            description = "Github 저장소 URL"
     )
     @Pattern(regexp = "^https?://.*$", message = "gitRepositoryLink의 URL 형식이 올바르지 않습니다.")
     private String gitRepositoryLink;
+
+    @Schema(
+            example = "https://...",
+            description = "Behance URL"
+    )
+    @Pattern(regexp = "^https?://.*$", message = "Behance의 URL 형식이 올바르지 않습니다.")
+    private String behanceLink;
+
+    @Schema(
+            example = "010-0000-0000",
+            description = "전화번호"
+    )
+    private String phoneNumber;
+
+    @Schema(
+            example = "000000000",
+            description = "학번"
+    )
+    private String studentNumber;
+
+    @Schema(
+            example = "컴퓨터공학부",
+            description = "학과"
+    )
+    private String department;
 }
