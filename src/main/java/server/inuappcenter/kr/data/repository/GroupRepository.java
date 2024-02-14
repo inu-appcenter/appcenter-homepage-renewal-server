@@ -17,7 +17,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     List<Group> findAllByMember_Name(String name);
 
-    @Query("SELECT DISTINCT e.year FROM Group e")
+    @Query("SELECT DISTINCT e.year FROM Group e ORDER BY e.year")
     List<Double> findAllYears();
 
     List<Group> findAllByYearAndPart(Double year, String part);
