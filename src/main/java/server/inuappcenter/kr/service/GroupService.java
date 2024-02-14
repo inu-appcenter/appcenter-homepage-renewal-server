@@ -35,17 +35,17 @@ public class GroupService {
     @Transactional(readOnly = true)
     public List<GroupResponseDto> findAllGroup(Double year, String part) {
         if (year != null && part != null) {
-            List<Group> foundGroups = groupRepository.findAllByYearAndPart(year, part);
+            List<Group> foundGroups = groupRepository.findAllByYearAndPartOrderByYear(year, part);
             return foundGroups.stream()
                     .map(data -> data.toGroupResponseDto(data))
                     .collect(Collectors.toList());
         } else if (year != null) {
-            List<Group> foundGroups = groupRepository.findAllByYear(year);
+            List<Group> foundGroups = groupRepository.findAllByYearOrderByPart(year);
             return foundGroups.stream()
                     .map(data -> data.toGroupResponseDto(data))
                     .collect(Collectors.toList());
         } else if (part != null) {
-            List<Group> foundGroups = groupRepository.findAllByPart(part);
+            List<Group> foundGroups = groupRepository.findAllByPartOrderByYearDesc(part);
             return foundGroups.stream()
                     .map(data -> data.toGroupResponseDto(data))
                     .collect(Collectors.toList());
