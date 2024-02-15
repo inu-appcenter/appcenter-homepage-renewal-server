@@ -23,9 +23,10 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("SELECT e FROM Group e WHERE e.year = :year AND e.part = :part ORDER BY CASE WHEN e.role.roleName = '파트장' THEN 0 ELSE 1 END, e.member.name")
     List<Group> findAllByYearAndPartOrderByYear(Double year, String part);
 
-    @Query("SELECT e FROM Group e WHERE e.year = :year ORDER BY CASE WHEN e.role.roleName = '파트장'THEN 0 ELSE 1 END, e.part")
+    @Query("SELECT e FROM Group e WHERE e.year = :year ORDER BY CASE WHEN e.role.roleName = '파트장' THEN 0 ELSE 1 END, e.part")
     List<Group> findAllByYearOrderByPart(Double year);
 
+    @Query("SELECT e FROM Group e WHERE e.part = :part ORDER BY CASE WHEN e.role.roleName = '파트장' THEN 0 ELSE 1 END, e.year DESC")
     List<Group> findAllByPartOrderByYearDesc(String part);
 
     @Query("SELECT DISTINCT e.part FROM Group e")
