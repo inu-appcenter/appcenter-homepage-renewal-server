@@ -102,7 +102,7 @@ public class GroupService {
 
     @Transactional(readOnly = true)
     public GroupYearListResponseDto findAllYears() {
-        List<Double> foundYears = groupRepository.findAllYears();
+        List<Double> foundYears = groupRepository.findAllYearsDesc();
         return new GroupYearListResponseDto(foundYears);
     }
 
