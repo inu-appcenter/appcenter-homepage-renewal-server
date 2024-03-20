@@ -11,7 +11,6 @@ import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
-import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
@@ -75,10 +74,8 @@ public class BoardService {
                 foundImageIds.add(image.getId());
             }
 
-
             // 캐시에서 이미지를 삭제한다.
             imageRedisRepository.deleteAllById(foundImageIds);
-          
 
             // image_id와 일치하는 ImageList를 순회함
             for (Image image : foundImageList) {

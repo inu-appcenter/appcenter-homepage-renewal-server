@@ -45,7 +45,11 @@ public class GroupControllerTest {
     GroupRequestDto givenDto = new GroupRequestDto(
             "서버", 15.5
     );
-    Group expectedEntity = new Group(new Member(new MemberRequestDto("홍길동", "자기소개입니다.", "https://...", "https://...", "test@test.com", "https://...")),
+    Group expectedEntity = new Group(new Member(new MemberRequestDto(
+            "홍길동", "자기소개입니다.", "https://...", "https://...",
+            "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+            "컴퓨터공학부"
+    )),
             new Role(new RoleRequestDto("파트장")), givenDto);
     GroupResponseDto expectedDto = GroupResponseDto.entityToDto(expectedEntity);
     @WithMockUser

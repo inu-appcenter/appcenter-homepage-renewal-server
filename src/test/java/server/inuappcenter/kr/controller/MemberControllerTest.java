@@ -39,7 +39,8 @@ public class MemberControllerTest {
     private final Long givenId = 1L;
     private final MemberRequestDto givenDto = new MemberRequestDto(
             "홍길동", "자기소개입니다.", "https://...", "https://...",
-            "test@test.com", "https://..."
+            "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+            "컴퓨터공학부"
     );
     private final Member expectedEntity = new Member(givenDto);
     private final MemberResponseDto expectedDto = MemberResponseDto.entityToDto(expectedEntity);

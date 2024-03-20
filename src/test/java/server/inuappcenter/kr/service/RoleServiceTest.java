@@ -163,7 +163,9 @@ public class RoleServiceTest {
         CommonResponseDto expectedResult = new CommonResponseDto("The role [" + givenId + "] is part of a Group. Please delete the Group first");
         for (int i = 1; i <= 10; i++) {
             expectedEntity.add(new Group(new Member(new MemberRequestDto(
-                    "홍길동", "안녕하세요 저는....", "https://...", "https://...", "test@inu.ac.kr", "https://..."
+                    "홍길동", "자기소개입니다.", "https://...", "https://...",
+                    "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+                    "컴퓨터공학부"
             )), expectedRole, new GroupRequestDto("서버", 14.4)));
         }
         given(roleRepository.findById(givenId)).willReturn(Optional.of(expectedRole));

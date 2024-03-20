@@ -46,8 +46,10 @@ public class GroupServiceTest {
 
     GroupRequestDto givenDto = new GroupRequestDto("파트장", 14.5);
     Group givenEntity = new Group(new Member(new MemberRequestDto(
-            "홍길동", "안녕하세요...", "https://...", "https://...", "test@test.com",
-            "https://...")), new Role(new RoleRequestDto("파트장")), givenDto);
+            "홍길동", "자기소개입니다.", "https://...", "https://...",
+            "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+            "컴퓨터공학부"
+    )), new Role(new RoleRequestDto("파트장")), givenDto);
     Long givenId = 1L;
     GroupResponseDto expectedResDto = GroupResponseDto.entityToDto(givenEntity);
     List<GroupResponseDto> expectedResList = new ArrayList<>();
@@ -99,8 +101,10 @@ public class GroupServiceTest {
     public void assignGroupTest() {
         // given
         Member expectedMember = new Member(new MemberRequestDto(
-                "홍길동", "안녕하세요...", "https://...", "https://...", "test@test.com",
-                "https://..."));
+                "홍길동", "자기소개입니다.", "https://...", "https://...",
+                "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+                "컴퓨터공학부"
+        ));
         Role expectedRole = new Role(new RoleRequestDto("파트장"));
         given(memberRepository.findById(givenId)).willReturn(Optional.of(expectedMember));
         given(roleRepository.findById(givenId)).willReturn(Optional.of(expectedRole));
@@ -132,8 +136,10 @@ public class GroupServiceTest {
         // case 2
         // given
         Member expectedMember = new Member(new MemberRequestDto(
-                "홍길동", "안녕하세요...", "https://...", "https://...", "test@test.com",
-                "https://..."));
+                "홍길동", "자기소개입니다.", "https://...", "https://...",
+                "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+                "컴퓨터공학부"
+        ));
         given(memberRepository.findById(givenId)).willReturn(Optional.of(expectedMember));
         given(roleRepository.findById(givenId)).willReturn(Optional.empty());
         // when, then

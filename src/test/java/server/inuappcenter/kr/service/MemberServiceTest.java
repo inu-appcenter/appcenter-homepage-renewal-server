@@ -37,13 +37,16 @@ public class MemberServiceTest {
     private MemberService memberService;
 
     MemberRequestDto givenDto = new MemberRequestDto(
-            "홍길동", "안녕하세요 제 이름은...", "https://...", "https://...",
-            "test@test.com", "https:///..."
+            "홍길동", "자기소개입니다.", "https://...", "https://...",
+            "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+            "컴퓨터공학부"
     );
 
     Member expectedEntity = new Member(new MemberRequestDto(
-            "홍길동", "안녕하세요 제 이름은...", "https://...", "https://...",
-            "test@test.com", "https://..."));
+            "홍길동", "자기소개입니다.", "https://...", "https://...",
+            "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+            "컴퓨터공학부"
+    ));
 
     MemberResponseDto expectedResult = MemberResponseDto.builder()
             .member_id(null)
@@ -102,8 +105,10 @@ public class MemberServiceTest {
         // given
         Long givenId = 1L;
         MemberRequestDto givenDto = new MemberRequestDto(
-                "김길동", "안녕하세요 제 이름은...", "https://...", "https://...",
-                "test@test.com", "https://...");
+                "홍길동", "자기소개입니다.", "https://...", "https://...",
+                "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+                "컴퓨터공학부"
+        );
         given(memberRepository.findById(givenId)).willReturn(Optional.ofNullable(expectedEntity));
         expectedEntity.updateMember(givenId, givenDto);
         given(memberRepository.save(Mockito.any(Member.class))).willReturn(expectedEntity);
