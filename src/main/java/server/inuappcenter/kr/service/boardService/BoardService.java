@@ -42,6 +42,7 @@ public class BoardService {
         );
     }
 
+
     @Transactional
     public CommonResponseDto saveBoard(BoardRequestDto boardRequestDto) {
         Board savedBoard = boardRepository.save(boardRequestDto.createBoard());

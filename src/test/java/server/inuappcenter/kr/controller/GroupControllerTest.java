@@ -77,34 +77,34 @@ public class GroupControllerTest {
         verify(groupService).getGroup(givenId);
     }
 
-//    @WithMockUser
-//    @DisplayName("그룹 멤버 전체 조회 테스트")
-//    @Test
-//    public void findAllGroup() throws Exception {
-//        // given
-//        List<GroupResponseDto> expectedDtoList = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            expectedDtoList.add(expectedDto);
-//        }
-//        given(groupService.findAllGroup()).willReturn(expectedDtoList);
-//        // when
-//        mockMvc.perform(get("/groups/public/all-groups-members"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$..group_id").exists())
-//                .andExpect(jsonPath("$..member").exists())
-//                .andExpect(jsonPath("$..profileImage").exists())
-//                .andExpect(jsonPath("$..email").exists())
-//                .andExpect(jsonPath("$..blogLink").exists())
-//                .andExpect(jsonPath("$..gitRepositoryLink").exists())
-//                .andExpect(jsonPath("$..role").exists())
-//                .andExpect(jsonPath("$..part").exists())
-//                .andExpect(jsonPath("$..year").exists())
-//                .andExpect(jsonPath("$..createdDate").exists())
-//                .andExpect(jsonPath("$..lastModifiedDate").exists())
-//                .andDo(print());
-//        // then
-//        verify(groupService).findAllGroup();
-//    }
+    @WithMockUser
+    @DisplayName("그룹 멤버 전체 조회 테스트")
+    @Test
+    public void findAllGroup() throws Exception {
+        // given
+        List<GroupResponseDto> expectedDtoList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            expectedDtoList.add(expectedDto);
+        }
+        given(groupService.findAllGroup(14.5, "Android")).willReturn(expectedDtoList);
+        // when
+        mockMvc.perform(get("/groups/public/all-groups-members?year=14.5&part=Android"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..group_id").exists())
+                .andExpect(jsonPath("$..member").exists())
+                .andExpect(jsonPath("$..profileImage").exists())
+                .andExpect(jsonPath("$..email").exists())
+                .andExpect(jsonPath("$..blogLink").exists())
+                .andExpect(jsonPath("$..gitRepositoryLink").exists())
+                .andExpect(jsonPath("$..role").exists())
+                .andExpect(jsonPath("$..part").exists())
+                .andExpect(jsonPath("$..year").exists())
+                .andExpect(jsonPath("$..createdDate").exists())
+                .andExpect(jsonPath("$..lastModifiedDate").exists())
+                .andDo(print());
+        // then
+        verify(groupService).findAllGroup(14.5, "Android");
+    }
 
     @WithMockUser
     @DisplayName("그룹 멤버 한 명 편성 테스트")
@@ -132,31 +132,31 @@ public class GroupControllerTest {
         verify(groupService).assignGroup(eq(givenId), eq(givenId), any(GroupRequestDto.class));
     }
 
-//    @WithMockUser
-//    @DisplayName("그룹 멤버 한 명 수정 테스트")
-//    @Test
-//    public void updateGroupTest() throws Exception {
-//        // given
-//        given(groupService.updateGroup(any(GroupRequestDto.class), eq(givenId))).willReturn(expectedDto);
-//        String objectToJson = objectMapper.writeValueAsString(givenDto);
-//        // when
-//        mockMvc.perform(patch("/groups?id="+givenId).content(objectToJson).contentType(MediaType.APPLICATION_JSON).with(csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$..group_id").exists())
-//                .andExpect(jsonPath("$.member").exists())
-//                .andExpect(jsonPath("$.profileImage").exists())
-//                .andExpect(jsonPath("$.email").exists())
-//                .andExpect(jsonPath("$.blogLink").exists())
-//                .andExpect(jsonPath("$.gitRepositoryLink").exists())
-//                .andExpect(jsonPath("$.role").exists())
-//                .andExpect(jsonPath("$.part").exists())
-//                .andExpect(jsonPath("$.year").exists())
-//                .andExpect(jsonPath("$..createdDate").exists())
-//                .andExpect(jsonPath("$..lastModifiedDate").exists())
-//                .andDo(print());
-//        // then
-//        verify(groupService).updateGroup(any(GroupRequestDto.class), eq(givenId));
-//    }
+    @WithMockUser
+    @DisplayName("그룹 멤버 한 명 수정 테스트")
+    @Test
+    public void updateGroupTest() throws Exception {
+        // given
+        given(groupService.updateGroup(any(GroupRequestDto.class), eq(givenId), eq(givenId))).willReturn(expectedDto);
+        String objectToJson = objectMapper.writeValueAsString(givenDto);
+        // when
+        mockMvc.perform(patch("/groups?groupId=1&roleId=1").content(objectToJson).contentType(MediaType.APPLICATION_JSON).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..group_id").exists())
+                .andExpect(jsonPath("$.member").exists())
+                .andExpect(jsonPath("$.profileImage").exists())
+                .andExpect(jsonPath("$.email").exists())
+                .andExpect(jsonPath("$.blogLink").exists())
+                .andExpect(jsonPath("$.gitRepositoryLink").exists())
+                .andExpect(jsonPath("$.role").exists())
+                .andExpect(jsonPath("$.part").exists())
+                .andExpect(jsonPath("$.year").exists())
+                .andExpect(jsonPath("$..createdDate").exists())
+                .andExpect(jsonPath("$..lastModifiedDate").exists())
+                .andDo(print());
+        // then
+        verify(groupService).updateGroup(any(GroupRequestDto.class), eq(givenId), eq(givenId));
+    }
 
     @WithMockUser
     @DisplayName("그룹 멤버 한 명 삭제 테스트")
