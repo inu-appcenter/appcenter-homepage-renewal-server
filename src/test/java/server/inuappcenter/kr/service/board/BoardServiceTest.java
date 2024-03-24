@@ -11,6 +11,9 @@ import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.FaqBoard;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
+import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
+import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 import server.inuappcenter.kr.service.boardService.BoardService;
@@ -25,31 +28,28 @@ import static org.mockito.BDDMockito.given;
 public class BoardServiceTest {
     @Mock
     private BoardRepository<Board> boardRepository;
+    @Mock
+    private BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
 
     @InjectMocks
     private BoardService boardService;
 
-//    @DisplayName("게시판 가져오기 테스트")
-//    @Test
-//    public void getBoard() {
-//        // given
-//        Long givenId = 1L;
-//        Board exceptedEntity = new FaqBoard(new FaqBoardRequestDto(
-//                "서버", "질문입니다.", "답변입니다."
-//        ));
-//        given(boardRepository.findById(givenId)).willReturn(Optional.of(exceptedEntity));
-//        // when
-//        Board result = boardService.findBoard(givenId);
-//        // then
-//        assertEquals(exceptedEntity.getId(), result.getId());
-//        assertEquals(exceptedEntity.getBody(), result.getBody());
-//
-//        // case2 (게시판이 존재하지 않을 경우)
-//        // given
-//        given(boardRepository.findById(givenId)).willReturn(Optional.empty());
-//        // when, then
-//        assertThrows(CustomNotFoundException.class, () -> boardService.getBoard(givenId));
-//    }
+    @DisplayName("게시판 가져오기 테스트")
+    @Test
+    public void getBoard() {
+        // given
+        Long givenId = 1L;
+        Board exceptedEntity = new FaqBoard(new FaqBoardRequestDto(
+                "서버", "질문입니다.", "답변입니다."
+        ));
+        BoardResponseDto responseDto = FaqBoardResponseDto.entityToDto(exceptedEntity);
+        given(boardResponseRedisRepository.findById(givenId)).willReturn(Optional.of(responseDto));
+        // when
+        BoardResponseDto result = boardService.findBoard(givenId);
+        // then
+        assertEquals(exceptedEntity.getId(), result.getId());
+        assertEquals(exceptedEntity.getBody(), result.getBody());
+    }
 
     @DisplayName("게시판 저장 테스트")
     @Test
