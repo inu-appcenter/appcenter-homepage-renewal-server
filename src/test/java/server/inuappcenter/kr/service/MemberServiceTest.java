@@ -43,7 +43,7 @@ public class MemberServiceTest {
     );
 
     Member expectedEntity = new Member(new MemberRequestDto(
-            "홍길동", "자기소개입니다.", "https://...", "https://...",
+            "홍길동", "안녕하세요 제 이름은...", "https://...", "https://...",
             "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
             "컴퓨터공학부"
     ));
