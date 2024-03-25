@@ -77,24 +77,24 @@ public class GroupServiceTest {
         assertThrows(CustomNotFoundException.class, () -> groupService.getGroup(givenId));
     }
 
-//    @DisplayName("모든 그룹 가져오기 테스트")
-//    @Test
-//    public void findAllGroupTest() {
-//        // given
-//        for (int i = 0; i < 10; i++) {
-//            expectedResList.add(expectedResDto);
-//            expectedEntityList.add(givenEntity);
-//        }
-//        given(groupRepository.findAll()).willReturn(expectedEntityList);
-//        // when
-//        List<GroupResponseDto> result = groupService.findAllGroup();
-//        // then
-//        for (int i = 0; i < 10; i++) {
-//            assertEquals(expectedResList.get(i).getGroup_id(), result.get(i).getGroup_id());
-//            assertEquals(expectedResList.get(i).getMember(), result.get(i).getMember());
-//            assertEquals(expectedResList.get(i).getRole(), result.get(i).getRole());
-//        }
-//    }
+    @DisplayName("모든 그룹 가져오기 테스트")
+    @Test
+    public void findAllGroupTest() {
+        // given
+        for (int i = 0; i < 10; i++) {
+            expectedResList.add(expectedResDto);
+            expectedEntityList.add(givenEntity);
+        }
+        given(groupRepository.findAllByYearAndPartOrderByYear(14.5, "Android")).willReturn(expectedEntityList);
+        // when
+        List<GroupResponseDto> result = groupService.findAllGroup(14.5, "Android");
+        // then
+        for (int i = 0; i < 10; i++) {
+            assertEquals(expectedResList.get(i).getGroup_id(), result.get(i).getGroup_id());
+            assertEquals(expectedResList.get(i).getMember(), result.get(i).getMember());
+            assertEquals(expectedResList.get(i).getRole(), result.get(i).getRole());
+        }
+    }
 
     @DisplayName("그룹 저장 테스트")
     @Test
@@ -146,37 +146,37 @@ public class GroupServiceTest {
         assertThrows(CustomNotFoundException.class, () -> groupService.assignGroup(givenId, givenId, givenDto));
     }
 
-//    @DisplayName("그룹 내용 수정 테스트")
-//    @Test
-//    public void updateGroup() {
-//        // given
-//        given(groupRepository.findById(givenId)).willReturn(Optional.ofNullable(givenEntity));
-//        givenEntity.updateGroup(givenId, givenDto);
-//        given(groupRepository.save(Mockito.any(Group.class))).willReturn(givenEntity);
-//        // when
-//        GroupResponseDto result = groupService.updateGroup(givenDto, givenId);
-//        // then
-//        assertEquals(1L, result.getGroup_id());
-//        assertEquals(expectedResDto.getMember(), result.getMember());
-//        assertEquals(expectedResDto.getProfileImage(), result.getProfileImage());
-//        assertEquals(expectedResDto.getEmail(), result.getEmail());
-//        assertEquals(expectedResDto.getBlogLink(), result.getBlogLink());
-//        assertEquals(expectedResDto.getGitRepositoryLink(), result.getGitRepositoryLink());
-//        assertEquals(expectedResDto.getRole(), result.getRole());
-//        assertEquals(expectedResDto.getPart(), result.getPart());
-//        assertEquals(expectedResDto.getYear(), result.getYear());
-//        assertEquals(expectedResDto.getCreatedDate(), result.getCreatedDate());
-//        assertEquals(expectedResDto.getLastModifiedDate(), result.getLastModifiedDate());
-//    }
-//
-//    @DisplayName("그룹 내용 수정 실패 테스트")
-//    @Test
-//    public void updateFailGroup() {
-//        // given
-//        given(groupRepository.findById(givenId)).willReturn(Optional.empty());
-//        // when, then
-//        assertThrows(CustomNotFoundException.class, () -> groupService.updateGroup(givenDto, givenId));
-//    }
+    @DisplayName("그룹 내용 수정 테스트")
+    @Test
+    public void updateGroup() {
+        // given
+        given(groupRepository.findById(givenId)).willReturn(Optional.ofNullable(givenEntity));
+        givenEntity.updateGroup(givenId, givenDto, null);
+        given(groupRepository.save(Mockito.any(Group.class))).willReturn(givenEntity);
+        // when
+        GroupResponseDto result = groupService.updateGroup(givenDto, givenId, null);
+        // then
+        assertEquals(1L, result.getGroup_id());
+        assertEquals(expectedResDto.getMember(), result.getMember());
+        assertEquals(expectedResDto.getProfileImage(), result.getProfileImage());
+        assertEquals(expectedResDto.getEmail(), result.getEmail());
+        assertEquals(expectedResDto.getBlogLink(), result.getBlogLink());
+        assertEquals(expectedResDto.getGitRepositoryLink(), result.getGitRepositoryLink());
+        assertEquals(expectedResDto.getRole(), result.getRole());
+        assertEquals(expectedResDto.getPart(), result.getPart());
+        assertEquals(expectedResDto.getYear(), result.getYear());
+        assertEquals(expectedResDto.getCreatedDate(), result.getCreatedDate());
+        assertEquals(expectedResDto.getLastModifiedDate(), result.getLastModifiedDate());
+    }
+
+    @DisplayName("그룹 내용 수정 실패 테스트")
+    @Test
+    public void updateFailGroup() {
+        // given
+        given(groupRepository.findById(givenId)).willReturn(Optional.empty());
+        // when, then
+        assertThrows(CustomNotFoundException.class, () -> groupService.updateGroup(givenDto, givenId, null));
+    }
 
     @DisplayName("그룹 삭제 테스트")
     @Test
