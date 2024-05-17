@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 
 @Getter
@@ -38,6 +39,7 @@ public class MemberRequestDto {
             example = "https://...",
             description = "블로그 URL"
     )
+    @Null
     @Pattern(regexp = "^https?://.*$", message = "blogLink의 URL 형식이 올바르지 않습니다.")
     private String blogLink;
 
@@ -52,6 +54,7 @@ public class MemberRequestDto {
             example = "https://...",
             description = "Github 저장소 URL"
     )
+    @Null
     @Pattern(regexp = "^https?://.*$", message = "gitRepositoryLink의 URL 형식이 올바르지 않습니다.")
     private String gitRepositoryLink;
 
@@ -59,6 +62,7 @@ public class MemberRequestDto {
             example = "https://...",
             description = "Behance URL"
     )
+    @Null
     @Pattern(regexp = "^https?://.*$", message = "Behance의 URL 형식이 올바르지 않습니다.")
     private String behanceLink;
 
