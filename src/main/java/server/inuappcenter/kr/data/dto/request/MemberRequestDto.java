@@ -32,6 +32,7 @@ public class MemberRequestDto {
             example = "https://...",
             description = "프로필 이미지 URL"
     )
+    @Null
     @Pattern(regexp = "^https?://.*$", message = "profileImage의 URL 형식이 올바르지 않습니다.")
     private String profileImage;
 
