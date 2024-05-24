@@ -27,12 +27,13 @@ public class ImageService {
     @Transactional(readOnly = true)
     public byte[] getImage(Long id) {
         return imageRedisRepository.findById(id)
-                .map(imageRedis -> ImageUtils.decompressImage(imageRedis.getImageData()))
+                .map(ImageRedis::getImageData)
                 .orElseGet(() -> {
                     Image foundImage = imageRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-                    ImageRedis imageRedis = new ImageRedis(foundImage.getId(), foundImage.getImageData());
+                    byte[] decompressedImage = ImageUtils.decompressImage(foundImage.getImageData());
+                    ImageRedis imageRedis = new ImageRedis(foundImage.getId(), decompressedImage);
                     imageRedisRepository.save(imageRedis);
-                    return ImageUtils.decompressImage(foundImage.getImageData());
+                    return decompressedImage;
                 });
     }
 
