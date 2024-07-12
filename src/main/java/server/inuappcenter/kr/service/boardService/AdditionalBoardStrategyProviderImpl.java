@@ -28,4 +28,10 @@ public class AdditionalBoardStrategyProviderImpl implements AdditionalBoardStrat
         AdditionalBoardService additionalBoardService = boardStrategyMap.get(boardName.toLowerCase());
         return additionalBoardService.findBoardList(topic);
     }
+
+    @Override
+    public List<BoardResponseDto> findBoardList(String boardName) {
+        AdditionalBoardService additionalBoardService = boardStrategyMap.get(boardName.toLowerCase());
+        return additionalBoardService.findBoardList(null);
+    }
 }

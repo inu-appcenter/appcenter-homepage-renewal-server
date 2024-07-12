@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface AdditionalBoardStrategyProvider {
     List<BoardResponseDto> findBoardList(String boardName, String topic);
+    List<BoardResponseDto> findBoardList(String boardName);
 }

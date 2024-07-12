@@ -69,7 +69,7 @@ public class PhotoBoardController {
     @Operation(summary = "사진 글 (전체) 조회", description = "사진 글을 모두 반환합니다.")
     @GetMapping("/public/all-boards-contents")
     public ResponseEntity<List<BoardResponseDto>> findAllBoard() {
-        return ResponseEntity.status(HttpStatus.OK).body(additionalBoardStrategyProvider.findBoardList("PhotoBoardServiceImpl",null));
+        return ResponseEntity.status(HttpStatus.OK).body(additionalBoardStrategyProvider.findBoardList("PhotoBoardServiceImpl"));
     }
 
 }
