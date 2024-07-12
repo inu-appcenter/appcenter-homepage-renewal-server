@@ -19,7 +19,7 @@ import server.inuappcenter.kr.controller.boardController.PhotoBoardController;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
-import server.inuappcenter.kr.service.boardService.AdditionalBoardService;
+import server.inuappcenter.kr.service.boardService.impl.AdditionalBoardService;
 import server.inuappcenter.kr.service.boardService.BoardService;
 
 import java.time.LocalDateTime;

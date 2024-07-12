@@ -5,3 +5,4 @@ import server.inuappcenter.kr.data.domain.board.Board;
 
 public interface BoardRepository<T extends Board> extends JpaRepository<T, Long> {
 }
+

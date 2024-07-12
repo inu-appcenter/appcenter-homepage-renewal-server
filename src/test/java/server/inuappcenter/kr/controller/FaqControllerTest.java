@@ -18,7 +18,7 @@ import server.inuappcenter.kr.data.domain.board.FaqBoard;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.FaqBoardResponseDto;
-import server.inuappcenter.kr.service.boardService.AdditionalBoardService;
+import server.inuappcenter.kr.service.boardService.impl.AdditionalBoardService;
 import server.inuappcenter.kr.service.boardService.BoardService;
 import server.inuappcenter.kr.service.boardService.impl.FaqBoardServiceImpl;
 
