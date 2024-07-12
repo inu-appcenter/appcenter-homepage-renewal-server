@@ -3,7 +3,7 @@ package server.inuappcenter.kr.controller.boardController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
-import server.inuappcenter.kr.service.boardService.AdditionalBoardService;
+import server.inuappcenter.kr.service.boardService.AdditionalBoardStrategyProvider;
 import server.inuappcenter.kr.service.boardService.BoardService;
 
 import javax.validation.Valid;
@@ -22,15 +22,11 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/photo-board")
+@RequiredArgsConstructor
 @Tag(name = "[Photo] 사진 게시판")
 public class PhotoBoardController {
     private final BoardService boardService;
-    private final AdditionalBoardService additionalBoardService;
-
-    public PhotoBoardController(BoardService boardService, @Qualifier(value = "PhotoBoardServiceImpl") AdditionalBoardService additionalBoardService) {
-        this.boardService = boardService;
-        this.additionalBoardService = additionalBoardService;
-    }
+    private final AdditionalBoardStrategyProvider additionalBoardStrategyProvider;
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
@@ -73,7 +69,7 @@ public class PhotoBoardController {
     @Operation(summary = "사진 글 (전체) 조회", description = "사진 글을 모두 반환합니다.")
     @GetMapping("/public/all-boards-contents")
     public ResponseEntity<List<BoardResponseDto>> findAllBoard() {
-        return ResponseEntity.status(HttpStatus.OK).body(additionalBoardService.findBoardList(null));
+        return ResponseEntity.status(HttpStatus.OK).body(additionalBoardStrategyProvider.findBoardList("PhotoBoardServiceImpl",null));
     }
 
 }

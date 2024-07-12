@@ -19,7 +19,7 @@ import server.inuappcenter.kr.controller.boardController.IntroBoardController;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
-import server.inuappcenter.kr.service.boardService.AdditionalBoardService;
+import server.inuappcenter.kr.service.boardService.impl.AdditionalBoardService;
 import server.inuappcenter.kr.service.boardService.BoardService;
 
 import java.util.ArrayList;

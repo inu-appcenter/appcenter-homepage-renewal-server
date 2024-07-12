@@ -6,13 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.repository.IntroBoardRepository;
-import server.inuappcenter.kr.service.boardService.AdditionalBoardService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service("IntroBoardServiceImpl")
+@Service
 @RequiredArgsConstructor
 public class IntroBoardServiceImpl implements AdditionalBoardService {
     private final IntroBoardRepository introBoardRepository;
