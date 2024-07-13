@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("FaqBoardServiceImpl")
 @RequiredArgsConstructor
 @Slf4j
 public class FaqBoardServiceImpl implements AdditionalBoardService {
