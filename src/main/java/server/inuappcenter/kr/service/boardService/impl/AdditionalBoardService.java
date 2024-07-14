@@ -1,4 +1,4 @@
-package server.inuappcenter.kr.service.boardService;
+package server.inuappcenter.kr.service.boardService.impl;
 
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 

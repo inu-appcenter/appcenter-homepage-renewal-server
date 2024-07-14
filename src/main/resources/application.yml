@@ -2,6 +2,9 @@ spring:
   redis:
     port: 5379
     host: na2ru2.me
+    sentinel:
+      username: appcenter-homepage
+      password: appcenter-homepage1!
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: dev
