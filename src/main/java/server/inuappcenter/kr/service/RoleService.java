@@ -36,6 +36,7 @@ public class RoleService {
                 .build();
     }
 
+    @Transactional
     public RoleResponseDto saveRole(RoleRequestDto roleRequestDto) {
         Role role = new Role(roleRequestDto);
         Role savedRole = roleRepository.save(role);

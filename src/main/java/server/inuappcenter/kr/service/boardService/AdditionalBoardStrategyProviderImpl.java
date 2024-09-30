@@ -1,7 +1,5 @@
 package server.inuappcenter.kr.service.boardService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
@@ -13,7 +11,6 @@ import java.util.Map;
 
 @Component
 public class AdditionalBoardStrategyProviderImpl implements AdditionalBoardStrategyProvider {
-    private static final Logger log = LoggerFactory.getLogger(AdditionalBoardStrategyProviderImpl.class);
     private final Map<String, AdditionalBoardService> boardStrategyMap;
 
     @Autowired
@@ -35,7 +32,6 @@ public class AdditionalBoardStrategyProviderImpl implements AdditionalBoardStrat
 
     @Override
     public List<BoardResponseDto> findBoardList(String boardName) {
-        log.info("getTest");
         AdditionalBoardService additionalBoardService = boardStrategyMap.get(boardName.toLowerCase());
         System.out.println(additionalBoardService.getClass().getSimpleName());
         return additionalBoardService.findBoardList(null);

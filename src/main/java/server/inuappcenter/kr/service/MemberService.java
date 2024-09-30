@@ -28,6 +28,7 @@ public class MemberService {
         return MemberResponseDto.entityToDto(member);
     }
 
+    @Transactional
     public MemberResponseDto saveMember(MemberRequestDto memberRequestDto) {
         Member member = new Member(memberRequestDto);
         Member savedMember = memberRepository.save(member);
@@ -50,6 +51,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public CommonResponseDto deleteMember(Long id) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_group = groupRepository.findAllByMember(found_member);
