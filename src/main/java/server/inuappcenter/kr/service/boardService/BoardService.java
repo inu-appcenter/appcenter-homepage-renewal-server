@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
@@ -18,7 +19,6 @@ import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -61,34 +61,23 @@ public class BoardService {
     public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto) {
         // 캐시에서 보드를 삭제한다.
         boardResponseRedisRepository.deleteById(board_id);
+
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         // 사용자가 multipart를 같이 보냈는지 확인
         if (boardRequestDto.getMultipartFiles() != null || image_id != null) {
             // 이미지 레포지토리에서 사용자가 보낸 ID로 조회를 먼저 진행하여, 찾아진 이미지 목록을 가짐
             List<Image> foundImageList = imageRepository.findByImageIdsAndBoard(image_id, foundBoard);
 
-            // DB에 저장되지 않은 이미지에 대한 처리들을 진행해야 함
-            // 먼저 DB에서 찾아진 ID에 대한 목록을 만들어줌
+            // foundImageList에 있는 image의 id를 따로 뽑아서 저장
             List<Long> foundImageIds = new ArrayList<>();
             for (Image image : foundImageList) {
                 // 찾아진 이미지 목록에서 id를 가져와 찾아진 id 목록에 추가함
                 foundImageIds.add(image.getId());
             }
-
             // 캐시에서 이미지를 삭제한다.
             imageRedisRepository.deleteAllById(foundImageIds);
 
-            // image_id와 일치하는 ImageList를 순회함
-            for (Image image : foundImageList) {
-                //  image_id와 ImageList의 id가 일치하는 값만 변경처리해줌
-                for (int j = 0; j < image_id.size(); j++) {
-                    if (Objects.equals(image.getId(), image_id.get(j))) {
-                        image.updateImage(boardRequestDto.getMultipartFiles().get(j));
-                    }
-                }
-            }
-
-            // 찾아진 ID 목록에 존재하지 않는 ID를 얻어야 하기 때문에 없는 이미지 ID 목록을 만들어줌
+            // DB에 존재하지 않는 id(=새로 추가할 이미지의 id)를 찾음
             List<Long> missingImageIds = new ArrayList<>();
             for (Long id : image_id) {
                 // 찾아진 Id 목록에 사용자가 보낸 ID가 존재하지 않는다면
@@ -97,25 +86,44 @@ public class BoardService {
                     missingImageIds.add(id);
                 }
             }
-            // 만약에 새로운 아이디(존재하지 않는 아이디)가 존재한다면
-            if (!missingImageIds.isEmpty()) {
-                // 존재하지 않는 ID 목록 수 만큼 새로운 이미지 객체를 만들어줌
-                List<Image> newImageList = new ArrayList<>();
-                for (int i = 0; i < missingImageIds.size(); i++) {
-                    newImageList.add(new Image(boardRequestDto.getMultipartFiles().get(i)));
+
+            // 인덱스 맵핑 -> 수정과 추가가 섞일시 누락 발생에 대하여
+            // image_id와 multipartFiles가 같은 인덱스로 매핑
+            // image_id의 순서가 저장되어 있는 multipartFiles의 순서가 다를 수 있음.
+            // 수정을 먼저 하고, 추가를 나중에 진행
+
+            // 기존 이미지 인덱스 매핑 -> 이미지 수정이 함께 일어남.
+            for (Image image : foundImageList) {
+                Long currentImageId = image.getId();
+                int idx = image_id.indexOf(currentImageId);
+                if(idx != -1) {
+                    MultipartFile updateFile = boardRequestDto.getMultipartFiles().get(idx);
+                    image.updateImage(updateFile);
                 }
-                // 이 이미지 객체는 Board와 매핑되어 저장되어야 함
-                // 따라서 새로운 이미지를 수정할 Board와 매핑시킨다.
+            }
+
+            // 새로운 이미지 리스트 생성
+            List<Image> newImageList = new ArrayList<>();
+            for(Long newImageId : missingImageIds) {
+                int idx = image_id.indexOf(newImageId);
+                if(idx != -1) {
+                    MultipartFile newImageFile = boardRequestDto.getMultipartFiles().get(idx);
+                    Image newImage = new Image(newImageFile);
+                    newImageList.add(newImage);
+                }
+            }
+
+            // 해당 board에 새로운 이미지 추가
+            if (!newImageList.isEmpty()) {
                 foundBoard.updateImage(newImageList);
             }
 
-            // 변경된 이미지 정보를 저장
             imageRepository.saveAll(foundImageList);
+            imageRepository.saveAll(newImageList);
         }
         // 이미지가 없을 경우 글 내용만 수정한다.
         foundBoard.modifyBoard(boardRequestDto);
         boardRepository.save(foundBoard);
         return new CommonResponseDto("id: " + board_id + " has been successfully modified.");
     }
-
 }
