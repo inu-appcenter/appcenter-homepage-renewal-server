@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
-import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
-import server.inuappcenter.kr.exception.customExceptions.CustomPasswordMisMatchException;
-import server.inuappcenter.kr.exception.customExceptions.CustomUsernameMisMatchException;
+import server.inuappcenter.kr.exception.customExceptions.*;
 
 import java.util.Objects;
 
@@ -44,6 +41,12 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomPasswordMisMatchException.class)
     public ResponseEntity<String> passwordMisMatchException(CustomPasswordMisMatchException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CustomFileSizeMisMatchException.class)
+    public ResponseEntity<String> fileSizeMisMatchException(CustomFileSizeMisMatchException e) {
         log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }

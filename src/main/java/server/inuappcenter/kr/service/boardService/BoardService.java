@@ -14,6 +14,7 @@ import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.data.repository.ImageRepository;
+import server.inuappcenter.kr.exception.customExceptions.CustomFileSizeMisMatchException;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,8 +64,14 @@ public class BoardService {
         boardResponseRedisRepository.deleteById(board_id);
 
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        List<MultipartFile> multipartFiles = boardRequestDto.getMultipartFiles();
         // 사용자가 multipart를 같이 보냈는지 확인
-        if (boardRequestDto.getMultipartFiles() != null || image_id != null) {
+        if (multipartFiles != null || image_id != null) {
+
+            if(image_id.size() != multipartFiles.size()) {
+                throw new CustomFileSizeMisMatchException("photo_ids와 files의 크기가 다릅니다");
+            }
+            
             // 이미지 레포지토리에서 사용자가 보낸 ID로 조회를 먼저 진행하여, 찾아진 이미지 목록을 가짐
             List<Image> foundImageList = imageRepository.findByImageIdsAndBoard(image_id, foundBoard);
 
