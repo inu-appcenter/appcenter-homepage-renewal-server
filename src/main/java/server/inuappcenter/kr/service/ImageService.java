@@ -40,21 +40,23 @@ public class ImageService {
     @Transactional
     public void deleteMultipleImages(Long board_id, List<Long> image_ids) {
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+
         List<Long> foundImageIds = new ArrayList<>();
         for (Image image: foundBoard.getImages()) {
             foundImageIds.add(image.getId());
         }
+
         if (!new HashSet<>(foundImageIds).containsAll(image_ids)) {
             throw new CustomNotFoundException("The requested ID was not found.");
         }
 
+        // remove() 함수는 리스트 자체를 변경 -> 역순으로 순회 -> 인덱스 초과x
         int imagesListSize = foundBoard.getImages().size();
-        for (int i = 0; i < imagesListSize; i++) {
-            for (Long imageId : image_ids) {
-                if (Objects.equals(foundBoard.getImages().get(i).getId(), imageId)) {
-                    foundBoard.getImages().remove(i);
-                    imageRepository.deleteById(imageId);
-                }
+        for (int i = imagesListSize -1 ; i >= 0 ; i--) {
+            Image image = foundBoard.getImages().get(i);
+            if(image_ids.contains(image.getId())) {
+                foundBoard.getImages().remove(i);
+                imageRepository.deleteById(image.getId());
             }
         }
     }
