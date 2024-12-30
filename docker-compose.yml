@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: appcenter-hompage-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root     # root 계정 비밀번호
+      - MYSQL_DATABASE=appcenter             # 초기 DB
+      - MYSQL_USER=dev                       # DB 접속용 유저
+      - MYSQL_PASSWORD=test1234              # DB 접속용 유저 비밀번호
+    command: [
+      "--default-authentication-plugin=mysql_native_password",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci"
+    ]
+    ports:
+      - "6306:3306"   # 호스트 6306 -> 컨테이너 3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: local-redis
+    ports:
+      - "5379:6379"   # 호스트 5379 -> 컨테이너 6379
+    # 필요하면 비밀번호 설정, redis.conf 사용 등 추가 설정
+
+volumes:
+  mysql_data:
