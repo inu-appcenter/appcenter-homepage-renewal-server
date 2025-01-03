@@ -61,7 +61,7 @@ public class PhotoBoard extends Board {
 
     @Override
     public void updateImage(List<Image> images) {
-        this.images = images;
+        this.images.addAll(images);
     }
 
     @Override

@@ -1,18 +1,18 @@
 spring:
   redis:
     port: 5379
-    host: na2ru2.me
-    sentinel:
-      username: appcenter-homepage
-      password: appcenter-homepage1!
+    host: localhost
+      #sentinel:
+    # username: appcenter-homepage
+    # password: appcenter-homepage1!
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: dev
-    url: jdbc:mysql://na2ru2.me:6306/appcenter
+    url: jdbc:mysql://localhost:6306/appcenter
     password: test1234
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     open-in-view: false
     properties:
