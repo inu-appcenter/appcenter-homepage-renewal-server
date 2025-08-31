@@ -73,5 +73,13 @@ public class IntroBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(board_id, photo_ids, introBoardRequestDto));
     }
 
+    @Operation(summary = "앱 활성화 상태 변경", description = "앱의 활성화/비활성화 상태만 변경합니다.")
+    @PatchMapping("/{board_id}/activation")
+    public ResponseEntity<CommonResponseDto> updateAppActivation(
+            final @PathVariable("board_id") Long id,
+            final @RequestParam("isActive") Boolean isActive) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateAppActivation(id, isActive));
+    }
+
 }
 

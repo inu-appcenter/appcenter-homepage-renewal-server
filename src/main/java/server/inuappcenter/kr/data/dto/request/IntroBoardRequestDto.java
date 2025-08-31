@@ -54,6 +54,12 @@ public class IntroBoardRequestDto extends BoardRequestDto{
     )
     private List<MultipartFile> multipartFiles;
 
+    @Schema(
+            example = "true",
+            description = "앱 활성화 상태 (true: 서비스 중, false: 서비스 종료)"
+    )
+    private Boolean isActive;
+
     @Override
     public Board createBoard() {
         return new IntroBoard(this);

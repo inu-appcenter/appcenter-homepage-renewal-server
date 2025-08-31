@@ -16,16 +16,18 @@ public class IntroBoardResponseDto extends BoardResponseDto {
     public final String subTitle;
     public final String androidStoreLink;
     public final String appleStoreLink;
+    public final Boolean isActive;
     private final Map<Long, String> images;
 
     @Builder
-    private IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String appleStoreLink, String body, Map<Long, String> images,
+    private IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String appleStoreLink, Boolean isActive, String body, Map<Long, String> images,
                                   LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
         this.androidStoreLink = androidStoreLink;
         this.appleStoreLink = appleStoreLink;
+        this.isActive = isActive;
         this.body = body;
         this.images = images;
         this.createdDate = createdDate;
@@ -40,6 +42,7 @@ public class IntroBoardResponseDto extends BoardResponseDto {
                 .subTitle(introBoard.getSubTitle())
                 .androidStoreLink(introBoard.getAndroidStoreLink())
                 .appleStoreLink(introBoard.getAppleStoreLink())
+                .isActive(introBoard.getIsActive())
                 .body(introBoard.getBody())
                 .images(BoardUtils.returnImageURL(request, introBoard.getImages()))
                 .createdDate(introBoard.getCreatedDate())

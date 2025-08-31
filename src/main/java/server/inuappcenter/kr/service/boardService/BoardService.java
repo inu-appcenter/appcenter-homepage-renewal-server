@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
+import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
@@ -132,5 +133,20 @@ public class BoardService {
         foundBoard.modifyBoard(boardRequestDto);
         boardRepository.save(foundBoard);
         return new CommonResponseDto("id: " + board_id + " has been successfully modified.");
+    }
+
+    @Transactional
+    public CommonResponseDto updateAppActivation(Long id, Boolean isActive) {
+        boardResponseRedisRepository.deleteById(id);
+        Board foundBoard = boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
+        
+        if (foundBoard instanceof IntroBoard) {
+            IntroBoard introBoard = (IntroBoard) foundBoard;
+            introBoard.isActive = isActive;
+            boardRepository.save(introBoard);
+            return new CommonResponseDto("App activation status updated to: " + isActive);
+        } else {
+            throw new CustomNotFoundException("해당 게시글은 앱 소개 게시글이 아닙니다.");
+        }
     }
 }

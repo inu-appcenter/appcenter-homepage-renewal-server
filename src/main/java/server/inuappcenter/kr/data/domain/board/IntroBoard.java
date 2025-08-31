@@ -24,6 +24,7 @@ public class IntroBoard extends Board {
     public String subTitle;
     public String androidStoreLink;
     public String appleStoreLink;
+    public Boolean isActive;
 
     private List<Image> images = new ArrayList<>();
 
@@ -36,6 +37,7 @@ public class IntroBoard extends Board {
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
         this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
         this.body = introBoardRequestDto.getBody();
+        this.isActive = introBoardRequestDto.getIsActive() != null ? introBoardRequestDto.getIsActive() : true;
     }
 
     public void InjectImageListForTest(List<Image> images) {
@@ -48,6 +50,9 @@ public class IntroBoard extends Board {
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
         this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
         this.body = introBoardRequestDto.getBody();
+        if (introBoardRequestDto.getIsActive() != null) {
+            this.isActive = introBoardRequestDto.getIsActive();
+        }
     }
 
     // 새 이미지 객체를 만들어 PhotoBoard(부모객체)와 매핑시킵니다.
@@ -84,6 +89,7 @@ public class IntroBoard extends Board {
                 .subTitle(this.subTitle)
                 .androidStoreLink(this.androidStoreLink)
                 .appleStoreLink(this.appleStoreLink)
+                .isActive(this.isActive)
                 .images(BoardUtils.returnImageURL(request, this.images))
                 .createdDate(this.getCreatedDate())
                 .lastModifiedDate(this.getLastModifiedDate())
