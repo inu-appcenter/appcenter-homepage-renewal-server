@@ -10,6 +10,7 @@ import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.data.utils.BoardUtils;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -24,6 +25,8 @@ public class IntroBoard extends Board {
     public String subTitle;
     public String androidStoreLink;
     public String appleStoreLink;
+    
+    @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
     public Boolean isActive;
 
     private List<Image> images = new ArrayList<>();
