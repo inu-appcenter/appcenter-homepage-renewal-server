@@ -24,7 +24,6 @@ public class IntroBoard extends Board {
     public String subTitle;
     public String androidStoreLink;
     public String appleStoreLink;
-    public String body;
 
     private List<Image> images = new ArrayList<>();
 
