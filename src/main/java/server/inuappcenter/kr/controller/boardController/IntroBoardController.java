@@ -35,7 +35,8 @@ public class IntroBoardController {
     public ResponseEntity<BoardResponseDto> getBoard(final @PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.findBoard(id));
     }
-    @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다. (첫번째 사진은 게시글의 썸네일로 사용됩니다.)")
+
+    @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다. (첫번째 사진은 게시글의 썸네일로 사용됩니다.) \n 제목과 부제목(짧은 설명글)만 있어도 저장 가능합니다. ")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> saveBoard(final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
                                                                        BindingResult bindingResult) {

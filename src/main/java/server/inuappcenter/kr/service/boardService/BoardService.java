@@ -31,6 +31,10 @@ public class BoardService {
     private final HttpServletRequest request;
     private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
     private final ImageRedisRepository imageRedisRepository;
+    private final StackRepository stackRepository;
+    private final GroupRepository groupRepository;
+    private final IntroBoardStackRepository introBoardStackRepository;
+    private final IntroBoardGroupRepository introBoardGroupRepository;
 
     @Transactional(readOnly = true)
     public BoardResponseDto findBoard(Long id) {
@@ -38,17 +42,77 @@ public class BoardService {
                 () -> {
                     Board result = boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
                     BoardResponseDto resultDto = result.createResponse(request);
+
+                    // IntroBoard인 경우 stacks, groups 조회 후 재구성
+                    if (result instanceof IntroBoard) {
+                        resultDto = buildIntroBoardResponse((IntroBoard) result, (IntroBoardResponseDto) resultDto);
+                    }
+
                     boardResponseRedisRepository.save(resultDto);
                     return resultDto;
                 }
         );
     }
 
+    private IntroBoardResponseDto buildIntroBoardResponse(IntroBoard introBoard, IntroBoardResponseDto baseResponse) {
+        List<StackResponseDto> stacks = introBoardStackRepository.findAllByIntroBoard(introBoard).stream()
+                .map(ibs -> StackResponseDto.entityToDto(ibs.getStack(), request))
+                .collect(Collectors.toList());
+
+        List<GroupResponseDto> groups = introBoardGroupRepository.findAllByIntroBoard(introBoard).stream()
+                .map(ibg -> GroupResponseDto.toIntroBoardDto(ibg.getGroup()))
+                .collect(Collectors.toList());
+
+        return IntroBoardResponseDto.builder()
+                .id(baseResponse.getId())
+                .title(baseResponse.getTitle())
+                .subTitle(baseResponse.getSubTitle())
+                .androidStoreLink(baseResponse.getAndroidStoreLink())
+                .appleStoreLink(baseResponse.getAppleStoreLink())
+                .websiteLink(baseResponse.getWebsiteLink())
+                .isActive(baseResponse.getIsActive())
+                .body(baseResponse.getBody())
+                .images(baseResponse.getImages())
+                .stacks(stacks)
+                .groups(groups)
+                .createdDate(baseResponse.getCreatedDate())
+                .lastModifiedDate(baseResponse.getLastModifiedDate())
+                .build();
+    }
+
 
     @Transactional
     public CommonResponseDto saveBoard(BoardRequestDto boardRequestDto) {
         Board savedBoard = boardRepository.save(boardRequestDto.createBoard());
+
+        // IntroBoard인 경우 Stack, Group 연결 처리
+        if (savedBoard instanceof IntroBoard && boardRequestDto instanceof IntroBoardRequestDto) {
+            IntroBoard introBoard = (IntroBoard) savedBoard;
+            IntroBoardRequestDto introBoardRequestDto = (IntroBoardRequestDto) boardRequestDto;
+            saveIntroBoardRelations(introBoard, introBoardRequestDto);
+        }
+
         return new CommonResponseDto(savedBoard.getId() + " Board has been successfully saved.");
+    }
+
+    private void saveIntroBoardRelations(IntroBoard introBoard, IntroBoardRequestDto requestDto) {
+        // Stack 연결
+        if (requestDto.getStackIds() != null && !requestDto.getStackIds().isEmpty()) {
+            for (Long stackId : requestDto.getStackIds()) {
+                Stack stack = stackRepository.findById(stackId)
+                        .orElseThrow(() -> new CustomNotFoundException("Stack ID: " + stackId + "를 찾을 수 없습니다."));
+                introBoardStackRepository.save(new IntroBoardStack(introBoard, stack));
+            }
+        }
+
+        // Group 연결
+        if (requestDto.getGroupIds() != null && !requestDto.getGroupIds().isEmpty()) {
+            for (Long groupId : requestDto.getGroupIds()) {
+                Group group = groupRepository.findById(groupId)
+                        .orElseThrow(() -> new CustomNotFoundException("Group ID: " + groupId + "를 찾을 수 없습니다."));
+                introBoardGroupRepository.save(new IntroBoardGroup(introBoard, group));
+            }
+        }
     }
 
     @Transactional

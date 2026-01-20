@@ -43,10 +43,15 @@ public class IntroBoardRequestDto extends BoardRequestDto{
     private String appleStoreLink;
 
     @Schema(
-            example = "This Application is...",
-            description = "앱 소개"
+            example = "https://...",
+            description = "웹사이트 링크"
     )
-    @NotBlank(message = "앱 소개글이 비어있을 수 없습니다.")
+    private String webSiteLink;
+
+    @Schema(
+            example = "This Application is...",
+            description = "프로젝트 소개글 -> 코드 변경할 부분"
+    )
     private String body;
 
     @Schema(
@@ -59,6 +64,18 @@ public class IntroBoardRequestDto extends BoardRequestDto{
             description = "앱 활성화 상태 (true: 서비스 중, false: 서비스 종료)"
     )
     private Boolean isActive;
+
+    @Schema(
+            example = "[1, 2, 3]",
+            description = "사용된 기술 스택 ID 목록"
+    )
+    private List<Long> stackIds;
+
+    @Schema(
+            example = "[1, 2, 3]",
+            description = "참여한 멤버(그룹) ID 목록"
+    )
+    private List<Long> groupIds;
 
     @Override
     public Board createBoard() {

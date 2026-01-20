@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.data.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import server.inuappcenter.kr.data.domain.Group;
@@ -7,6 +8,7 @@ import server.inuappcenter.kr.data.domain.Group;
 import java.time.LocalDateTime;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GroupResponseDto {
     private final Long group_id;
     private final String member;
@@ -51,6 +53,16 @@ public class GroupResponseDto {
                 .year(group.getYear())
                 .createdDate(group.getCreatedDate())
                 .lastModifiedDate(group.getLastModifiedDate())
+                .build();
+    }
+
+    // 프로젝트 조회시 사용
+    public static GroupResponseDto toIntroBoardDto(Group group) {
+        return new GroupResponseDto.GroupResponseDtoBuilder()
+                .group_id(group.getGroup_id())
+                .member(group.getMember().getName())
+                .profileImage(group.getMember().getProfileImage())
+                .part(group.getPart())
                 .build();
     }
 }
