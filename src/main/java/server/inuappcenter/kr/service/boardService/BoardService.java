@@ -6,21 +6,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.domain.Group;
+import server.inuappcenter.kr.data.domain.IntroBoardGroup;
+import server.inuappcenter.kr.data.domain.IntroBoardStack;
+import server.inuappcenter.kr.data.domain.Stack;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
+import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
+import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
+import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
+import server.inuappcenter.kr.data.dto.response.StackResponseDto;
 import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
-import server.inuappcenter.kr.data.repository.BoardRepository;
-import server.inuappcenter.kr.data.repository.ImageRepository;
+import server.inuappcenter.kr.data.repository.*;
 import server.inuappcenter.kr.exception.customExceptions.CustomFileSizeMisMatchException;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -196,7 +204,65 @@ public class BoardService {
         // 이미지가 없을 경우 글 내용만 수정한다.
         foundBoard.modifyBoard(boardRequestDto);
         boardRepository.save(foundBoard);
+
+        // IntroBoard인 경우 Stack, Group 연결 업데이트
+        if (foundBoard instanceof IntroBoard && boardRequestDto instanceof IntroBoardRequestDto) {
+            IntroBoard introBoard = (IntroBoard) foundBoard;
+            IntroBoardRequestDto introBoardRequestDto = (IntroBoardRequestDto) boardRequestDto;
+            updateIntroBoardRelations(introBoard, introBoardRequestDto);
+        }
+
         return new CommonResponseDto("id: " + board_id + " has been successfully modified.");
+    }
+
+    private void updateIntroBoardRelations(IntroBoard introBoard, IntroBoardRequestDto requestDto) {
+        // Stack
+        if (requestDto.getStackIds() != null) {
+            List<IntroBoardStack> existingStacks = introBoardStackRepository.findAllByIntroBoard(introBoard);
+            List<Long> existingStackIds = existingStacks.stream()
+                    .map(ids -> ids.getStack().getId())
+                    .collect(Collectors.toList());
+            List<Long> requestedStackIds = requestDto.getStackIds();
+
+            // 요청과 db 다를시 삭제
+            for (IntroBoardStack existing : existingStacks) {
+                if (!requestedStackIds.contains(existing.getStack().getId())) {
+                    introBoardStackRepository.delete(existing);
+                }
+            }
+
+            // 추가 스택 저장
+            for (Long stackId : requestedStackIds) {
+                if (!existingStackIds.contains(stackId)) {
+                    Stack stack = stackRepository.findById(stackId)
+                            .orElseThrow(() -> new CustomNotFoundException("Stack ID: " + stackId + "를 찾을 수 없습니다."));
+                    introBoardStackRepository.save(new IntroBoardStack(introBoard, stack));
+                }
+            }
+        }
+
+        // Group
+        if (requestDto.getGroupIds() != null) {
+            List<IntroBoardGroup> existingGroups = introBoardGroupRepository.findAllByIntroBoard(introBoard);
+            List<Long> existingGroupIds = existingGroups.stream()
+                    .map(ibg -> ibg.getGroup().getGroup_id())
+                    .collect(Collectors.toList());
+            List<Long> requestedGroupIds = requestDto.getGroupIds();
+
+            for (IntroBoardGroup existing : existingGroups) {
+                if (!requestedGroupIds.contains(existing.getGroup().getGroup_id())) {
+                    introBoardGroupRepository.delete(existing);
+                }
+            }
+
+            for (Long groupId : requestedGroupIds) {
+                if (!existingGroupIds.contains(groupId)) {
+                    Group group = groupRepository.findById(groupId)
+                            .orElseThrow(() -> new CustomNotFoundException("Group ID: " + groupId + "를 찾을 수 없습니다."));
+                    introBoardGroupRepository.save(new IntroBoardGroup(introBoard, group));
+                }
+            }
+        }
     }
 
     @Transactional

@@ -73,7 +73,7 @@ public class IntroBoardRequestDto extends BoardRequestDto{
 
     @Schema(
             example = "[1, 2, 3]",
-            description = "참여한 멤버(그룹) ID 목록"
+            description = "참여한 멤버 ID 목록 (member_id가 아닌 group_id를 입력)"
     )
     private List<Long> groupIds;
 

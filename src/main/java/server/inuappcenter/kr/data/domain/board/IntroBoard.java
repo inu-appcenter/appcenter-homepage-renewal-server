@@ -46,12 +46,24 @@ public class IntroBoard extends Board {
     }
 
     public void updateBoard(IntroBoardRequestDto introBoardRequestDto) {
-        this.title = introBoardRequestDto.getTitle();
-        this.subTitle = introBoardRequestDto.getSubTitle();
-        this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
-        this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
-        this.webSiteLink = introBoardRequestDto.getWebSiteLink();
-        this.body = introBoardRequestDto.getBody();
+        if (introBoardRequestDto.getTitle() != null) {
+            this.title = introBoardRequestDto.getTitle();
+        }
+        if (introBoardRequestDto.getSubTitle() != null) {
+            this.subTitle = introBoardRequestDto.getSubTitle();
+        }
+        if (introBoardRequestDto.getAndroidStoreLink() != null) {
+            this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
+        }
+        if (introBoardRequestDto.getAppleStoreLink() != null) {
+            this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
+        }
+        if (introBoardRequestDto.getWebSiteLink() != null) {
+            this.webSiteLink = introBoardRequestDto.getWebSiteLink();
+        }
+        if (introBoardRequestDto.getBody() != null) {
+            this.body = introBoardRequestDto.getBody();
+        }
         if (introBoardRequestDto.getIsActive() != null) {
             this.isActive = introBoardRequestDto.getIsActive();
         }

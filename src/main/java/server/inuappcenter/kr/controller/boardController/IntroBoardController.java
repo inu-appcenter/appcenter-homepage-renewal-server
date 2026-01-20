@@ -36,7 +36,10 @@ public class IntroBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.findBoard(id));
     }
 
-    @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다. (첫번째 사진은 게시글의 썸네일로 사용됩니다.) \n 제목과 부제목(짧은 설명글)만 있어도 저장 가능합니다. ")
+    @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다.<br/><br/>" +
+            "- 첫번째 사진은 게시글의 썸네일로 사용됩니다.<br/>" +
+            "- 제목과 부제목(짧은 설명글)만 있어도 저장 가능합니다.<br/>" +
+            "- groupIds는 member_id가 아닌 group_id를 입력해주세요.")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> saveBoard(final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
                                                                        BindingResult bindingResult) {
@@ -62,7 +65,7 @@ public class IntroBoardController {
 
 
     @Operation(summary = "게시글 수정", description = "사진 수정(추가)이 있을 경우에는 경로에 /{photo_ids}를 포함해주세요")
-    @PatchMapping(path = {"/{photo_ids}", "/"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(path = {"/{photo_ids}", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> updateBoard(
             final @PathVariable(name = "photo_ids", required = false) List<Long> photo_ids,
             final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
