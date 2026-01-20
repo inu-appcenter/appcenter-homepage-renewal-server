@@ -25,6 +25,7 @@ public class IntroBoard extends Board {
     public String subTitle;
     public String androidStoreLink;
     public String appleStoreLink;
+    public String webSiteLink;
     
     @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
     public Boolean isActive;
@@ -39,12 +40,9 @@ public class IntroBoard extends Board {
         this.subTitle = introBoardRequestDto.getSubTitle();
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
         this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
+        this.webSiteLink = introBoardRequestDto.getWebSiteLink();
         this.body = introBoardRequestDto.getBody();
         this.isActive = introBoardRequestDto.getIsActive() != null ? introBoardRequestDto.getIsActive() : true;
-    }
-
-    public void InjectImageListForTest(List<Image> images) {
-        this.images = images;
     }
 
     public void updateBoard(IntroBoardRequestDto introBoardRequestDto) {
@@ -52,6 +50,7 @@ public class IntroBoard extends Board {
         this.subTitle = introBoardRequestDto.getSubTitle();
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
         this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
+        this.webSiteLink = introBoardRequestDto.getWebSiteLink();
         this.body = introBoardRequestDto.getBody();
         if (introBoardRequestDto.getIsActive() != null) {
             this.isActive = introBoardRequestDto.getIsActive();
@@ -92,8 +91,11 @@ public class IntroBoard extends Board {
                 .subTitle(this.subTitle)
                 .androidStoreLink(this.androidStoreLink)
                 .appleStoreLink(this.appleStoreLink)
+                .websiteLink(this.webSiteLink)
                 .isActive(this.isActive)
                 .images(BoardUtils.returnImageURL(request, this.images))
+                .stacks(null)
+                .groups(null)
                 .createdDate(this.getCreatedDate())
                 .lastModifiedDate(this.getLastModifiedDate())
                 .build();

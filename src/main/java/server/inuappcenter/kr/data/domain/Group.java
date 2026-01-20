@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "appcenter_group")
+@Table(name = "appcenter_group") // 기수 관리 -> 해당 멤버-파트-기수
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Group extends BaseTimeEntity {
     @Id

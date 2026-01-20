@@ -19,6 +19,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+// 활동 게시판
 public class PhotoBoard extends Board {
 
     private String body;
