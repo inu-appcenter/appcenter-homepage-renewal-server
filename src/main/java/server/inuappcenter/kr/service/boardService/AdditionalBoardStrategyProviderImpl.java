@@ -18,8 +18,10 @@ public class AdditionalBoardStrategyProviderImpl implements AdditionalBoardStrat
 
     @Autowired
     public AdditionalBoardStrategyProviderImpl(List<AdditionalBoardService> additionalBoardServices) {
+       // log.debug("=== 주입된 서비스 목록 ===");
         this.boardStrategyMap = new HashMap<>();
         for (AdditionalBoardService additionalBoardService : additionalBoardServices) {
+           // log.debug("- " + additionalBoardService.getClass().getSimpleName());
             String key = additionalBoardService.getClass().getSimpleName().toLowerCase();
             int index = key.indexOf("$");
             this.boardStrategyMap.put(key.substring(0, index), additionalBoardService);
@@ -37,7 +39,7 @@ public class AdditionalBoardStrategyProviderImpl implements AdditionalBoardStrat
     public List<BoardResponseDto> findBoardList(String boardName) {
         log.info("getTest");
         AdditionalBoardService additionalBoardService = boardStrategyMap.get(boardName.toLowerCase());
-        System.out.println(additionalBoardService.getClass().getSimpleName());
+        log.info(additionalBoardService.getClass().getSimpleName());
         return additionalBoardService.findBoardList(null);
     }
 }
