@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED) //JPA 상속 매핑 전략 / InheritanceType.JOINED : 조회시 JOIN으로 병합해서 가져옴.
 @DiscriminatorColumn(name = "Board_Type")
 // board 를 직접 생성할 일이 없으므로 추상클래스로 정의
 public abstract class Board extends BaseTimeEntity {

@@ -3,17 +3,18 @@ package server.inuappcenter.kr.data.domain.board;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
-import server.inuappcenter.kr.data.utils.BoardUtils;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -22,38 +23,31 @@ import java.util.List;
 // 활동 게시판
 public class PhotoBoard extends Board {
 
-    private String body;
+    private LocalDate eventDate;
 
-    private List<Image> images = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     public PhotoBoard(PhotoBoardRequestDto photoBoardRequestDto) {
-        if (photoBoardRequestDto.getMultipartFiles() != null) {
-            this.images = mappingPhotoAndEntity(photoBoardRequestDto.getMultipartFiles());
+        if (photoBoardRequestDto.getMultipartFile() != null && !photoBoardRequestDto.getMultipartFile().isEmpty()) {
+            this.image = new Image(photoBoardRequestDto.getMultipartFile());
         }
-        body = photoBoardRequestDto.getBody();
-    }
-
-    public void InjectImageListForTest(List<Image> images) {
-        this.images = images;
+        this.body = photoBoardRequestDto.getTitle();
+        this.eventDate = photoBoardRequestDto.getEventDate();
     }
 
     public void updateBoard(PhotoBoardRequestDto photoBoardRequestDto) {
-        this.body = photoBoardRequestDto.getBody();
-    }
-
-    public List<Image> mappingPhotoAndEntity(List<MultipartFile> multipartFiles) {
-        List<Image> imageEntityList = new ArrayList<>();
-        for (MultipartFile file: multipartFiles) {
-            try {
-                imageEntityList.add(new Image().returnMultipartToEntity(file));
-            } catch (IOException e) {
-                throw new RuntimeException("파일을 불러오는데 실패하였습니다.");
-            }
+        if (photoBoardRequestDto.getTitle() != null) {
+            this.body = photoBoardRequestDto.getTitle();
         }
-        imageEntityList.get(0).isThumbnail();
-        return imageEntityList;
+        if (photoBoardRequestDto.getEventDate() != null) {
+            this.eventDate = photoBoardRequestDto.getEventDate();
+        }
+        if (photoBoardRequestDto.getMultipartFile() != null && !photoBoardRequestDto.getMultipartFile().isEmpty()) {
+            this.image = new Image(photoBoardRequestDto.getMultipartFile());
+        }
     }
-
 
     @Override
     public void modifyBoard(BoardRequestDto photoBoardRequestDto) {
@@ -62,15 +56,32 @@ public class PhotoBoard extends Board {
 
     @Override
     public void updateImage(List<Image> images) {
-        this.images.addAll(images);
+        if (images != null && !images.isEmpty()) {
+            this.image = images.get(0);
+        }
+    }
+
+    @Override
+    public List<Image> getImages() {
+        return this.image != null ? Collections.singletonList(this.image) : Collections.emptyList();
+    }
+
+    public String getTitle() {
+        return this.body;
     }
 
     @Override
     public BoardResponseDto createResponse(HttpServletRequest request) {
+        String imageUrl = null;
+        if (this.image != null) {
+            imageUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                    + "/image/photo/" + this.image.getId();
+        }
         return PhotoBoardResponseDto.builder()
                 .id(this.getId())
-                .body(this.body)
-                .images(BoardUtils.returnImageURL(request, this.images))
+                .title(this.getTitle())
+                .eventDate(this.eventDate)
+                .imageUrl(imageUrl)
                 .createdDate(this.getCreatedDate())
                 .lastModifiedDate(this.getLastModifiedDate())
                 .build();
