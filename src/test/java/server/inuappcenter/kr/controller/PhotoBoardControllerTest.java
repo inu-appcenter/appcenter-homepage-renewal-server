@@ -22,6 +22,7 @@ import server.inuappcenter.kr.data.dto.response.PhotoBoardResponseDto;
 import server.inuappcenter.kr.service.boardService.impl.AdditionalBoardService;
 import server.inuappcenter.kr.service.boardService.BoardService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,15 +57,17 @@ public class PhotoBoardControllerTest {
         return mockImage;
     }
     private final Long givenId = 1L;
+    private final LocalDate givenDate = LocalDate.now();
     private final PhotoBoardRequestDto givenDto = new PhotoBoardRequestDto(
-            "내용입니다.", null
+            "내용입니다.", givenDate, null
     );
+
     private final PhotoBoardResponseDto expectedDto = PhotoBoardResponseDto.builder()
             .id(givenId)
-            .body("내용입니다.")
+            .title("내용입니다.")
             .createdDate(LocalDateTime.now())
             .lastModifiedDate(LocalDateTime.now())
-            .images(makeMockImageMap())
+            .imageUrl(makeMockImageMap().get(givenId))
             .build();
 
     private final CommonResponseDto expectedCommonRes = new CommonResponseDto("id has been successfully modified.");

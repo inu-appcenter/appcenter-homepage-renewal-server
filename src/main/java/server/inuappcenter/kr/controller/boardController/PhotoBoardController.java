@@ -15,6 +15,7 @@ import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
 import server.inuappcenter.kr.service.boardService.AdditionalBoardStrategyProvider;
 import server.inuappcenter.kr.service.boardService.BoardService;
+import server.inuappcenter.kr.service.boardService.impl.PhotoBoardServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,9 +24,10 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/photo-board")
 @RequiredArgsConstructor
-@Tag(name = "[Photo] 사진 게시판")
+@Tag(name = "[Photo] 사진(워크샵) 게시판")
 public class PhotoBoardController {
     private final BoardService boardService;
+    private final PhotoBoardServiceImpl photoBoardService;
     private final AdditionalBoardStrategyProvider additionalBoardStrategyProvider;
 
     @Operation(summary = "게시글 (1개) 가져오기", description = "가져올 게시글의 id를 입력해주세요")
@@ -46,17 +48,17 @@ public class PhotoBoardController {
         }
     }
 
-    @Operation(summary = "게시글 수정", description = "사진 수정(추가)이 있을 경우에는 경로에 /{photo_ids}를 포함해주세요")
-    @PatchMapping(path = {"/{photo_ids}", "/"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "게시글 수정", description = "사진 수정이 있을 경우에는 경로에 /{photo_id}를 포함해주세요")
+    @PatchMapping(path = {"/{photo_id}", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> updateBoard(
-            final @PathVariable(name = "photo_ids", required = false) List<Long> photo_ids,
+            final @PathVariable(name = "photo_id", required = false) Long photo_id,
             final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
             BindingResult bindingResult,
             final @Parameter(name = "board_id") Long board_id) {
         if(bindingResult.hasErrors()) {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(board_id, photo_ids, photoBoardRequestDto));
+        return ResponseEntity.status(HttpStatus.OK).body(photoBoardService.updateBoard(board_id, photo_id, photoBoardRequestDto));
     }
 
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
