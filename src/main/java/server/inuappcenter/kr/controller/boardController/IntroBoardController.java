@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 @RequestMapping("/introduction-board")
 @RequiredArgsConstructor
@@ -71,10 +73,22 @@ public class IntroBoardController {
             final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
             BindingResult bindingResult,
             final @Parameter(name = "board_id") Long board_id) {
+        log.info("=== updateBoard 호출 ===");
+        log.info("board_id: {}", board_id);
+        log.info("photo_ids: {}", photo_ids);
+        log.info("title: {}", introBoardRequestDto.getTitle());
+        log.info("stackIds: {}", introBoardRequestDto.getStackIds());
+        log.info("groupIds: {}", introBoardRequestDto.getGroupIds());
+
         if(bindingResult.hasErrors()) {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(board_id, photo_ids, introBoardRequestDto));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(board_id, photo_ids, introBoardRequestDto));
+        } catch (Exception e) {
+            log.error("updateBoard 에러 발생: ", e);
+            throw e;
+        }
     }
 
     @Operation(summary = "앱 활성화 상태 변경", description = "앱의 활성화/비활성화 상태만 변경합니다.")
@@ -87,3 +101,4 @@ public class IntroBoardController {
 
 }
 
+// let her go

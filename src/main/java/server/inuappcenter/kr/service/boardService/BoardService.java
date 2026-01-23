@@ -11,10 +11,14 @@ import server.inuappcenter.kr.data.domain.IntroBoardGroup;
 import server.inuappcenter.kr.data.domain.IntroBoardStack;
 import server.inuappcenter.kr.data.domain.Stack;
 import server.inuappcenter.kr.data.domain.board.Board;
+import server.inuappcenter.kr.data.domain.board.FaqBoard;
 import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
+import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
+import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.IntroBoardRequestDto;
+import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
@@ -137,12 +141,41 @@ public class BoardService {
         boardResponseRedisRepository.deleteById(board_id);
 
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+
+        // Board 타입과 RequestDto 타입 일치 여부 확인
+        validateBoardAndRequestDtoType(foundBoard, boardRequestDto);
+
         List<MultipartFile> multipartFiles = boardRequestDto.getMultipartFiles();
         // 사용자가 multipart를 같이 보냈는지 확인
-        if (multipartFiles != null || image_id != null) {
+        boolean hasMultipartFiles = multipartFiles != null && !multipartFiles.isEmpty();
+        boolean hasImageIds = image_id != null && !image_id.isEmpty();
 
-            if(image_id.size() != multipartFiles.size()) {
-                throw new CustomFileSizeMisMatchException("photo_ids와 files의 크기가 다릅니다");
+        if (hasMultipartFiles || hasImageIds) {
+            // 둘 다 있는 경우: 크기 비교 (기존 이미지 수정)
+            if (hasMultipartFiles && hasImageIds) {
+                if (image_id.size() != multipartFiles.size()) {
+                    throw new CustomFileSizeMisMatchException("photo_ids와 files의 크기가 다릅니다");
+                }
+            }
+            // 요청한 이미지만 있고 ID가 없는 경우: 새 이미지 추가
+            else if (hasMultipartFiles && !hasImageIds) {
+                List<Image> newImages = new ArrayList<>();
+                for (MultipartFile file : multipartFiles) {
+                    newImages.add(new Image(file));
+                }
+                foundBoard.updateImage(newImages);
+                imageRepository.saveAll(newImages);
+                foundBoard.modifyBoard(boardRequestDto);
+                boardRepository.save(foundBoard);
+
+                // IntroBoard인 경우 Stack, Group 연결 업데이트
+                if (foundBoard instanceof IntroBoard && boardRequestDto instanceof IntroBoardRequestDto) {
+                    IntroBoard introBoard = (IntroBoard) foundBoard;
+                    IntroBoardRequestDto introBoardRequestDto = (IntroBoardRequestDto) boardRequestDto;
+                    updateIntroBoardRelations(introBoard, introBoardRequestDto);
+                }
+
+                return new CommonResponseDto("id: " + board_id + " has been successfully modified.");
             }
             
             // 이미지 레포지토리에서 사용자가 보낸 ID로 조회를 먼저 진행하여, 찾아진 이미지 목록을 가짐
@@ -277,6 +310,24 @@ public class BoardService {
             return new CommonResponseDto("App activation status updated to: " + isActive);
         } else {
             throw new CustomNotFoundException("해당 게시글은 앱 소개 게시글이 아닙니다.");
+        }
+    }
+
+    private void validateBoardAndRequestDtoType(Board board, BoardRequestDto requestDto) {
+        String boardType = board.getClass().getSimpleName();
+        String requestDtoType = requestDto.getClass().getSimpleName();
+
+        if (board instanceof IntroBoard && !(requestDto instanceof IntroBoardRequestDto)) {
+            throw new IllegalArgumentException(
+                    "Board 타입 불일치: " + boardType + "은(는) IntroBoardRequestDto로만 수정 가능합니다. (요청된 DTO: " + requestDtoType + ")");
+        }
+        if (board instanceof PhotoBoard && !(requestDto instanceof PhotoBoardRequestDto)) {
+            throw new IllegalArgumentException(
+                    "Board 타입 불일치: " + boardType + "은(는) PhotoBoardRequestDto로만 수정 가능합니다. (요청된 DTO: " + requestDtoType + ")");
+        }
+        if (board instanceof FaqBoard && !(requestDto instanceof FaqBoardRequestDto)) {
+            throw new IllegalArgumentException(
+                    "Board 타입 불일치: " + boardType + "은(는) FaqBoardRequestDto로만 수정 가능합니다. (요청된 DTO: " + requestDtoType + ")");
         }
     }
 }
