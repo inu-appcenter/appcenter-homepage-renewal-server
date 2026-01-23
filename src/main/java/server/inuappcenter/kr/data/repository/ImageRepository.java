@@ -21,4 +21,8 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     @Query("SELECT i FROM Image i WHERE i.id IN :imageIds AND i.board = :board")
     List<Image> findByImageIdsAndBoard(@Param("imageIds") List<Long> imageIds, @Param("board") Board board);
+
+    List<Image> findAllByBoard(Board board);
+
+    void deleteAllByBoard(Board board);
 }

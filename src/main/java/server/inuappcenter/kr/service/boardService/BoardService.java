@@ -130,8 +130,24 @@ public class BoardService {
     @Transactional
     public CommonResponseDto deleteBoard(Long id) {
         boardResponseRedisRepository.deleteById(id);
-        boardRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
+
+        Board foundBoard = boardRepository.findById(id)
+                .orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 보드가 없습니다."));
+        log.info("Board 타입: {}", foundBoard.getClass().getSimpleName());
+
+        // IntroBoard) 연결된 Stack, Group 먼저 삭제
+        if (foundBoard instanceof IntroBoard) {
+            IntroBoard introBoard = (IntroBoard) foundBoard;
+            introBoardStackRepository.deleteAllByIntroBoard(introBoard);
+            introBoardGroupRepository.deleteAllByIntroBoard(introBoard);
+            log.info("IntroBoard 연결 데이터 삭제 완료");
+        }
+
+        imageRepository.deleteAllByBoard(foundBoard);
+        log.info("이미지 삭제 완료");
+
         boardRepository.deleteById(id);
+        log.info("Board 삭제 완료: id={}", id);
         return new CommonResponseDto("id: " + id + " has been successfully deleted.");
     }
 
