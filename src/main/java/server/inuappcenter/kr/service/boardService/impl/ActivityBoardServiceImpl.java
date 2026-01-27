@@ -164,11 +164,6 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
             throw new IllegalArgumentException("대표 이미지가 비어있을 수 없습니다.");
         }
 
-        log.info("썸네일 수정 요청: boardId={}, 기존 thumbnailId={}, 새 파일명={}, 파일크기={}",
-                boardId,
-                board.getThumbnail() != null ? board.getThumbnail().getId() : "없음",
-                thumbnail.getOriginalFilename(),
-                thumbnail.getSize());
 
         Long oldThumbnailId = board.getThumbnail() != null ? board.getThumbnail().getId() : null;
 
