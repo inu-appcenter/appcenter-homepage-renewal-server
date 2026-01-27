@@ -23,6 +23,8 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
             "/faqs/public/*",
             "/introduction-board/public/*",
             "/photo-board/public/*",
+            "/activity-board/public/*",
+            "/stacks/public/*",
             "/image/photo/*",
             "/sign/sign-in",
             "/v3/api-docs/**",
