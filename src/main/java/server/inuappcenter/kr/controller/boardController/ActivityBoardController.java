@@ -51,6 +51,8 @@ public class ActivityBoardController {
                     + "- JSON 파트 이름은 request 이고 Content-Type은 application/json 으로 설정합니다.\n"
                     + "- FILE 파트는 thumbnail(대표 이미지)과 contentImages(콘텐츠 이미지들)입니다.\n"
                     + "- contentImages 는 동일 키로 여러 파일을 전송하며, 각 콘텐츠의 imageIndexes로 매칭합니다.\n"
+                    + "- sequence 는 1부터 시작, imageIndexes 0,1,2 로 순차적으로 작성합니다. (contentImages와 자동매칭됩니다.\n"
+                    + "- contents : 섹션 리스트, sequence : 섹션구분순서, contentImages : 전체 이미지 리스트"
     )
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> saveBoard(
@@ -85,9 +87,10 @@ public class ActivityBoardController {
 
     @Operation(
             summary = "대표 이미지 수정",
-            description = "활동 게시글의 대표 이미지를 수정합니다.\n"
+            description = "활동 게시글의 대표 이미지를 수정합니다. 대표이미지는 필수이므로, 삭제 API 없이 수정 API 만 존재합니다.\n"
                     + "- 요청은 multipart/form-data 로 전송합니다.\n"
-                    + "- 파일 파트 이름은 thumbnail 입니다."
+                    + "- 파일 파트 이름은 thumbnail 입니다.\n"
+                    + "- 수정 이후에도 imageUrl 경로는 유지됩니다."
     )
     @PatchMapping(value = "/thumbnail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> updateThumbnail(
@@ -114,7 +117,8 @@ public class ActivityBoardController {
 
     @Operation(
             summary = "활동 콘텐츠 이미지 순서 변경",
-            description = "하나의 contents 에서의 이미지 ID를 원하는 순서대로 배열하여 전송합니다."
+            description = "하나의 contents 에서의  imageId를 원하는 순서대로 배열하여 전송합니다.\n"
+                    + "- 기존 13,14 순으로 조회되었다면, imageIds [14,13]과 같이 원하는 순서대로 작성합니다."
     )
     @PatchMapping(value = "/contents/{content_id}/images/order")
     public ResponseEntity<CommonResponseDto> reorderContentImages(
@@ -124,7 +128,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.reorderContentImages(contentId, imageIds));
     }
 
-    @Operation(summary = "활동 콘텐츠 이미지 삭제", description = "활동 콘텐츠에서 이미지(1장 이상)를 삭제합니다.")
+    @Operation(summary = "활동 콘텐츠 이미지 단일 삭제", description = "활동 콘텐츠에서 이미지(1장 이상)를 삭제합니다.")
     @DeleteMapping("/contents/{content_id}/images")
     public ResponseEntity<CommonResponseDto> deleteContentImages(
             final @PathVariable("content_id") Long contentId,
