@@ -23,6 +23,7 @@ import java.util.List;
 public class IntroBoard extends Board {
     public String title;
     public String subTitle;
+    public String githubLink;
     public String androidStoreLink;
     public String appleStoreLink;
     public String webSiteLink;
@@ -38,6 +39,7 @@ public class IntroBoard extends Board {
         }
         this.title = introBoardRequestDto.getTitle();
         this.subTitle = introBoardRequestDto.getSubTitle();
+        this.githubLink = introBoardRequestDto.getGithubLink();
         this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
         this.appleStoreLink = introBoardRequestDto.getAppleStoreLink();
         this.webSiteLink = introBoardRequestDto.getWebSiteLink();
@@ -51,6 +53,9 @@ public class IntroBoard extends Board {
         }
         if (introBoardRequestDto.getSubTitle() != null) {
             this.subTitle = introBoardRequestDto.getSubTitle();
+        }
+        if (introBoardRequestDto.getGithubLink() != null) {
+            this.githubLink = introBoardRequestDto.getGithubLink();
         }
         if (introBoardRequestDto.getAndroidStoreLink() != null) {
             this.androidStoreLink = introBoardRequestDto.getAndroidStoreLink();
@@ -101,6 +106,7 @@ public class IntroBoard extends Board {
                 .body(this.body)
                 .title(this.title)
                 .subTitle(this.subTitle)
+                .githubLink(this.githubLink)
                 .androidStoreLink(this.androidStoreLink)
                 .appleStoreLink(this.appleStoreLink)
                 .websiteLink(this.webSiteLink)

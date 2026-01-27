@@ -56,6 +56,7 @@ public class IntroBoardServiceImpl implements AdditionalBoardService {
                 .id(baseResponse.getId())
                 .title(baseResponse.getTitle())
                 .subTitle(baseResponse.getSubTitle())
+                .githubLink(baseResponse.getGithubLink())
                 .androidStoreLink(baseResponse.getAndroidStoreLink())
                 .appleStoreLink(baseResponse.getAppleStoreLink())
                 .websiteLink(baseResponse.getWebsiteLink())

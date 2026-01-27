@@ -32,6 +32,12 @@ public class IntroBoardRequestDto extends BoardRequestDto{
 
     @Schema(
             example = "https://...",
+            description = "깃허브 개발 링크"
+    )
+    private String githubLink;
+
+    @Schema(
+            example = "https://...",
             description = "플레이 스토어 링크"
     )
     private String androidStoreLink;

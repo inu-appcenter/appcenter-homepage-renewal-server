@@ -15,6 +15,7 @@ import java.util.Map;
 public class IntroBoardResponseDto extends BoardResponseDto {
     public final String title;
     public final String subTitle;
+    public final String githubLink;
     public final String androidStoreLink;
     public final String appleStoreLink;
     public final String websiteLink;
@@ -24,12 +25,13 @@ public class IntroBoardResponseDto extends BoardResponseDto {
     private final List<GroupResponseDto> groups;
 
     @Builder
-    private IntroBoardResponseDto (Long id, String title, String subTitle, String androidStoreLink, String appleStoreLink, String websiteLink, Boolean isActive, String body, Map<Long, String> images,
+    private IntroBoardResponseDto (Long id, String title, String subTitle, String githubLink, String androidStoreLink, String appleStoreLink, String websiteLink, Boolean isActive, String body, Map<Long, String> images,
                                   List<StackResponseDto> stacks, List<GroupResponseDto> groups,
                                   LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
+        this.githubLink = githubLink;
         this.androidStoreLink = androidStoreLink;
         this.appleStoreLink = appleStoreLink;
         this.websiteLink = websiteLink;
@@ -48,6 +50,7 @@ public class IntroBoardResponseDto extends BoardResponseDto {
                 .id(introBoard.getId())
                 .title(introBoard.getTitle())
                 .subTitle(introBoard.getSubTitle())
+                .githubLink(introBoard.getGithubLink())
                 .androidStoreLink(introBoard.getAndroidStoreLink())
                 .appleStoreLink(introBoard.getAppleStoreLink())
                 .websiteLink(introBoard.getWebSiteLink())
