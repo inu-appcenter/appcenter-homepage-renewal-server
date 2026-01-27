@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import server.inuappcenter.kr.service.ImageService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/image")
@@ -23,7 +26,11 @@ public class ImageController {
     @Parameter(name = "id", description = "사진 ID", required = true)
     @GetMapping("/photo/{id}")
     public ResponseEntity<?> getPhoto (final @PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imageService.getImage(id));
+        byte[] imageData = imageService.getImage(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.noCache())
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
     }
 
     @Operation(summary = "사진 여러장 삭제하기", description = "삭제할 사진들의 ID와 게시판의 ID를 입력해주세요")
