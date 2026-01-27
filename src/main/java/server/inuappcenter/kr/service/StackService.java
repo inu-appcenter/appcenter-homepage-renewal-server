@@ -41,7 +41,7 @@ public class StackService {
         if (requestDto.getIconImage() != null && !requestDto.getIconImage().isEmpty()) {
             icon = new Image(requestDto.getIconImage());
         }
-        Stack stack = new Stack(requestDto.getName(), icon);
+        Stack stack = new Stack(requestDto.getName(), requestDto.getCategory(), icon);
         Stack savedStack = stackRepository.save(stack);
         return new CommonResponseDto("Stack ID : " + savedStack.getId() + "이 저장되었습니다.");
     }
@@ -55,7 +55,7 @@ public class StackService {
         if (requestDto.getIconImage() != null && !requestDto.getIconImage().isEmpty()) {
             newIcon = new Image(requestDto.getIconImage());
         }
-        stack.updateStack(requestDto.getName(), newIcon);
+        stack.updateStack(requestDto.getName(), requestDto.getCategory(), newIcon);
         stackRepository.save(stack);
         return new CommonResponseDto("Stack ID : " + id + "이 수정되었습니다.");
     }

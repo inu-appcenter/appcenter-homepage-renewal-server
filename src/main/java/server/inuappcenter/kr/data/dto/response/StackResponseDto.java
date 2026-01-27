@@ -3,6 +3,7 @@ package server.inuappcenter.kr.data.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import server.inuappcenter.kr.data.domain.Stack;
+import server.inuappcenter.kr.data.domain.StackCategory;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,12 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 public class StackResponseDto {
     private final Long id;
     private final String name;
+    private final StackCategory category;
     private final String icon;
 
     @Builder
-    private StackResponseDto(Long id, String name, String icon) {
+    private StackResponseDto(Long id, String name, StackCategory category, String icon) {
         this.id = id;
         this.name = name;
+        this.category = category;
         this.icon = icon;
     }
 
@@ -28,6 +31,7 @@ public class StackResponseDto {
         return StackResponseDto.builder()
                 .id(stack.getId())
                 .name(stack.getName())
+                .category(stack.getCategory())
                 .icon(icon)
                 .build();
     }

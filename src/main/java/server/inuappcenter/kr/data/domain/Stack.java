@@ -17,17 +17,24 @@ public class Stack {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private StackCategory category;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "image_id")
     private Image icon;
 
-    public Stack(String name, Image icon) {
+    public Stack(String name, StackCategory category, Image icon) {
         this.name = name;
+        this.category = category;
         this.icon = icon;
     }
 
-    public void updateStack(String name, Image icon) {
+    public void updateStack(String name, StackCategory category, Image icon) {
         this.name = name;
+        if (category != null) {
+            this.category = category;
+        }
         if (icon != null) {
             this.icon = icon;
         }

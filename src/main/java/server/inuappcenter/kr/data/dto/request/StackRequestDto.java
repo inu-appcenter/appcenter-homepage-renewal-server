@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.domain.StackCategory;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
@@ -19,6 +21,13 @@ public class StackRequestDto {
     )
     @NotBlank(message = "스택 이름이 비어있을 수 없습니다.")
     private String name;
+
+    @Schema(
+            example = "FRONTEND",
+            description = "카테고리 (FRONTEND, BACKEND, DEVOPS, DESIGN)"
+    )
+    @NotNull(message = "카테고리가 비어있을 수 없습니다.")
+    private StackCategory category;
 
     @Schema(
             description = "스택 아이콘 이미지"
