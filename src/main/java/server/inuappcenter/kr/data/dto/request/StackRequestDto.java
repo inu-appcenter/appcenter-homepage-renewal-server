@@ -24,7 +24,7 @@ public class StackRequestDto {
 
     @Schema(
             example = "FRONTEND",
-            description = "카테고리 (FRONTEND, BACKEND, DEVOPS, DESIGN)"
+            description = "카테고리 (FRONTEND, BACKEND, DATABASE, DEVOPS, OTHERS)"
     )
     @NotNull(message = "카테고리가 비어있을 수 없습니다.")
     private StackCategory category;
