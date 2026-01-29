@@ -189,6 +189,7 @@ public class ActivityBoardController {
 
         return new ActivityBoardRequestDto(
                 requestDto.getTitle(),
+                requestDto.getTitleEng(),
                 requestDto.getBody(),
                 thumbnail,
                 requestDto.getAuthor(),
@@ -217,6 +218,7 @@ public class ActivityBoardController {
 
         return new ActivityBoardRequestDto(
                 requestDto.getTitle(),
+                requestDto.getTitleEng(),
                 requestDto.getBody(),
                 null,
                 requestDto.getAuthor(),

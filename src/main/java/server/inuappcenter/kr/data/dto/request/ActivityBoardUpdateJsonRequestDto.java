@@ -15,6 +15,9 @@ public class ActivityBoardUpdateJsonRequestDto {
     @Schema(example = "2025 제 1회 세미나", description = "활동 제목")
     private String title;
 
+    @Schema(example = "2025 1st Seminar", description = "활동 제목 (영어)")
+    private String titleEng;
+
     @Schema(example = "제 1회 세미나입니다.", description = "활동 설명")
     private String body;
 

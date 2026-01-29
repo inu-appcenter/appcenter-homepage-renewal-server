@@ -76,6 +76,7 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
         return ActivityBoardResponseDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())
+                .titleEng(board.getTitleEng())
                 .body(board.getBody())
                 .thumbnail(imageUrl)
                 .author(board.getAuthor())

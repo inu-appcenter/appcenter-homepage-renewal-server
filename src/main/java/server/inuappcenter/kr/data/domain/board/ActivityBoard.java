@@ -21,6 +21,8 @@ import java.util.List;
 public class ActivityBoard extends Board {
     private String title;
 
+    private String titleEng;
+
     private String author;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -29,6 +31,7 @@ public class ActivityBoard extends Board {
 
     public ActivityBoard(ActivityBoardRequestDto requestDto) {
         this.title = requestDto.getTitle();
+        this.titleEng = requestDto.getTitleEng();
         this.body = requestDto.getBody();
         this.author = requestDto.getAuthor();
         if (requestDto.getThumbnail() != null && !requestDto.getThumbnail().isEmpty()) {
@@ -39,6 +42,9 @@ public class ActivityBoard extends Board {
     public void updateBoard(ActivityBoardRequestDto requestDto) {
         if (requestDto.getTitle() != null) {
             this.title = requestDto.getTitle();
+        }
+        if (requestDto.getTitleEng() != null) {
+            this.titleEng = requestDto.getTitleEng();
         }
         if (requestDto.getBody() != null) {
             this.body = requestDto.getBody();

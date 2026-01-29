@@ -20,6 +20,9 @@ public class ActivityBoardRequestDto extends BoardRequestDto {
     @NotBlank(message = "제목이 비어있을 수 없습니다.")
     private String title;
 
+    @Schema(example = "2025 1st Seminar", description = "활동 제목 (영어)")
+    private String titleEng;
+
     @Schema(example = "제 1회 세미나입니다.", description = "활동 설명")
     private String body;
 
