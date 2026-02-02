@@ -141,7 +141,7 @@ public class ActivityBoardController {
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponseDto> deleteBoard(final @PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.deleteBoard(id));
+        return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.deleteBoard(id));
     }
 
     @Operation(summary = "활동 글 (전체) 조회", description = "활동 글을 모두 반환합니다.")

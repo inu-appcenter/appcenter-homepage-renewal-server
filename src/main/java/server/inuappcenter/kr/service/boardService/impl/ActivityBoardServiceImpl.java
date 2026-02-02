@@ -129,6 +129,21 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
                 }
             }
 
+            // 요청에 포함된 contentId 수집
+            Set<Long> requestedIds = new HashSet<>();
+            for (ContentRequestDto contentDto : requestDto.getContents()) {
+                if (contentDto.getContentId() != null) {
+                    requestedIds.add(contentDto.getContentId());
+                }
+            }
+
+            // 요청에 없는 기존 content 삭제
+            for (ActivityContent existing : existingContents) {
+                if (!requestedIds.contains(existing.getId())) {
+                    activityContentRepository.delete(existing);
+                }
+            }
+
             for (ContentRequestDto contentDto : requestDto.getContents()) {
                 Long contentId = contentDto.getContentId();
                 if (contentId != null && existingById.containsKey(contentId)) {
@@ -312,5 +327,24 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
             boardResponseRedisRepository.deleteById(board.getId());
             log.info("ActivityBoard Redis 캐시 삭제: id={}", board.getId());
         }
+    }
+
+    @Transactional
+    public CommonResponseDto deleteBoard(Long boardId) {
+        ActivityBoard board = activityBoardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 활동 게시글이 없습니다."));
+
+        // ActivityContent 삭제 (Image는 cascade로 자동 삭제)
+        List<ActivityContent> contents = activityContentRepository.findAllByActivityBoardOrderBySequenceAsc(board);
+        activityContentRepository.deleteAll(contents);
+
+        // ActivityBoard 삭제 (thumbnail은 cascade로 자동 삭제)
+        activityBoardRepository.delete(board);
+
+        // Redis 캐시 삭제
+        boardResponseRedisRepository.deleteById(boardId);
+        log.info("ActivityBoard 삭제 완료: id={}", boardId);
+
+        return new CommonResponseDto("id: " + boardId + " has been successfully deleted.");
     }
 }
