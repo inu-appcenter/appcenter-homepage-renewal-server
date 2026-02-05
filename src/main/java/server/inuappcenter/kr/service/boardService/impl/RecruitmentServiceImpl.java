@@ -14,6 +14,7 @@ import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentFieldResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentListResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentResponseDto;
+import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentFieldMappingRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentFieldRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentRepository;
@@ -31,6 +32,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     private final RecruitmentRepository recruitmentRepository;
     private final RecruitmentFieldRepository recruitmentFieldRepository;
     private final RecruitmentFieldMappingRepository recruitmentFieldMappingRepository;
+    private final ImageRedisRepository imageRedisRepository;
     private final HttpServletRequest request;
 
     @Override
@@ -151,10 +153,20 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
             throw new IllegalArgumentException("대표 이미지가 비어있을 수 없습니다.");
         }
 
+        Long oldThumbnailId = recruitment.getThumbnail() != null ? recruitment.getThumbnail().getId() : null;
+
         recruitment.updateThumbnail(thumbnail);
         recruitmentRepository.save(recruitment);
 
-        log.info("리크루팅 썸네일 수정 완료: recruitmentId={}", recruitmentId);
+        // 기존 이미지 Redis 캐시 삭제
+        if (oldThumbnailId != null) {
+            imageRedisRepository.deleteById(oldThumbnailId);
+            log.info("리크루팅 썸네일 이미지 Redis 캐시 삭제: imageId={}", oldThumbnailId);
+        }
+
+        log.info("리크루팅 썸네일 수정 완료: recruitmentId={}, thumbnailId={}",
+                recruitmentId,
+                recruitment.getThumbnail() != null ? recruitment.getThumbnail().getId() : "없음");
         return new CommonResponseDto("thumbnail has been successfully modified.");
     }
 
