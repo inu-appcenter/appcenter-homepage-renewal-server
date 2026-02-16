@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.RecruitmentField;
 import server.inuappcenter.kr.data.domain.RecruitmentFieldMapping;
+import server.inuappcenter.kr.data.domain.User;
 import server.inuappcenter.kr.data.domain.board.Recruitment;
 import server.inuappcenter.kr.data.dto.request.RecruitmentRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
@@ -18,6 +19,7 @@ import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentFieldMappingRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentFieldRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentRepository;
+import server.inuappcenter.kr.data.repository.UserRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     private final RecruitmentFieldRepository recruitmentFieldRepository;
     private final RecruitmentFieldMappingRepository recruitmentFieldMappingRepository;
     private final ImageRedisRepository imageRedisRepository;
+    private final UserRepository userRepository;
     private final HttpServletRequest request;
 
     @Override
@@ -115,8 +118,11 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     }
 
     @Transactional
-    public CommonResponseDto saveRecruitment(RecruitmentRequestDto requestDto) {
-        Recruitment recruitment = new Recruitment(requestDto);
+    public CommonResponseDto saveRecruitment(String uid, RecruitmentRequestDto requestDto) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+
+        Recruitment recruitment = new Recruitment(requestDto, user);
         Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
 
         if (requestDto.getFieldIds() != null && !requestDto.getFieldIds().isEmpty()) {
@@ -127,10 +133,11 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     }
 
     @Transactional
-    public CommonResponseDto updateRecruitment(Long recruitmentId, RecruitmentRequestDto requestDto) {
+    public CommonResponseDto updateRecruitment(String uid, Long recruitmentId, RecruitmentRequestDto requestDto) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
                 .orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 리크루팅 게시글이 없습니다."));
 
+        validateOwnership(uid, recruitment);
         recruitment.updateRecruitment(requestDto);
 
         if (requestDto.getFieldIds() != null) {
@@ -145,9 +152,11 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     }
 
     @Transactional
-    public CommonResponseDto updateThumbnail(Long recruitmentId, MultipartFile thumbnail) {
+    public CommonResponseDto updateThumbnail(String uid, Long recruitmentId, MultipartFile thumbnail) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
                 .orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 리크루팅 게시글이 없습니다."));
+
+        validateOwnership(uid, recruitment);
 
         if (thumbnail == null || thumbnail.isEmpty()) {
             throw new IllegalArgumentException("대표 이미지가 비어있을 수 없습니다.");
@@ -171,9 +180,11 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     }
 
     @Transactional
-    public CommonResponseDto deleteRecruitment(Long recruitmentId) {
+    public CommonResponseDto deleteRecruitment(String uid, Long recruitmentId) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
                 .orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 리크루팅 게시글이 없습니다."));
+
+        validateOwnership(uid, recruitment);
 
         recruitmentFieldMappingRepository.deleteAllByRecruitment(recruitment);
         recruitmentRepository.delete(recruitment);
@@ -183,9 +194,11 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     }
 
     @Transactional
-    public CommonResponseDto toggleForceClosed(Long recruitmentId) {
+    public CommonResponseDto toggleForceClosed(String uid, Long recruitmentId) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
                 .orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 리크루팅 게시글이 없습니다."));
+
+        validateOwnership(uid, recruitment);
 
         recruitment.toggleForceClosed();
         recruitmentRepository.save(recruitment);
@@ -193,6 +206,32 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
         String status = recruitment.isForceClosed() ? "강제 마감" : "마감 해제 (날짜 기준)";
         log.info("Recruitment 강제 마감 토글: id={}, status={}", recruitmentId, status);
         return new CommonResponseDto("id: " + recruitmentId + " 상태가 '" + status + "'로 변경되었습니다.");
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecruitmentListResponseDto> findMyRecruitments(String uid) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+
+        List<Recruitment> myRecruitments = recruitmentRepository.findAllByCreatedBy(user);
+        List<RecruitmentListResponseDto> responseDtoList = new ArrayList<>();
+        for (Recruitment recruitment : myRecruitments) {
+            responseDtoList.add(buildListResponse(recruitment));
+        }
+        return responseDtoList;
+    }
+
+    private void validateOwnership(String uid, Recruitment recruitment) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+        // 관리자는 항상 허용
+        if (user.isAdmin()) {
+            return;
+        }
+        // 작성자 본인만 허용
+        if (recruitment.getCreatedBy() == null || recruitment.getCreatedBy().getId() != user.getId()) {
+            throw new IllegalArgumentException("본인이 작성한 게시글만 수정/삭제할 수 있습니다.");
+        }
     }
 
     private void saveFieldMappings(Recruitment recruitment, List<Long> fieldIds) {

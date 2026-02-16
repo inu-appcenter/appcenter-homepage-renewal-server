@@ -25,6 +25,8 @@ import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.StackResponseDto;
 import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
+import server.inuappcenter.kr.data.domain.Member;
+import server.inuappcenter.kr.data.domain.User;
 import server.inuappcenter.kr.data.repository.*;
 import server.inuappcenter.kr.exception.customExceptions.CustomFileSizeMisMatchException;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
@@ -47,6 +49,7 @@ public class BoardService {
     private final GroupRepository groupRepository;
     private final IntroBoardStackRepository introBoardStackRepository;
     private final IntroBoardGroupRepository introBoardGroupRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public BoardResponseDto findBoard(Long id) {
@@ -328,6 +331,27 @@ public class BoardService {
         } else {
             throw new CustomNotFoundException("해당 게시글은 앱 소개 게시글이 아닙니다.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<BoardResponseDto> findMyIntroBoards(String uid) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = user.getMember();
+        if (member == null) {
+            throw new CustomNotFoundException("연결된 멤버 정보가 없습니다.");
+        }
+
+        List<IntroBoardGroup> introBoardGroups = introBoardGroupRepository.findAllByGroup_Member(member);
+
+        return introBoardGroups.stream()
+                .map(IntroBoardGroup::getIntroBoard)
+                .distinct()
+                .map(introBoard -> {
+                    IntroBoardResponseDto baseResponse = IntroBoardResponseDto.entityToDto(request, introBoard);
+                    return buildIntroBoardResponse(introBoard, baseResponse);
+                })
+                .collect(Collectors.toList());
     }
 
     private void validateBoardAndRequestDtoType(Board board, BoardRequestDto requestDto) {

@@ -101,4 +101,10 @@ public class IntroBoardController {
 
 }
 
-// let her go
+// let her go    @PreAuthorize("hasRole('MEMBER')")
+    @Operation(summary = "내가 참여한 프로젝트 조회", description = "로그인한 사용자가 참여한 프로젝트 목록을 반환합니다.")
+    @GetMapping("/my")
+    public ResponseEntity<List<BoardResponseDto>> findMyBoards(@Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.findMyIntroBoards(userDetails.getUsername()));
+    }
+}

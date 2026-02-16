@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import server.inuappcenter.kr.data.domain.User;
 import server.inuappcenter.kr.data.dto.request.BoardRequestDto;
 import server.inuappcenter.kr.data.dto.request.RecruitmentRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
@@ -41,6 +42,25 @@ public class Recruitment extends Board {
     @JoinColumn(name = "thumbnail_id")
     private Image thumbnail;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    public Recruitment(RecruitmentRequestDto requestDto, User createdBy) {
+        this.createdBy = createdBy;
+        this.title = requestDto.getTitle();
+        this.body = requestDto.getBody();
+        this.startDate = requestDto.getStartDate();
+        this.endDate = requestDto.getEndDate();
+        this.capacity = requestDto.getCapacity();
+        this.targetAudience = requestDto.getTargetAudience();
+        this.applyLink = requestDto.getApplyLink();
+        if (requestDto.getThumbnail() != null && !requestDto.getThumbnail().isEmpty()) {
+            this.thumbnail = new Image(requestDto.getThumbnail());
+        }
+    }
+
+    @Deprecated
     public Recruitment(RecruitmentRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.body = requestDto.getBody();

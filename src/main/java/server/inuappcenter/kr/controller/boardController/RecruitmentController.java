@@ -101,6 +101,15 @@ public class RecruitmentController {
         return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.deleteRecruitment(id));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
+    @Operation(summary = "내가 작성한 리크루팅 목록 조회", description = "로그인한 사용자가 작성한 리크루팅 목록을 조회합니다.")
+    @GetMapping("/my")
+    public ResponseEntity<List<RecruitmentListResponseDto>> getMyRecruitments(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.findMyRecruitments(userDetails.getUsername()));
+    }
+
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(
             summary = "강제 마감/마감 해제 토글",
             description = "리크루팅의 모집 상태를 강제로 토글합니다.\n"
