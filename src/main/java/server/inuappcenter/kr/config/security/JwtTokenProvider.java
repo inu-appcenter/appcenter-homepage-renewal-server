@@ -70,7 +70,11 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest httpServletRequest) {
-        return httpServletRequest.getHeader("X-AUTH-TOKEN");
+        String bearer = httpServletRequest.getHeader("Authorization");
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        return null;
     }
 
     public boolean validateToken(String token) {

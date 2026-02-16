@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     @Bean
     public OpenAPI springOpenAPI() {
-        SecurityScheme apikey = new SecurityScheme()
-                .type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name("X-AUTH-TOKEN");
-        SecurityRequirement securityItem = new SecurityRequirement().addList("basicAuth");
+        SecurityScheme bearerScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT");
+        SecurityRequirement securityItem = new SecurityRequirement().addList("bearerAuth");
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("basicAuth", apikey))
+                .components(new Components().addSecuritySchemes("bearerAuth", bearerScheme))
                 .addSecurityItem(securityItem)
                 .info(new Info().title("Appcenter Homepage Application")
                         .description("앱센터 홈페이지 애플리케이션입니다.")
