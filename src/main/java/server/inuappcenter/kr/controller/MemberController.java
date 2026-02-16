@@ -42,6 +42,7 @@ public class MemberController {
     }
 
     @Operation(summary = "동아리원 (1명) 수정하기", description = "수정할 동아리원 정보를 입력해주세요")
+    @Operation(summary = "동아리원 (1명) 수정하기", description = "(관리자 전용) 수정할 동아리원 정보를 입력해주세요")
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @PatchMapping
     public ResponseEntity<MemberResponseDto> updateMember(@RequestBody MemberRequestDto memberRequestDto, final Long id) {
@@ -62,5 +63,16 @@ public class MemberController {
     @GetMapping("/id/{name}")
     public ResponseEntity<List<MemberResponseDto>> findIdByName(final @PathVariable("name") String name) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findIdByName(name));
+    }
+    @Operation(summary = "내 프로필 조회", description = "로그인한 사용자의 프로필을 반환합니다.")
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponseDto> getMyProfile(@Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMyProfile(userDetails.getUsername()));
+    }
+    @Operation(summary = "내 프로필 수정", description = "(회원전용) 로그인한 사용자의 프로필을 수정합니다.")
+    @PatchMapping("/me")
+    public ResponseEntity<MemberResponseDto> updateMyProfile(@Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
+                                                             @RequestBody @Valid MemberRequestDto memberRequestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMyProfile(userDetails.getUsername(), memberRequestDto));
     }
 }

@@ -6,10 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Member;
+import server.inuappcenter.kr.data.domain.User;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.response.MemberResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
+import server.inuappcenter.kr.data.repository.UserRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public MemberResponseDto getMember(Long id) {
@@ -67,5 +70,29 @@ public class MemberService {
         return foundMembers.stream()
                 .map(data -> data.toMemberResponseDto(data))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponseDto getMyProfile(String uid) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = user.getMember();
+        if (member == null) {
+            throw new CustomNotFoundException("연결된 멤버 정보가 없습니다.");
+        }
+        return MemberResponseDto.entityToDto(member);
+    }
+
+    @Transactional
+    public MemberResponseDto updateMyProfile(String uid, MemberRequestDto memberRequestDto) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = user.getMember();
+        if (member == null) {
+            throw new CustomNotFoundException("연결된 멤버 정보가 없습니다.");
+        }
+        member.updateMember(member.getId(), memberRequestDto);
+        Member savedMember = memberRepository.save(member);
+        return MemberResponseDto.entityToDto(savedMember);
     }
 }

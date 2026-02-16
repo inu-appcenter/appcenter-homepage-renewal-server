@@ -4,10 +4,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,6 +24,24 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public User(String uid, String password, Member member) {
+        this.uid = uid;
+        this.password = password;
+        this.member = member;
+    }
+
+    public boolean isAdmin() {
+        return this.id == 1L;
+    }
+
+    public void encodePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

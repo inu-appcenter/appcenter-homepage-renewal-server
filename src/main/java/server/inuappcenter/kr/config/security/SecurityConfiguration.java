@@ -29,9 +29,16 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
             "/recruitment-fields/public/*",
             "/image/photo/*",
             "/sign/sign-in",
+            "/sign/sign-up",
+            "/sign/refresh",
             "/v3/api-docs/**",
             "/swagger-ui/**"
     };
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
