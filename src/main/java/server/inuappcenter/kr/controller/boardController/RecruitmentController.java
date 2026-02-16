@@ -111,6 +111,21 @@ public class RecruitmentController {
     @PatchMapping("/{id}/toggle-close")
     public ResponseEntity<CommonResponseDto> toggleForceClosed(final @PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.toggleForceClosed(id));
+    @Operation(summary = "이메일 등록", description = "리크루팅 관련 이메일 주소를 등록합니다. 중복 등록은 불가합니다.")
+    @PostMapping("/public/email")
+    public ResponseEntity<CommonResponseDto> subscribeEmail(
+            @RequestBody @Valid EmailSubscriptionRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(emailSubscriptionService.subscribe(requestDto.getEmail()));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "수집된 이메일 목록 조회(관리자 전용)", description = "등록된 이메일 목록을 조회합니다. (관리자 전용)")
+    @GetMapping("/email")
+    public ResponseEntity<List<EmailSubscriptionResponseDto>> getAllEmails(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(emailSubscriptionService.findAll());
     }
 
     private RecruitmentRequestDto mapToMultipartRequest(RecruitmentJsonRequestDto requestDto, MultipartFile thumbnail) {
