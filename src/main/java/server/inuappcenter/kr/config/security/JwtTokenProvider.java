@@ -11,17 +11,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import server.inuappcenter.kr.data.domain.RefreshToken;
+import server.inuappcenter.kr.data.repository.RefreshTokenRepository;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
     private Key secretKey;
+    private static final long REFRESH_TOKEN_VALID_DAYS = 14;
 
     @PostConstruct
     protected void init() {
@@ -48,6 +54,14 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + tokenValidMillisecond))
                 .compact();
+    }
+
+    public String createRefreshToken(String userUid) {
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiryDate = LocalDateTime.now().plusDays(REFRESH_TOKEN_VALID_DAYS);
+        RefreshToken refreshToken = new RefreshToken(token, userUid, expiryDate);
+        refreshTokenRepository.save(refreshToken);
+        return token;
     }
 
     public Authentication getAuthentication(String token) {
