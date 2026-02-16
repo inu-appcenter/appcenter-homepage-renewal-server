@@ -35,8 +35,9 @@ public class Recruitment extends Board {
     @Column(name = "apply_link")
     private String applyLink; // 지원 링크
 
-    @Column(name = "force_closed")
-    private Boolean forceClosed = false; // 강제 마감 여부
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private RecruitmentStatus status = RecruitmentStatus.AUTO;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "thumbnail_id")
@@ -60,7 +61,6 @@ public class Recruitment extends Board {
         }
     }
 
-    @Deprecated
     public Recruitment(RecruitmentRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.body = requestDto.getBody();
@@ -108,23 +108,26 @@ public class Recruitment extends Board {
         }
     }
 
-    public boolean isRecruiting() {
-        // 강제 마감이면 무조건 마감
-        if (Boolean.TRUE.equals(forceClosed)) {
-            return false;
+    public RecruitmentStatus getStatus() {
+        if (status != RecruitmentStatus.AUTO) {
+            return status;
         }
-        if (endDate == null) {
-            return false;
+        // AUTO: 날짜 기반 자동 계산
+        LocalDate now = LocalDate.now();
+        if (startDate != null && now.isBefore(startDate)) {
+            return RecruitmentStatus.WAITING;
         }
-        return !LocalDate.now().isAfter(endDate);
+        if (endDate != null && now.isAfter(endDate)) {
+            return RecruitmentStatus.CLOSED;
+        }
+        if (startDate != null && endDate != null) {
+            return RecruitmentStatus.RECRUITING;
+        }
+        return RecruitmentStatus.WAITING;
     }
 
-    public void toggleForceClosed() {
-        this.forceClosed = !Boolean.TRUE.equals(this.forceClosed);
-    }
-
-    public Boolean isForceClosed() {
-        return Boolean.TRUE.equals(this.forceClosed);
+    public void updateManualStatus(RecruitmentStatus status) {
+        this.status = status;
     }
 
     public Long getDDay() {

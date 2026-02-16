@@ -10,6 +10,7 @@ import server.inuappcenter.kr.data.domain.RecruitmentField;
 import server.inuappcenter.kr.data.domain.RecruitmentFieldMapping;
 import server.inuappcenter.kr.data.domain.User;
 import server.inuappcenter.kr.data.domain.board.Recruitment;
+import server.inuappcenter.kr.data.domain.board.RecruitmentStatus;
 import server.inuappcenter.kr.data.dto.request.RecruitmentRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentFieldResponseDto;
@@ -86,8 +87,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
                 .targetAudience(recruitment.getTargetAudience())
                 .applyLink(recruitment.getApplyLink())
                 .thumbnail(thumbnailUrl)
-                .isRecruiting(recruitment.isRecruiting())
-                .forceClosed(recruitment.isForceClosed())
+                .status(recruitment.getStatus())
                 .dDay(recruitment.getDDay())
                 .fields(fieldDtos)
                 .createdDate(recruitment.getCreatedDate())
@@ -111,7 +111,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
                 .id(recruitment.getId())
                 .title(recruitment.getTitle())
                 .thumbnail(thumbnailUrl)
-                .isRecruiting(recruitment.isRecruiting())
+                .status(recruitment.getStatus())
                 .dDay(recruitment.getDDay())
                 .fieldNames(fieldNames)
                 .build();
@@ -194,18 +194,17 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     }
 
     @Transactional
-    public CommonResponseDto toggleForceClosed(String uid, Long recruitmentId) {
+    public CommonResponseDto changeStatus(String uid, Long recruitmentId, RecruitmentStatus status) {
         Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
                 .orElseThrow(() -> new CustomNotFoundException("ID에 해당되는 리크루팅 게시글이 없습니다."));
 
         validateOwnership(uid, recruitment);
 
-        recruitment.toggleForceClosed();
+        recruitment.updateManualStatus(status);
         recruitmentRepository.save(recruitment);
 
-        String status = recruitment.isForceClosed() ? "강제 마감" : "마감 해제 (날짜 기준)";
-        log.info("Recruitment 강제 마감 토글: id={}, status={}", recruitmentId, status);
-        return new CommonResponseDto("id: " + recruitmentId + " 상태가 '" + status + "'로 변경되었습니다.");
+        log.info("Recruitment 상태 변경: id={}, manualStatus={}", recruitmentId, status);
+        return new CommonResponseDto("id: " + recruitmentId + " 상태가 '" + status + "'(으)로 변경되었습니다.");
     }
 
     @Transactional(readOnly = true)

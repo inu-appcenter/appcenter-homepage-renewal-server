@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.domain.board.RecruitmentStatus;
 import server.inuappcenter.kr.data.dto.request.EmailSubscriptionRequestDto;
 import server.inuappcenter.kr.data.dto.request.RecruitmentJsonRequestDto;
 import server.inuappcenter.kr.data.dto.request.RecruitmentRequestDto;
@@ -108,6 +109,23 @@ public class RecruitmentController {
     }
 
     @PreAuthorize("hasRole('MEMBER')")
+    @Operation(
+            summary = "모집 상태 변경",
+            description = "리크루팅의 모집 상태를 변경합니다.\n"
+                    + "- WAITING(모집 대기), RECRUITING(모집 중), CLOSED(모집 마감) 중 선택하면 해당 상태로 고정됩니다.\n"
+                    + "- AUTO를 선택하면 시작일/마감일 기준 자동 계산으로 돌아갑니다."
+    )
+    @Parameter(name = "id", description = "리크루팅 ID")
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<CommonResponseDto> changeStatus(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
+            final @PathVariable("id") Long id,
+            final @RequestParam("status") RecruitmentStatus status) {
+        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.changeStatus(userDetails.getUsername(), id, status));
+    }
+
+
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "리크루팅 삭제", description = "삭제할 리크루팅의 ID를 입력해주세요")
     @Parameter(name = "id", description = "리크루팅 ID")
     @DeleteMapping("/{id}")
@@ -123,21 +141,6 @@ public class RecruitmentController {
     public ResponseEntity<List<RecruitmentListResponseDto>> getMyRecruitments(
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.findMyRecruitments(userDetails.getUsername()));
-    }
-
-    @PreAuthorize("hasRole('MEMBER')")
-    @Operation(
-            summary = "강제 마감/마감 해제 토글",
-            description = "리크루팅의 모집 상태를 강제로 토글합니다.\n"
-                    + "- 강제 마감 상태면 마감일과 관계없이 '마감' 상태로 표시됩니다.\n"
-                    + "- 다시 호출하면 마감 해제되어 날짜 기준으로 상태가 계산됩니다."
-    )
-    @Parameter(name = "id", description = "리크루팅 ID")
-    @PatchMapping("/{id}/toggle-close")
-    public ResponseEntity<CommonResponseDto> toggleForceClosed(
-            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
-            final @PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.toggleForceClosed(userDetails.getUsername(), id));
     }
 
     @Operation(summary = "이메일 등록", description = "리크루팅 관련 이메일 주소를 등록합니다. 중복 등록은 불가합니다.")
