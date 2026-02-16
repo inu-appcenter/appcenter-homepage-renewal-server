@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
@@ -22,6 +25,7 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "동아리원 (1명) 정보 가져오기", description = "동아리원에게 부여된 id를 입력해주세요 / 동아리원(1명)을 반환합니다.")
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @GetMapping("/{id}")
@@ -29,19 +33,21 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember(id));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "동아리원 (전체) 정보 가져오기", description = "전체 동아리원을 반환합니다.")
     @GetMapping("/all-members")
     public ResponseEntity<List<MemberResponseDto>> findAllMember() {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findAllMember());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "동아리원 (1명) 등록", description = "등록할 동아리원 정보를 입력해주세요")
     @PostMapping
     public ResponseEntity<MemberResponseDto> saveMember(final @RequestBody @Valid MemberRequestDto memberRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.saveMember(memberRequestDto));
     }
 
-    @Operation(summary = "동아리원 (1명) 수정하기", description = "수정할 동아리원 정보를 입력해주세요")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "동아리원 (1명) 수정하기", description = "(관리자 전용) 수정할 동아리원 정보를 입력해주세요")
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @PatchMapping
@@ -51,6 +57,7 @@ public class MemberController {
 
     // 삭제 API 필요
     // 그룹에 등록되어 있는지 확인 후, 등록 안되어 있는 경우에만 삭제처리 하게끔 구현
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "동아리원 (1명) 삭제하기", description = "동아리원 삭제 / 동아리원이 그룹에 등록되어 있으면 삭제되지 않습니다.")
     @Parameter(name = "id", description = "동아리원 id", required = true)
     @DeleteMapping("/{id}")
@@ -58,17 +65,22 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember(id));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "동아리원ID 이름으로 찾기", description = "동아리원 ID를 이름으로 찾을 수 있습니다.")
     @Parameter(name = "name", description = "동아리원 이름", required = true)
     @GetMapping("/id/{name}")
     public ResponseEntity<List<MemberResponseDto>> findIdByName(final @PathVariable("name") String name) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findIdByName(name));
     }
+
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "내 프로필 조회", description = "로그인한 사용자의 프로필을 반환합니다.")
     @GetMapping("/me")
     public ResponseEntity<MemberResponseDto> getMyProfile(@Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getMyProfile(userDetails.getUsername()));
     }
+
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "내 프로필 수정", description = "(회원전용) 로그인한 사용자의 프로필을 수정합니다.")
     @PatchMapping("/me")
     public ResponseEntity<MemberResponseDto> updateMyProfile(@Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +34,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Tag(name = "[Activity] 활동 게시판")
 public class ActivityBoardController {
-    private final BoardService boardService;
     private final ActivityBoardServiceImpl activityBoardService;
     private final AdditionalBoardStrategyProvider additionalBoardStrategyProvider;
 
@@ -44,6 +44,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.findBoard(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "게시글 (1개) 저장하기",
             description = "활동 게시글을 저장합니다.\n"
@@ -67,6 +68,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(activityBoardService.saveBoard(mappedRequest));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "게시글 메타데이터 수정",
             description = "활동 게시글의 텍스트/메타데이터만 수정합니다.\n"
@@ -85,6 +87,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.updateBoard(boardId, mappedRequest));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "대표 이미지 수정",
             description = "활동 게시글의 대표 이미지를 수정합니다. 대표이미지는 필수이므로, 삭제 API 없이 수정 API 만 존재합니다.\n"
@@ -100,6 +103,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.updateThumbnail(boardId, thumbnail));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "활동 콘텐츠 이미지 교체/추가",
             description = "특정 활동 콘텐츠의 이미지를 교체하거나 추가합니다. 동시는 불가능합니다.\n"
@@ -115,6 +119,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.updateContentImages(contentId, imageIds, images));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "활동 콘텐츠 이미지 순서 변경",
             description = "하나의 contents 에서의  imageId를 원하는 순서대로 배열하여 전송합니다.\n"
@@ -128,6 +133,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.reorderContentImages(contentId, imageIds));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "활동 콘텐츠 이미지 단일 삭제", description = "활동 콘텐츠에서 이미지(1장 이상)를 삭제합니다.")
     @DeleteMapping("/contents/{content_id}/images")
     public ResponseEntity<CommonResponseDto> deleteContentImages(
@@ -137,6 +143,7 @@ public class ActivityBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(activityBoardService.deleteContentImages(contentId, imageIds));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping("/{id}")

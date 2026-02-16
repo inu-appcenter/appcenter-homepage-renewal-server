@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
@@ -39,12 +40,14 @@ public class FaqController {
         return ResponseEntity.status(HttpStatus.OK).body(additionalBoardStrategyProvider.findBoardList("FaqBoardServiceImpl", topic));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "FAQ 한 개 작성", description = "저장할 FAQ JSON을 보내주세요")
     @PostMapping
     public ResponseEntity<CommonResponseDto> saveFaq(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(boardService.saveBoard(faqBoardRequestDto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "FAQ 한 개 수정", description = "수정할 FAQ JSON을 보내주세요")
     @PatchMapping
     public ResponseEntity<CommonResponseDto> updateFaq(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto,
@@ -52,6 +55,7 @@ public class FaqController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(id, null, faqBoardRequestDto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "FAQ 한 개 삭제", description = "삭제할 faq_id를 입력해주세요")
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponseDto> deleteFaq(final @PathVariable("id") Long id) {

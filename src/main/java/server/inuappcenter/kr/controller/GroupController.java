@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
@@ -40,6 +41,7 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllGroup(year, part));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "그룹 멤버 (1명) 편성", description = "저장할 member_id(멤버)와 role_id(역할)을 입력해주세요")
     @Parameters({
             @Parameter(name = "member_id", description = "멤버 ID", required = true),
@@ -52,6 +54,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.CREATED).body(groupService.assignGroup(member_id, role_id, groupRequestDto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "그룹 멤버 (1명) 수정", description = "수정할 Group id를 입력해주세요")
     @PatchMapping
     public ResponseEntity<GroupResponseDto> updateGroup(final @RequestBody @Valid GroupRequestDto groupRequestDto,
@@ -60,18 +63,21 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.updateGroup(groupRequestDto, groupId, roleId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "그룹 멤버 (1명) 삭제", description = "삭제할 Group id를 입력해주세요")
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponseDto> deleteGroup(final @PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.deleteGroup(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "그룹 멤버 여러명 삭제", description = "삭제할 Group id를 입력해주세요")
     @DeleteMapping("/all-groups-members/{id}")
     public ResponseEntity<CommonResponseDto> deleteMultipleGroups(final @PathVariable("id") List<Long> id) {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.deleteMultipleGroups(id));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "동아리원 이름으로 소속된 그룹들을 찾기", description = "동아리원의 이름을 입력해주세요")
     @GetMapping("/members/{name}")
     public ResponseEntity<List<GroupResponseDto>> searchByMemberName(final @PathVariable("name") String name) {

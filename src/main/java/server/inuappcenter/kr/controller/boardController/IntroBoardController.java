@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
@@ -25,7 +28,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/introduction-board")
 @RequiredArgsConstructor
-@Tag(name = "[Intro] 애플리케이션 소개 게시판")
+@Tag(name = "[Intro] 애플리케이션 소개 게시판 (ADMIN + MEMBER)")
 public class IntroBoardController {
 
     public final BoardService boardService;
@@ -38,7 +41,8 @@ public class IntroBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.findBoard(id));
     }
 
-    @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다.<br/><br/>" +
+    @PreAuthorize("hasRole('MEMBER')")
+    @Operation(summary = "게시글 (1개) 저장하기", description = "(관리자, 멤버) 게시글을 저장합니다.<br/><br/>" +
             "- 첫번째 사진은 게시글의 썸네일로 사용됩니다.<br/>" +
             "- 제목과 부제목(짧은 설명글)만 있어도 저장 가능합니다.<br/>" +
             "- groupIds는 member_id가 아닌 group_id를 입력해주세요.")
@@ -52,6 +56,7 @@ public class IntroBoardController {
         }
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id", required = true)
     @DeleteMapping("/{id}")
@@ -66,6 +71,7 @@ public class IntroBoardController {
     }
 
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "게시글 수정", description = "사진 수정(추가)이 있을 경우에는 경로에 /{photo_ids}를 포함해주세요")
     @PatchMapping(path = {"/{photo_ids}", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> updateBoard(
@@ -91,6 +97,7 @@ public class IntroBoardController {
         }
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "앱 활성화 상태 변경", description = "앱의 활성화/비활성화 상태만 변경합니다.")
     @PatchMapping("/{board_id}/activation")
     public ResponseEntity<CommonResponseDto> updateAppActivation(
@@ -99,9 +106,7 @@ public class IntroBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.updateAppActivation(id, isActive));
     }
 
-}
-
-// let her go    @PreAuthorize("hasRole('MEMBER')")
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "내가 참여한 프로젝트 조회", description = "로그인한 사용자가 참여한 프로젝트 목록을 반환합니다.")
     @GetMapping("/my")
     public ResponseEntity<List<BoardResponseDto>> findMyBoards(@Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails) {

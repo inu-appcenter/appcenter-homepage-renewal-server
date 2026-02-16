@@ -1,22 +1,31 @@
 package server.inuappcenter.kr.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.dto.request.RefreshTokenRequestDto;
 import server.inuappcenter.kr.data.dto.request.SignInRequestDto;
+import server.inuappcenter.kr.data.dto.request.SignUpRequestDto;
 import server.inuappcenter.kr.data.dto.response.SignInResponseDto;
 import server.inuappcenter.kr.service.SignService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/sign")
 @RequiredArgsConstructor
-@Tag(name = "[Sign] 로그인")
+@Tag(name = "[Sign] 로그인 / 회원가입")
 public class SignController {
     private final SignService signService;
 
@@ -42,6 +51,7 @@ public class SignController {
         return ResponseEntity.status(HttpStatus.OK).body(signService.refreshAccessToken(requestDto.getRefreshToken()));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "비밀번호 일괄 해싱", description = "평문으로 저장된 기존 비밀번호를 BCrypt로 일괄 해싱합니다. (관리자 전용, 1회성)")
     @PostMapping("/migrate-passwords")
     public ResponseEntity<CommonResponseDto> migratePasswords(

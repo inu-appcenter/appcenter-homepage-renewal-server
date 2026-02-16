@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/roles")
 @RequiredArgsConstructor
 @Tag(name = "[Role] 역할 관리")
+@PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
     private final RoleService roleService;
 

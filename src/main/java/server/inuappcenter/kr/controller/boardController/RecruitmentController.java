@@ -7,15 +7,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.dto.request.EmailSubscriptionRequestDto;
 import server.inuappcenter.kr.data.dto.request.RecruitmentJsonRequestDto;
 import server.inuappcenter.kr.data.dto.request.RecruitmentRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
+import server.inuappcenter.kr.data.dto.response.EmailSubscriptionResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentListResponseDto;
 import server.inuappcenter.kr.exception.customExceptions.CustomModelAttributeException;
+import server.inuappcenter.kr.service.EmailSubscriptionService;
 import server.inuappcenter.kr.service.boardService.impl.RecruitmentServiceImpl;
 
 import javax.validation.Valid;
@@ -28,6 +34,7 @@ import java.util.Objects;
 @Tag(name = "[Recruitment] 리크루팅")
 public class RecruitmentController {
     private final RecruitmentServiceImpl recruitmentService;
+    private final EmailSubscriptionService emailSubscriptionService;
 
     @Operation(summary = "리크루팅 (1개) 조회", description = "조회할 리크루팅의 ID를 입력해주세요. 전체 정보를 반환합니다.")
     @Parameter(name = "id", description = "리크루팅 ID")
@@ -42,6 +49,7 @@ public class RecruitmentController {
         return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.findAllRecruitmentList());
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(
             summary = "리크루팅 저장",
             description = "리크루팅을 저장합니다.\n"
@@ -52,6 +60,7 @@ public class RecruitmentController {
     )
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> saveRecruitment(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
             final @RequestPart("request") @Valid RecruitmentJsonRequestDto requestDto,
             final @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
             BindingResult bindingResult) {
@@ -59,9 +68,10 @@ public class RecruitmentController {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         RecruitmentRequestDto mappedRequest = mapToMultipartRequest(requestDto, thumbnail);
-        return ResponseEntity.status(HttpStatus.CREATED).body(recruitmentService.saveRecruitment(mappedRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(recruitmentService.saveRecruitment(userDetails.getUsername(), mappedRequest));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(
             summary = "리크루팅 메타데이터 수정",
             description = "리크루팅의 텍스트/메타데이터를 수정합니다.\n"
@@ -70,6 +80,7 @@ public class RecruitmentController {
     )
     @PatchMapping(value = "/meta", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CommonResponseDto> updateRecruitmentMeta(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
             final @RequestParam("recruitment_id") Long recruitmentId,
             final @RequestBody @Valid RecruitmentJsonRequestDto requestDto,
             BindingResult bindingResult) {
@@ -77,9 +88,10 @@ public class RecruitmentController {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         RecruitmentRequestDto mappedRequest = mapToMultipartRequest(requestDto, null);
-        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.updateRecruitment(recruitmentId, mappedRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.updateRecruitment(userDetails.getUsername(), recruitmentId, mappedRequest));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(
             summary = "대표 이미지 수정",
             description = "리크루팅의 대표 이미지를 수정합니다.\n"
@@ -88,17 +100,21 @@ public class RecruitmentController {
     )
     @PatchMapping(value = "/thumbnail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> updateThumbnail(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
             final @RequestParam("recruitment_id") Long recruitmentId,
             final @RequestPart("thumbnail") MultipartFile thumbnail
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.updateThumbnail(recruitmentId, thumbnail));
+        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.updateThumbnail(userDetails.getUsername(), recruitmentId, thumbnail));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @Operation(summary = "리크루팅 삭제", description = "삭제할 리크루팅의 ID를 입력해주세요")
     @Parameter(name = "id", description = "리크루팅 ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<CommonResponseDto> deleteRecruitment(final @PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.deleteRecruitment(id));
+    public ResponseEntity<CommonResponseDto> deleteRecruitment(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
+            final @PathVariable("id") Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.deleteRecruitment(userDetails.getUsername(), id));
     }
 
     @PreAuthorize("hasRole('MEMBER')")
@@ -118,8 +134,12 @@ public class RecruitmentController {
     )
     @Parameter(name = "id", description = "리크루팅 ID")
     @PatchMapping("/{id}/toggle-close")
-    public ResponseEntity<CommonResponseDto> toggleForceClosed(final @PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.toggleForceClosed(id));
+    public ResponseEntity<CommonResponseDto> toggleForceClosed(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
+            final @PathVariable("id") Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(recruitmentService.toggleForceClosed(userDetails.getUsername(), id));
+    }
+
     @Operation(summary = "이메일 등록", description = "리크루팅 관련 이메일 주소를 등록합니다. 중복 등록은 불가합니다.")
     @PostMapping("/public/email")
     public ResponseEntity<CommonResponseDto> subscribeEmail(

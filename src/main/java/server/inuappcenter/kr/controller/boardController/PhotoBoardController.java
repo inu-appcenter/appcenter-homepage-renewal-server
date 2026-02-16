@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
@@ -37,6 +38,7 @@ public class PhotoBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.findBoard(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "게시글 (1개) 저장하기", description = "게시글을 저장합니다. (첫번째 사진은 게시글의 썸네일로 사용됩니다.)")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> saveBoard(final @ModelAttribute @Valid PhotoBoardRequestDto photoBoardRequestDto,
@@ -48,6 +50,7 @@ public class PhotoBoardController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "게시글 수정", description = "사진 수정이 있을 경우에는 경로에 /{photo_id}를 포함해주세요")
     @PatchMapping(path = {"/{photo_id}", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> updateBoard(
@@ -61,6 +64,7 @@ public class PhotoBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(photoBoardService.updateBoard(board_id, photo_id, photoBoardRequestDto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
     @Parameter(name = "id", description = "게시판 id")
     @DeleteMapping("/{id}")
