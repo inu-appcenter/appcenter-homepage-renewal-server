@@ -162,7 +162,7 @@ public class SignService {
         Member member = findMemberByIdentifier(dto.getName(), dto.getEmail(), dto.getPhoneNumber(), dto.getStudentNumber());
         User user = userRepository.findByMember(member)
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버에 연결된 계정이 없습니다."));
-        return new CommonResponseDto("아이디: " + user.getUid());
+        return new CommonResponseDto(user.getUid());
     }
 
     @Transactional
