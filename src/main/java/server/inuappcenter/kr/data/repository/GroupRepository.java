@@ -32,4 +32,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("SELECT DISTINCT e.part FROM Group e")
     List<String> findAllParts();
 
+    @Query("SELECT COUNT(e) FROM Group e WHERE e.year = :year AND e.role.roleName IN ('센터장', '파트장','운영진')")
+    long countLeadersByYear(Double year);
+
 }

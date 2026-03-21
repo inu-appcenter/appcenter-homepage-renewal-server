@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.FaqBoardRequestDto;
@@ -51,8 +53,9 @@ public class FaqController {
     @Operation(summary = "FAQ 한 개 수정", description = "수정할 FAQ JSON을 보내주세요")
     @PatchMapping
     public ResponseEntity<CommonResponseDto> updateFaq(final @RequestBody @Valid FaqBoardRequestDto faqBoardRequestDto,
-                                                        final Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(id, null, faqBoardRequestDto));
+                                                        final Long id,
+                                                        @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(id, null, faqBoardRequestDto, userDetails.getUsername()));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

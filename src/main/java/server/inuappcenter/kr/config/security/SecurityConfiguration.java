@@ -32,6 +32,7 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
             "/recruitment/public/*",
             "/recruitment-fields/public/*",
             "/image/photo/*",
+            "/members/public/*",
             "/sign/sign-in",
             "/sign/sign-up",
             "/sign/refresh",

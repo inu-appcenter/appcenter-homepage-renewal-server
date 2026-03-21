@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
+import server.inuappcenter.kr.data.dto.response.AppCenterStatsResponseDto;
 import server.inuappcenter.kr.data.dto.response.MemberResponseDto;
 import server.inuappcenter.kr.service.MemberService;
 
@@ -71,6 +72,12 @@ public class MemberController {
     @GetMapping("/id/{name}")
     public ResponseEntity<List<MemberResponseDto>> findIdByName(final @PathVariable("name") String name) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findIdByName(name));
+    }
+
+    @Operation(summary = "앱센터 통계 조회", description = "전체 멤버 수 / 최신 기수 / 파트 수 / 최신 기수의 센터장·파트장 수를 반환합니다.")
+    @GetMapping("/public/stats")
+    public ResponseEntity<AppCenterStatsResponseDto> getAppCenterStats() {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getAppCenterStats());
     }
 
     @PreAuthorize("hasRole('MEMBER')")

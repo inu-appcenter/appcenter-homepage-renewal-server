@@ -8,6 +8,7 @@ import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.User;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
+import server.inuappcenter.kr.data.dto.response.AppCenterStatsResponseDto;
 import server.inuappcenter.kr.data.dto.response.MemberResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
@@ -16,6 +17,7 @@ import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,7 +54,7 @@ public class MemberService {
                 .map(data -> data.toMemberResponseDto(data))
                 .collect(Collectors.toList());
     }
-
+0
     public CommonResponseDto deleteMember(Long id) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_group = groupRepository.findAllByMember(found_member);
@@ -81,6 +83,25 @@ public class MemberService {
             throw new CustomNotFoundException("연결된 멤버 정보가 없습니다.");
         }
         return MemberResponseDto.entityToDto(member);
+    }
+
+    @Transactional(readOnly = true)
+    public AppCenterStatsResponseDto getAppCenterStats() {
+        long totalMemberCount = memberRepository.count();
+
+        List<Double> years = groupRepository.findAllYearsDesc();
+        Double currentYear = years.isEmpty() ? null : years.get(0); // 최댓값 가져오기
+
+        Set<String> devParts = Set.of("dev", "ios", "android", "web", "server");  // 개발 파트 -> Dev 파트로 통일화
+        List<String> allParts = groupRepository.findAllParts();
+        long partCount = allParts.stream()
+                .map(p -> devParts.contains(p.toLowerCase()) ? "dev" : p)
+                .collect(Collectors.toSet())
+                .size();
+
+        long leaderCount = currentYear != null ? groupRepository.countLeadersByYear(currentYear) : 0;
+
+        return new AppCenterStatsResponseDto(totalMemberCount, currentYear, partCount, leaderCount);
     }
 
     @Transactional
