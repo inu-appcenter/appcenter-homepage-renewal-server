@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import server.inuappcenter.kr.config.security.JwtTokenProvider;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.User;
+import server.inuappcenter.kr.data.dto.request.ChangePasswordRequestDto;
+import server.inuappcenter.kr.data.dto.request.FindIdRequestDto;
+import server.inuappcenter.kr.data.dto.request.ResetPasswordRequestDto;
 import server.inuappcenter.kr.data.dto.request.SignInRequestDto;
 import server.inuappcenter.kr.data.dto.request.SignUpRequestDto;
 import server.inuappcenter.kr.data.dto.response.SignInResponseDto;
@@ -150,6 +153,73 @@ public class SignService {
             if (userRepository.findByMember(found).isPresent()) {
                 throw new IllegalArgumentException("해당 멤버는 이미 계정이 존재합니다.");
             }
+        }
+
+        return found;
+    }
+
+    public CommonResponseDto findId(FindIdRequestDto dto) {
+        Member member = findMemberByIdentifier(dto.getName(), dto.getEmail(), dto.getPhoneNumber(), dto.getStudentNumber());
+        User user = userRepository.findByMember(member)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버에 연결된 계정이 없습니다."));
+        return new CommonResponseDto("아이디: " + user.getUid());
+    }
+
+    @Transactional
+    public CommonResponseDto resetPassword(ResetPasswordRequestDto dto) {
+        User user = userRepository.findByUid(dto.getUid())
+                .orElseThrow(() -> new CustomNotFoundException("존재하지 않는 아이디입니다."));
+
+        if (!user.getMember().getName().equals(dto.getName())) {
+            throw new IllegalArgumentException("입력하신 정보와 일치하는 계정을 찾을 수 없습니다.");
+        }
+
+        findMemberByIdentifier(dto.getName(), dto.getEmail(), dto.getPhoneNumber(), dto.getStudentNumber());
+
+        user.encodePassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+        return new CommonResponseDto("비밀번호가 변경되었습니다.");
+    }
+
+    @Transactional
+    public CommonResponseDto changePassword(String uid, ChangePasswordRequestDto dto) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new CustomPasswordMisMatchException();
+        }
+
+        user.encodePassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+        return new CommonResponseDto("비밀번호가 변경되었습니다.");
+    }
+
+    private Member findMemberByIdentifier(String name, String email, String phoneNumber, String studentNumber) {
+        boolean hasIdentifier = (email != null && !email.isBlank())
+                || (phoneNumber != null && !phoneNumber.isBlank())
+                || (studentNumber != null && !studentNumber.isBlank());
+
+        if (!hasIdentifier) {
+
+            throw new IllegalArgumentException("이메일, 전화번호, 학번 중 하나는 입력해야 합니다.");
+        }
+
+        Member found = null;
+
+        if (email != null && !email.isBlank()) {
+            found = memberRepository.findByEmail(email).orElse(null);
+        }
+        if (found == null && phoneNumber != null && !phoneNumber.isBlank()) {
+            String digitsOnly = phoneNumber.replaceAll("-", "");
+            found = memberRepository.findByPhoneNumberIgnoreDashes(digitsOnly).orElse(null);
+        }
+        if (found == null && studentNumber != null && !studentNumber.isBlank()) {
+            found = memberRepository.findByStudentNumber(studentNumber).orElse(null);
+        }
+
+        if (found == null || !found.getName().equals(name)) {
+            throw new IllegalArgumentException("입력하신 정보와 일치하는 계정을 찾을 수 없습니다.");
         }
 
         return found;

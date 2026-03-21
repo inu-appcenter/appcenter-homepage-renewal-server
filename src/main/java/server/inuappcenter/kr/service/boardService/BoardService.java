@@ -2,6 +2,7 @@ package server.inuappcenter.kr.service.boardService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -156,11 +157,24 @@ public class BoardService {
     }
 
     @Transactional
-    public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto) {
+    public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto, String uid) {
         // 캐시에서 보드를 삭제한다.
         boardResponseRedisRepository.deleteById(board_id);
 
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+
+        // IntroBoard인 경우 수정 권한 확인 (ADMIN 또는 해당 프로젝트에 묶인 멤버)
+        if (foundBoard instanceof IntroBoard) {
+            User user = userRepository.findByUid(uid)
+                    .orElseThrow(() -> new CustomNotFoundException("사용자를 찾을 수 없습니다."));
+            if (!user.isAdmin()) {
+                Member member = user.getMember();
+                boolean isLinked = introBoardGroupRepository.existsByIntroBoardAndGroup_Member((IntroBoard) foundBoard, member);
+                if (!isLinked) {
+                    throw new AccessDeniedException("해당 프로젝트를 수정할 권한이 없습니다.");
+                }
+            }
+        }
 
         // Board 타입과 RequestDto 타입 일치 여부 확인
         validateBoardAndRequestDtoType(foundBoard, boardRequestDto);

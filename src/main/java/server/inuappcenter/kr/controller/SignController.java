@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.dto.request.ChangePasswordRequestDto;
 import server.inuappcenter.kr.data.dto.request.FindIdRequestDto;
 import server.inuappcenter.kr.data.dto.request.RefreshTokenRequestDto;
 import server.inuappcenter.kr.data.dto.request.ResetPasswordRequestDto;
@@ -53,13 +54,22 @@ public class SignController {
         return ResponseEntity.status(HttpStatus.OK).body(signService.refreshAccessToken(requestDto.getRefreshToken()));
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
+    @Operation(summary = "비밀번호 변경", description = "로그인한 상태에서 현재 비밀번호를 확인 후 새 비밀번호로 변경합니다.")
+    @PostMapping("/change-password")
+    public ResponseEntity<CommonResponseDto> changePassword(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
+            final @RequestBody @Valid ChangePasswordRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(signService.changePassword(userDetails.getUsername(), requestDto));
+    }
+
     @Operation(summary = "아이디 찾기", description = "이름 + 이메일/전화번호/학번 중 하나로 아이디를 찾습니다.")
     @PostMapping("/find-id")
     public ResponseEntity<CommonResponseDto> findId(final @RequestBody @Valid FindIdRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(signService.findId(requestDto));
     }
 
-    @Operation(summary = "비밀번호 재설정", description = "아이디 + 이름 + 이메일/전화번호/학번 중 하나로 본인 확인 후 새 비밀번호로 변경합니다.")
+    @Operation(summary = "비밀번호 재설정(찾기)", description = "아이디 + 이름 + 이메일/전화번호/학번 중 하나로 본인 확인 후 새 비밀번호로 변경합니다.")
     @PostMapping("/reset-password")
     public ResponseEntity<CommonResponseDto> resetPassword(final @RequestBody @Valid ResetPasswordRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(signService.resetPassword(requestDto));
