@@ -13,4 +13,5 @@ public interface IntroBoardGroupRepository extends JpaRepository<IntroBoardGroup
     List<IntroBoardGroup> findAllByIntroBoard(IntroBoard introBoard);
     void deleteAllByIntroBoard(IntroBoard introBoard);
     List<IntroBoardGroup> findAllByGroup_Member(Member member);
+    boolean existsByIntroBoardAndGroup_Member(IntroBoard introBoard, Member member);
 }

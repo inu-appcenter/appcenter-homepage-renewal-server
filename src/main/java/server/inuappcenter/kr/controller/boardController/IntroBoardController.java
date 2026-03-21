@@ -72,9 +72,11 @@ public class IntroBoardController {
 
 
     @PreAuthorize("hasRole('MEMBER')")
-    @Operation(summary = "게시글 수정", description = "사진 수정(추가)이 있을 경우에는 경로에 /{photo_ids}를 포함해주세요")
+    @Operation(summary = "게시글 수정", description = "사진 수정(추가)이 있을 경우에는 경로에 /{photo_ids}를 포함해주세요<br/><br/>" +
+            "ADMIN은 모든 프로젝트 수정 가능, 일반 멤버는 본인이 참여한 프로젝트만 수정 가능합니다.")
     @PatchMapping(path = {"/{photo_ids}", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto> updateBoard(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
             final @PathVariable(name = "photo_ids", required = false) List<Long> photo_ids,
             final @ModelAttribute @Valid IntroBoardRequestDto introBoardRequestDto,
             BindingResult bindingResult,
@@ -90,7 +92,7 @@ public class IntroBoardController {
             throw new CustomModelAttributeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(board_id, photo_ids, introBoardRequestDto));
+            return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(board_id, photo_ids, introBoardRequestDto, userDetails.getUsername()));
         } catch (Exception e) {
             log.error("updateBoard 에러 발생: ", e);
             throw e;
