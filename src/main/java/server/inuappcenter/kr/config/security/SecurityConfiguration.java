@@ -35,6 +35,8 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
             "/sign/sign-in",
             "/sign/sign-up",
             "/sign/refresh",
+            "/sign/find-id",
+            "/sign/reset-password",
             "/v3/api-docs/**",
             "/swagger-ui/**"
     };

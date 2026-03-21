@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
+import server.inuappcenter.kr.data.dto.request.FindIdRequestDto;
 import server.inuappcenter.kr.data.dto.request.RefreshTokenRequestDto;
+import server.inuappcenter.kr.data.dto.request.ResetPasswordRequestDto;
 import server.inuappcenter.kr.data.dto.request.SignInRequestDto;
 import server.inuappcenter.kr.data.dto.request.SignUpRequestDto;
 import server.inuappcenter.kr.data.dto.response.SignInResponseDto;
@@ -49,6 +51,18 @@ public class SignController {
     @PostMapping("/refresh")
     public ResponseEntity<SignInResponseDto> refresh(final @RequestBody @Valid RefreshTokenRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(signService.refreshAccessToken(requestDto.getRefreshToken()));
+    }
+
+    @Operation(summary = "아이디 찾기", description = "이름 + 이메일/전화번호/학번 중 하나로 아이디를 찾습니다.")
+    @PostMapping("/find-id")
+    public ResponseEntity<CommonResponseDto> findId(final @RequestBody @Valid FindIdRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(signService.findId(requestDto));
+    }
+
+    @Operation(summary = "비밀번호 재설정", description = "아이디 + 이름 + 이메일/전화번호/학번 중 하나로 본인 확인 후 새 비밀번호로 변경합니다.")
+    @PostMapping("/reset-password")
+    public ResponseEntity<CommonResponseDto> resetPassword(final @RequestBody @Valid ResetPasswordRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(signService.resetPassword(requestDto));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

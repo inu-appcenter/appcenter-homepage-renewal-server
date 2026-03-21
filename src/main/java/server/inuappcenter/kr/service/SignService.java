@@ -134,9 +134,15 @@ public class SignService {
             found = memberRepository.findByEmail(dto.getEmail()).orElse(null);
         }
 
-        // 2. 이메일로 못 찾으면 전화번호로 검색
+        // 2. 전화번호로 검색 (숫자만 비교)
         if (found == null && dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank()) {
-            found = memberRepository.findByPhoneNumber(dto.getPhoneNumber()).orElse(null);
+            String digitsOnly = dto.getPhoneNumber().replaceAll("-", "");
+            found = memberRepository.findByPhoneNumberIgnoreDashes(digitsOnly).orElse(null);
+        }
+
+        // 3. 학번으로 검색
+        if (found == null && dto.getStudentNumber() != null && !dto.getStudentNumber().isBlank()) {
+            found = memberRepository.findByStudentNumber(dto.getStudentNumber()).orElse(null);
         }
 
         if (found != null) {
