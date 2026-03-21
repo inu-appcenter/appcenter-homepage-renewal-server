@@ -11,6 +11,7 @@ import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.response.AppCenterStatsResponseDto;
 import server.inuappcenter.kr.data.dto.response.MemberResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
+import server.inuappcenter.kr.data.repository.IntroBoardRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
 import server.inuappcenter.kr.data.repository.UserRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
@@ -26,6 +27,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final IntroBoardRepository introBoardRepository;
 
     @Transactional(readOnly = true)
     public MemberResponseDto getMember(Long id) {
@@ -101,7 +103,9 @@ public class MemberService {
 
         long leaderCount = currentYear != null ? groupRepository.countLeadersByYear(currentYear) : 0;
 
-        return new AppCenterStatsResponseDto(totalMemberCount, currentYear, partCount, leaderCount);
+        long projectCount = introBoardRepository.count();
+
+        return new AppCenterStatsResponseDto(totalMemberCount, currentYear, partCount, leaderCount, projectCount);
     }
 
     @Transactional
