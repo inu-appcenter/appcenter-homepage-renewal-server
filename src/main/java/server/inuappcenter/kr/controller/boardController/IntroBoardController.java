@@ -56,8 +56,8 @@ public class IntroBoardController {
         }
     }
 
-    @PreAuthorize("hasRole('MEMBER')")
-    @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "게시글 (1개) 삭제하기", description = "삭제할 게시글의 id를 입력해주세요 (관리자 전용)")
     @Parameter(name = "id", description = "게시판 id", required = true)
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponseDto> deleteBoard(final @PathVariable("id") Long id) {
