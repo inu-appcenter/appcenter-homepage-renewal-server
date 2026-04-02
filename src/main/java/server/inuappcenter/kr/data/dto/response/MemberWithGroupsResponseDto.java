@@ -1,5 +1,7 @@
 package server.inuappcenter.kr.data.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import server.inuappcenter.kr.data.domain.Member;
 
@@ -29,6 +31,33 @@ public class MemberWithGroupsResponseDto {
         this.gitRepositoryLink = member.getGitRepositoryLink();
         this.behanceLink = member.getBehanceLink();
         this.department = member.getDepartment();
+        this.groups = groups;
+        this.projects = projects;
+    }
+
+    @JsonCreator
+    public MemberWithGroupsResponseDto(
+            @JsonProperty("memberId") Long memberId,
+            @JsonProperty("name") String name,
+            @JsonProperty("description") String description,
+            @JsonProperty("profileImage") String profileImage,
+            @JsonProperty("email") String email,
+            @JsonProperty("blogLink") String blogLink,
+            @JsonProperty("gitRepositoryLink") String gitRepositoryLink,
+            @JsonProperty("behanceLink") String behanceLink,
+            @JsonProperty("department") String department,
+            @JsonProperty("groups") List<MemberGroupEntryDto> groups,
+            @JsonProperty("projects") List<MemberProjectInfoDto> projects
+    ) {
+        this.memberId = memberId;
+        this.name = name;
+        this.description = description;
+        this.profileImage = profileImage;
+        this.email = email;
+        this.blogLink = blogLink;
+        this.gitRepositoryLink = gitRepositoryLink;
+        this.behanceLink = behanceLink;
+        this.department = department;
         this.groups = groups;
         this.projects = projects;
     }

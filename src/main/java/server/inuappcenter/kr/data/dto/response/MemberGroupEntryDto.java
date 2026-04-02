@@ -1,5 +1,7 @@
 package server.inuappcenter.kr.data.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import server.inuappcenter.kr.data.domain.Group;
 
@@ -10,7 +12,13 @@ public class MemberGroupEntryDto {
     private final Double year;
     private final String part;
 
-    private MemberGroupEntryDto(Long groupId, String role, Double year, String part) {
+    @JsonCreator
+    private MemberGroupEntryDto(
+            @JsonProperty("groupId") Long groupId,
+            @JsonProperty("role") String role,
+            @JsonProperty("year") Double year,
+            @JsonProperty("part") String part
+    ) {
         this.groupId = groupId;
         this.role = role;
         this.year = year;

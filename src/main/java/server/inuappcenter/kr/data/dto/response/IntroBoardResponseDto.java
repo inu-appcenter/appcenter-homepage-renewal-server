@@ -2,6 +2,7 @@ package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.utils.BoardUtils;
@@ -24,6 +25,7 @@ public class IntroBoardResponseDto extends BoardResponseDto {
     private final List<StackResponseDto> stacks;
     private final List<GroupResponseDto> groups;
 
+    @Jacksonized
     @Builder
     private IntroBoardResponseDto (Long id, String title, String subTitle, String githubLink, String androidStoreLink, String appleStoreLink, String websiteLink, Boolean isActive, String body, Map<Long, String> images,
                                   List<StackResponseDto> stacks, List<GroupResponseDto> groups,

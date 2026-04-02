@@ -3,6 +3,7 @@ package server.inuappcenter.kr.data.dto.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 
@@ -22,6 +23,7 @@ public class PhotoBoardResponseDto extends BoardResponseDto{
         return null;
     }
 
+    @Jacksonized
     @Builder
     private PhotoBoardResponseDto (Long id, String title, LocalDate eventDate, String imageUrl,
                                    LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
