@@ -2,6 +2,8 @@ package server.inuappcenter.kr.service.boardService.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +33,7 @@ public class PhotoBoardServiceImpl implements AdditionalBoardService {
     private final ImageRedisRepository imageRedisRepository;
     private final HttpServletRequest request;
 
+    @Cacheable(value = "photoBoardList", key = "'all'")
     @Override
     @Transactional(readOnly = true)
     public List<BoardResponseDto> findBoardList(String topic) {
@@ -41,6 +44,7 @@ public class PhotoBoardServiceImpl implements AdditionalBoardService {
         return responseDtoList;
     }
 
+    @CacheEvict(value = "photoBoardList", allEntries = true)
     @Transactional
     public CommonResponseDto updateBoard(Long boardId, Long imageId, PhotoBoardRequestDto requestDto) {
         boardResponseRedisRepository.deleteById(boardId);

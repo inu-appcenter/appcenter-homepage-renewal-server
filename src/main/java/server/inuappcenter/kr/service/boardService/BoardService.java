@@ -2,6 +2,8 @@ package server.inuappcenter.kr.service.boardService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,6 +100,10 @@ public class BoardService {
     }
 
 
+    @Caching(evict = {
+            @CacheEvict(value = "introBoardList", allEntries = true),
+            @CacheEvict(value = "photoBoardList", allEntries = true)
+    })
     @Transactional
     public CommonResponseDto saveBoard(BoardRequestDto boardRequestDto) {
         Board savedBoard = boardRepository.save(boardRequestDto.createBoard());
@@ -132,6 +138,10 @@ public class BoardService {
         }
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "introBoardList", allEntries = true),
+            @CacheEvict(value = "photoBoardList", allEntries = true)
+    })
     @Transactional
     public CommonResponseDto deleteBoard(Long id) {
         boardResponseRedisRepository.deleteById(id);
@@ -156,6 +166,10 @@ public class BoardService {
         return new CommonResponseDto("id: " + id + " has been successfully deleted.");
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "introBoardList", allEntries = true),
+            @CacheEvict(value = "photoBoardList", allEntries = true)
+    })
     @Transactional
     public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto, String uid) {
         // 캐시에서 보드를 삭제한다.
@@ -332,6 +346,7 @@ public class BoardService {
         }
     }
 
+    @CacheEvict(value = "introBoardList", allEntries = true)
     @Transactional
     public CommonResponseDto updateAppActivation(Long id, Boolean isActive) {
         boardResponseRedisRepository.deleteById(id);

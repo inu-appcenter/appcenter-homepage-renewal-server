@@ -2,6 +2,7 @@ package server.inuappcenter.kr.service.boardService.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.data.domain.board.Board;
@@ -28,6 +29,7 @@ public class IntroBoardServiceImpl implements AdditionalBoardService {
     private final IntroBoardGroupRepository introBoardGroupRepository;
     private final HttpServletRequest request;
 
+    @Cacheable(value = "introBoardList", key = "'all'")
     @Override
     @Transactional(readOnly = true)
     public List<BoardResponseDto> findBoardList(String topic) {
