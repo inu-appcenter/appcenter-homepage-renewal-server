@@ -5,56 +5,96 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
+import server.inuappcenter.kr.data.domain.IntroBoardGroup;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.Role;
+import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupPartListResponseDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
 import server.inuappcenter.kr.data.dto.response.GroupYearListResponseDto;
+import server.inuappcenter.kr.data.dto.response.MemberGroupEntryDto;
+import server.inuappcenter.kr.data.dto.response.MemberProjectInfoDto;
+import server.inuappcenter.kr.data.dto.response.MemberWithGroupsResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
+import server.inuappcenter.kr.data.repository.IntroBoardGroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GroupService {
     private final GroupRepository groupRepository;
+    private final IntroBoardGroupRepository introBoardGroupRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
+    private final HttpServletRequest request;
 
-    @Transactional(readOnly = true)
+@Transactional(readOnly = true)
     public GroupResponseDto getGroup(Long id) {
         Group foundGroup = groupRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         return GroupResponseDto.entityToDto(foundGroup);
     }
 
     @Transactional(readOnly = true)
-    public List<GroupResponseDto> findAllGroup(Double year, String part) {
+    public List<MemberWithGroupsResponseDto> findAllGroup(Double year, String part) {
+        List<Group> foundGroups;
         if (year != null && part != null) {
-            List<Group> foundGroups = groupRepository.findAllByYearAndPartOrderByYear(year, part);
-            return foundGroups.stream()
-                    .map(data -> data.toGroupResponseDto(data))
-                    .collect(Collectors.toList());
+            foundGroups = groupRepository.findAllByYearAndPartOrderByYear(year, part);
         } else if (year != null) {
-            List<Group> foundGroups = groupRepository.findAllByYearOrderByPart(year);
-            return foundGroups.stream()
-                    .map(data -> data.toGroupResponseDto(data))
-                    .collect(Collectors.toList());
+            foundGroups = groupRepository.findAllByYearOrderByPart(year);
         } else if (part != null) {
-            List<Group> foundGroups = groupRepository.findAllByPartOrderByYearDesc(part);
-            return foundGroups.stream()
-                    .map(data -> data.toGroupResponseDto(data))
-                    .collect(Collectors.toList());
+            foundGroups = groupRepository.findAllByPartOrderByYearDesc(part);
         } else {
-            List<Group> found_Groups = groupRepository.findAll();
-            return found_Groups.stream()
-                    .map(data -> data.toGroupResponseDto(data))
-                    .collect(Collectors.toList());
+            foundGroups = groupRepository.findAll();
         }
+
+        // 멤버 목록 추출 (중복 제거)
+        Set<Long> seenMemberIds = new HashSet<>();
+        List<Member> members = foundGroups.stream()
+                .map(Group::getMember)
+                .filter(m -> seenMemberIds.add(m.getId()))
+                .collect(Collectors.toList());
+
+        // 프로젝트 한 번에 배치 조회
+        List<IntroBoardGroup> allIntroBoardGroups = introBoardGroupRepository.findAllByGroup_MemberIn(members);
+        Map<Long, List<MemberProjectInfoDto>> projectsByMemberId = new HashMap<>();
+        for (IntroBoardGroup ibg : allIntroBoardGroups) {
+            Long memberId = ibg.getGroup().getMember().getId();
+            projectsByMemberId.computeIfAbsent(memberId, k -> new java.util.ArrayList<>());
+            IntroBoard ib = ibg.getIntroBoard();
+            String mainImage = null;
+            if (!ib.getImages().isEmpty()) {
+                mainImage = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                        + "/image/photo/" + ib.getImages().get(0).getId();
+            }
+            MemberProjectInfoDto projectDto = new MemberProjectInfoDto(ib.getId(), ib.getTitle(), mainImage);
+            if (projectsByMemberId.get(memberId).stream().noneMatch(p -> p.getId().equals(ib.getId()))) {
+                projectsByMemberId.get(memberId).add(projectDto);
+            }
+        }
+
+        Map<Long, MemberWithGroupsResponseDto> memberMap = new LinkedHashMap<>();
+        for (Group group : foundGroups) {
+            Member member = group.getMember();
+            memberMap.computeIfAbsent(member.getId(),
+                    id -> new MemberWithGroupsResponseDto(member, new java.util.ArrayList<>(),
+                            projectsByMemberId.getOrDefault(member.getId(), java.util.Collections.emptyList()))
+            ).getGroups().add(MemberGroupEntryDto.from(group));
+        }
+        return new java.util.ArrayList<>(memberMap.values());
     }
 
     @Transactional

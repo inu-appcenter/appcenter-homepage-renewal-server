@@ -17,6 +17,9 @@ import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
+import server.inuappcenter.kr.data.dto.response.MemberGroupEntryDto;
+import server.inuappcenter.kr.data.dto.response.MemberProjectInfoDto;
+import server.inuappcenter.kr.data.dto.response.MemberWithGroupsResponseDto;
 import server.inuappcenter.kr.service.GroupService;
 
 import java.util.ArrayList;
@@ -82,25 +85,33 @@ public class GroupControllerTest {
     @Test
     public void findAllGroup() throws Exception {
         // given
-        List<GroupResponseDto> expectedDtoList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            expectedDtoList.add(expectedDto);
+        Member member = new Member(new MemberRequestDto(
+                "홍길동", "자기소개입니다.", "https://...", "https://...",
+                "test@test.com", "https://...", "https://...", "010-1111-1111", "202102917",
+                "컴퓨터공학부"
+        ));
+        List<MemberGroupEntryDto> groups = List.of(MemberGroupEntryDto.from(expectedEntity));
+        List<MemberProjectInfoDto> projects = new ArrayList<>();
+        MemberWithGroupsResponseDto memberDto = new MemberWithGroupsResponseDto(member, groups, projects);
+
+        List<MemberWithGroupsResponseDto> expectedDtoList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            expectedDtoList.add(memberDto);
         }
         given(groupService.findAllGroup(14.5, "Android")).willReturn(expectedDtoList);
         // when
         mockMvc.perform(get("/groups/public/all-groups-members?year=14.5&part=Android"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..group_id").exists())
-                .andExpect(jsonPath("$..member").exists())
+                .andExpect(jsonPath("$..memberId").exists())
+                .andExpect(jsonPath("$..name").exists())
                 .andExpect(jsonPath("$..profileImage").exists())
                 .andExpect(jsonPath("$..email").exists())
                 .andExpect(jsonPath("$..blogLink").exists())
                 .andExpect(jsonPath("$..gitRepositoryLink").exists())
-                .andExpect(jsonPath("$..role").exists())
-                .andExpect(jsonPath("$..part").exists())
-                .andExpect(jsonPath("$..year").exists())
-                .andExpect(jsonPath("$..createdDate").exists())
-                .andExpect(jsonPath("$..lastModifiedDate").exists())
+                .andExpect(jsonPath("$..behanceLink").exists())
+                .andExpect(jsonPath("$..department").exists())
+                .andExpect(jsonPath("$..groups").exists())
+                .andExpect(jsonPath("$..projects").exists())
                 .andDo(print());
         // then
         verify(groupService).findAllGroup(14.5, "Android");

@@ -15,12 +15,16 @@ import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.request.MemberRequestDto;
 import server.inuappcenter.kr.data.dto.request.RoleRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
+import server.inuappcenter.kr.data.dto.response.MemberWithGroupsResponseDto;
 import server.inuappcenter.kr.data.repository.GroupRepository;
+import server.inuappcenter.kr.data.repository.IntroBoardGroupRepository;
 import server.inuappcenter.kr.data.repository.MemberRepository;
 import server.inuappcenter.kr.data.repository.RoleRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,10 +40,16 @@ public class GroupServiceTest {
     private GroupRepository groupRepository;
 
     @Mock
+    private IntroBoardGroupRepository introBoardGroupRepository;
+
+    @Mock
     private MemberRepository memberRepository;
 
     @Mock
     private RoleRepository roleRepository;
+
+    @Mock
+    private HttpServletRequest request;
 
     @InjectMocks
     private GroupService groupService;
@@ -82,18 +92,19 @@ public class GroupServiceTest {
     public void findAllGroupTest() {
         // given
         for (int i = 0; i < 10; i++) {
-            expectedResList.add(expectedResDto);
             expectedEntityList.add(givenEntity);
         }
         given(groupRepository.findAllByYearAndPartOrderByYear(14.5, "Android")).willReturn(expectedEntityList);
+        given(introBoardGroupRepository.findAllByGroup_Member(Mockito.any())).willReturn(Collections.emptyList());
         // when
-        List<GroupResponseDto> result = groupService.findAllGroup(14.5, "Android");
+        List<MemberWithGroupsResponseDto> result = groupService.findAllGroup(14.5, "Android");
         // then
-        for (int i = 0; i < 10; i++) {
-            assertEquals(expectedResList.get(i).getGroup_id(), result.get(i).getGroup_id());
-            assertEquals(expectedResList.get(i).getMember(), result.get(i).getMember());
-            assertEquals(expectedResList.get(i).getRole(), result.get(i).getRole());
-        }
+        // 동일 멤버 10개 → 그룹핑 후 1명, groups 10개
+        assertEquals(1, result.size());
+        assertEquals(10, result.get(0).getGroups().size());
+        assertEquals(givenEntity.getMember().getName(), result.get(0).getName());
+        assertEquals(expectedResDto.getRole(), result.get(0).getGroups().get(0).getRole());
+        assertEquals(expectedResDto.getPart(), result.get(0).getGroups().get(0).getPart());
     }
 
     @DisplayName("그룹 저장 테스트")

@@ -6,6 +6,7 @@ import lombok.Getter;
 import server.inuappcenter.kr.data.domain.Group;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,12 +22,14 @@ public class GroupResponseDto {
     private final Double year;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
+    private final List<MemberProjectInfoDto> projects;
 
 
     @Builder
     private GroupResponseDto(Long group_id, String member, String profileImage, String email,
                              String blogLink, String gitRepositoryLink, String role, String part, Double year,
-                             LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+                             LocalDateTime createdDate, LocalDateTime lastModifiedDate,
+                             List<MemberProjectInfoDto> projects) {
         this.group_id = group_id;
         this.member = member;
         this.profileImage = profileImage;
@@ -38,6 +41,15 @@ public class GroupResponseDto {
         this.year = year;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
+        this.projects = projects;
+    }
+
+    private static String normalizePart(String part) {
+        if (part == null) return null;
+        switch (part.toLowerCase()) {
+            case "server": case "android": case "ios": case "web": return "Dev";
+            default: return part;
+        }
     }
 
     public static GroupResponseDto entityToDto(Group group) {
@@ -49,10 +61,27 @@ public class GroupResponseDto {
                 .blogLink(group.getMember().getBlogLink())
                 .gitRepositoryLink(group.getMember().getGitRepositoryLink())
                 .role(group.getRole().getRoleName())
-                .part(group.getPart())
+                .part(normalizePart(group.getPart()))
                 .year(group.getYear())
                 .createdDate(group.getCreatedDate())
                 .lastModifiedDate(group.getLastModifiedDate())
+                .build();
+    }
+
+    public static GroupResponseDto entityToDtoWithProjects(Group group, List<MemberProjectInfoDto> projects) {
+        return new GroupResponseDto.GroupResponseDtoBuilder()
+                .group_id(group.getGroup_id())
+                .member(group.getMember().getName())
+                .profileImage(group.getMember().getProfileImage())
+                .email(group.getMember().getEmail())
+                .blogLink(group.getMember().getBlogLink())
+                .gitRepositoryLink(group.getMember().getGitRepositoryLink())
+                .role(group.getRole().getRoleName())
+                .part(normalizePart(group.getPart()))
+                .year(group.getYear())
+                .createdDate(group.getCreatedDate())
+                .lastModifiedDate(group.getLastModifiedDate())
+                .projects(projects)
                 .build();
     }
 
@@ -62,7 +91,7 @@ public class GroupResponseDto {
                 .group_id(group.getGroup_id())
                 .member(group.getMember().getName())
                 .profileImage(group.getMember().getProfileImage())
-                .part(group.getPart())
+                .part(normalizePart(group.getPart()))
                 .build();
     }
 }

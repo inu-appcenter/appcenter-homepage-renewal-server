@@ -14,6 +14,7 @@ import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupPartListResponseDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
 import server.inuappcenter.kr.data.dto.response.GroupYearListResponseDto;
+import server.inuappcenter.kr.data.dto.response.MemberWithGroupsResponseDto;
 import server.inuappcenter.kr.service.GroupService;
 
 import javax.validation.Valid;
@@ -34,7 +35,7 @@ public class GroupController {
 
     @Operation(summary = "그룹 멤버 (전체) 조회", description = "전체 그룹 멤버를 반환합니다. year(기수)와 part(파트)를 QueryParameter로 보내면 해당 값으로 검색이 됩니다.")
     @GetMapping("/public/all-groups-members")
-    public ResponseEntity<List<GroupResponseDto>> findAllGroup(
+    public ResponseEntity<List<MemberWithGroupsResponseDto>> findAllGroup(
             final @RequestParam(required = false) Double year,
             final @RequestParam(required = false) String part
     ) {
