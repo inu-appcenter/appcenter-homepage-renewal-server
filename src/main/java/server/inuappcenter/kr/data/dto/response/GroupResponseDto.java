@@ -3,6 +3,7 @@ package server.inuappcenter.kr.data.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 import server.inuappcenter.kr.data.domain.Group;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class GroupResponseDto {
     private final List<MemberProjectInfoDto> projects;
 
 
+    @Jacksonized
     @Builder
     private GroupResponseDto(Long group_id, String member, String profileImage, String email,
                              String blogLink, String gitRepositoryLink, String role, String part, Double year,

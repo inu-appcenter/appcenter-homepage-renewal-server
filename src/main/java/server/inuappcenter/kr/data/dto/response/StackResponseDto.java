@@ -2,6 +2,7 @@ package server.inuappcenter.kr.data.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 import server.inuappcenter.kr.data.domain.Stack;
 import server.inuappcenter.kr.data.domain.StackCategory;
 
@@ -14,6 +15,7 @@ public class StackResponseDto {
     private final StackCategory category;
     private final String icon;
 
+    @Jacksonized
     @Builder
     private StackResponseDto(Long id, String name, StackCategory category, String icon) {
         this.id = id;
