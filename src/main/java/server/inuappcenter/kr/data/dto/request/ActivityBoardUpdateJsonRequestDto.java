@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -23,6 +24,9 @@ public class ActivityBoardUpdateJsonRequestDto {
 
     @Schema(example = "17기 센터장", description = "작성자")
     private String author;
+
+    @Schema(example = "2026-03-30", description = "활동 일자")
+    private LocalDate activityDate;
 
     @Schema(description = "활동 내용 목록 (contentId, subTitle, text)")
     private List<ContentUpdateRequestDto> contents;

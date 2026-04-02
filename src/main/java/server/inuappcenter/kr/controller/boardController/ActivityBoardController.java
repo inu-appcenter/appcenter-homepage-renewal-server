@@ -200,6 +200,7 @@ public class ActivityBoardController {
                 requestDto.getBody(),
                 thumbnail,
                 requestDto.getAuthor(),
+                requestDto.getActivityDate(),
                 contents
         );
     }
@@ -229,6 +230,7 @@ public class ActivityBoardController {
                 requestDto.getBody(),
                 null,
                 requestDto.getAuthor(),
+                requestDto.getActivityDate(),
                 contents
         );
     }
