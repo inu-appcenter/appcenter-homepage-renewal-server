@@ -3,6 +3,7 @@ package server.inuappcenter.kr.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
@@ -52,7 +53,25 @@ public class GroupService {
 
     @Cacheable(value = "groupMembers", key = "(#year ?: 'all') + '_' + (#part ?: 'all')")
     @Transactional(readOnly = true)
-    public List<MemberWithGroupsResponseDto> findAllGroup(Double year, String part) {
+    public List<GroupResponseDto> findAllGroup(Double year, String part) {
+        List<Group> foundGroups;
+        if (year != null && part != null) {
+            foundGroups = groupRepository.findAllByYearAndPartOrderByYear(year, part);
+        } else if (year != null) {
+            foundGroups = groupRepository.findAllByYearOrderByPart(year);
+        } else if (part != null) {
+            foundGroups = groupRepository.findAllByPartOrderByYearDesc(part);
+        } else {
+            foundGroups = groupRepository.findAll();
+        }
+        return foundGroups.stream()
+                .map(GroupResponseDto::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "groupMembersInfo", key = "(#year ?: 'all') + '_' + (#part ?: 'all')")
+    @Transactional(readOnly = true)
+    public List<MemberWithGroupsResponseDto> findAllGroupWithDetails(Double year, String part) {
         List<Group> foundGroups;
         if (year != null && part != null) {
             foundGroups = groupRepository.findAllByYearAndPartOrderByYear(year, part);
@@ -100,7 +119,10 @@ public class GroupService {
         return new java.util.ArrayList<>(memberMap.values());
     }
 
-    @CacheEvict(value = "groupMembers", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "groupMembers", allEntries = true),
+            @CacheEvict(value = "groupMembersInfo", allEntries = true)
+    })
     @Transactional
     public GroupResponseDto assignGroup(Long member_id, Long role_id, GroupRequestDto groupRequestDto) {
         Member found_member = memberRepository.findById(member_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
@@ -112,7 +134,10 @@ public class GroupService {
         return GroupResponseDto.entityToDto(savedGroup);
     }
 
-    @CacheEvict(value = "groupMembers", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "groupMembers", allEntries = true),
+            @CacheEvict(value = "groupMembersInfo", allEntries = true)
+    })
     @Transactional
     public GroupResponseDto updateGroup(GroupRequestDto groupRequestDto, Long id, Long roleId) {
         Group foundGroup = groupRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
@@ -125,14 +150,20 @@ public class GroupService {
         return GroupResponseDto.entityToDto(savedGroup);
     }
 
-    @CacheEvict(value = "groupMembers", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "groupMembers", allEntries = true),
+            @CacheEvict(value = "groupMembersInfo", allEntries = true)
+    })
     @Transactional
     public CommonResponseDto deleteGroup(Long id) {
         groupRepository.deleteById(id);
         return new CommonResponseDto("id: " + id + " has been successfully deleted.");
     }
 
-    @CacheEvict(value = "groupMembers", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "groupMembers", allEntries = true),
+            @CacheEvict(value = "groupMembersInfo", allEntries = true)
+    })
     @Transactional
     public CommonResponseDto deleteMultipleGroups(List<Long> id) {
         groupRepository.deleteAllByIdInBatch(id);

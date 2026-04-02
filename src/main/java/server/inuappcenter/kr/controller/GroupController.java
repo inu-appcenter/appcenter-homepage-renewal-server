@@ -35,11 +35,20 @@ public class GroupController {
 
     @Operation(summary = "그룹 멤버 (전체) 조회", description = "전체 그룹 멤버를 반환합니다. year(기수)와 part(파트)를 QueryParameter로 보내면 해당 값으로 검색이 됩니다.")
     @GetMapping("/public/all-groups-members")
-    public ResponseEntity<List<MemberWithGroupsResponseDto>> findAllGroup(
+    public ResponseEntity<List<GroupResponseDto>> findAllGroup(
             final @RequestParam(required = false) Double year,
             final @RequestParam(required = false) String part
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllGroup(year, part));
+    }
+
+    @Operation(summary = "멤버별 그룹/프로젝트 정보 조회", description = "멤버 기준으로 소속 그룹 목록과 참여 프로젝트를 함께 반환합니다.")
+    @GetMapping("/public/all-members-info")
+    public ResponseEntity<List<MemberWithGroupsResponseDto>> findAllGroupWithDetails(
+            final @RequestParam(required = false) Double year,
+            final @RequestParam(required = false) String part
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAllGroupWithDetails(year, part));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
