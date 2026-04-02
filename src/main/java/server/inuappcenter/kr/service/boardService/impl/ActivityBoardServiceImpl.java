@@ -80,6 +80,7 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
                 .body(board.getBody())
                 .thumbnail(imageUrl)
                 .author(board.getAuthor())
+                .activityDate(board.getEventDate())
                 .contents(contentDtos)
                 .createdDate(board.getCreatedDate())
                 .lastModifiedDate(board.getLastModifiedDate())

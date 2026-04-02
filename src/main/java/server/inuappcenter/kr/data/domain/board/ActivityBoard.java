@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -25,6 +26,8 @@ public class ActivityBoard extends Board {
 
     private String author;
 
+    private LocalDate eventDate;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "thumbnail_id")
     private Image thumbnail;
@@ -34,6 +37,7 @@ public class ActivityBoard extends Board {
         this.titleEng = requestDto.getTitleEng();
         this.body = requestDto.getBody();
         this.author = requestDto.getAuthor();
+        this.eventDate = requestDto.getActivityDate();
         if (requestDto.getThumbnail() != null && !requestDto.getThumbnail().isEmpty()) {
             this.thumbnail = new Image(requestDto.getThumbnail());
         }
@@ -51,6 +55,9 @@ public class ActivityBoard extends Board {
         }
         if (requestDto.getAuthor() != null) {
             this.author = requestDto.getAuthor();
+        }
+        if (requestDto.getActivityDate() != null) {
+            this.eventDate = requestDto.getActivityDate();
         }
     }
 
