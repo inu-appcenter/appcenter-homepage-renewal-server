@@ -124,13 +124,19 @@ public class GroupService {
                 Comparator.comparingDouble(MemberGroupEntryDto::getYear)
         ));
 
-        // 멤버 목록을 가장 최근 year 기준 내림차순 정렬
+        // 멤버 목록을 가장 최근 year 내림차순, 동률이면 활동 기수 개수 내림차순 정렬
         result.sort(Comparator.comparingDouble(
                 (MemberWithGroupsResponseDto dto) -> dto.getGroups().stream()
                         .mapToDouble(MemberGroupEntryDto::getYear)
                         .max()
                         .orElse(0)
-        ).reversed());
+        ).reversed().thenComparing(
+                Comparator.comparingLong((MemberWithGroupsResponseDto dto) -> dto.getGroups().stream()
+                        .mapToDouble(MemberGroupEntryDto::getYear)
+                        .distinct()
+                        .count()
+                ).reversed()
+        ));
 
         return result;
     }
