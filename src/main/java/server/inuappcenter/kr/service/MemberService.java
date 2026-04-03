@@ -1,6 +1,7 @@
 package server.inuappcenter.kr.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
@@ -41,6 +42,7 @@ public class MemberService {
         return MemberResponseDto.entityToDto(savedMember);
     }
 
+    @CacheEvict(value = "groupMembersInfo", allEntries = true)
     @Transactional
     public MemberResponseDto updateMember(Long id, MemberRequestDto memberRequestDto) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
@@ -57,6 +59,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(value = "groupMembersInfo", allEntries = true)
     public CommonResponseDto deleteMember(Long id) {
         Member found_member = memberRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
         ArrayList<Group> found_group = groupRepository.findAllByMember(found_member);
@@ -108,6 +111,7 @@ public class MemberService {
         return new AppCenterStatsResponseDto(totalMemberCount, currentYear, partCount, leaderCount, projectCount);
     }
 
+    @CacheEvict(value = "groupMembersInfo", allEntries = true)
     @Transactional
     public MemberResponseDto updateMyProfile(String uid, MemberRequestDto memberRequestDto) {
         User user = userRepository.findByUid(uid)
