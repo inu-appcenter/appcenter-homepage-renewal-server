@@ -28,6 +28,7 @@ import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -95,7 +96,7 @@ public class GroupService {
         Map<Long, List<MemberProjectInfoDto>> projectsByMemberId = new HashMap<>();
         for (IntroBoardGroup ibg : allIntroBoardGroups) {
             Long memberId = ibg.getGroup().getMember().getId();
-            projectsByMemberId.computeIfAbsent(memberId, k -> new java.util.ArrayList<>());
+            projectsByMemberId.computeIfAbsent(memberId, k -> new ArrayList<>());
             IntroBoard ib = ibg.getIntroBoard();
             String mainImage = null;
             if (!ib.getImages().isEmpty()) {
@@ -112,11 +113,26 @@ public class GroupService {
         for (Group group : foundGroups) {
             Member member = group.getMember();
             memberMap.computeIfAbsent(member.getId(),
-                    id -> new MemberWithGroupsResponseDto(member, new java.util.ArrayList<>(),
-                            projectsByMemberId.getOrDefault(member.getId(), java.util.Collections.emptyList()))
+                    id -> new MemberWithGroupsResponseDto(member, new ArrayList<>(),
+                            projectsByMemberId.getOrDefault(member.getId(), Collections.emptyList()))
             ).getGroups().add(MemberGroupEntryDto.from(group));
         }
-        return new java.util.ArrayList<>(memberMap.values());
+        List<MemberWithGroupsResponseDto> result = new ArrayList<>(memberMap.values());
+
+        // 각 멤버의 groups를 year 오름차순 정렬
+        result.forEach(dto -> dto.getGroups().sort(
+                Comparator.comparingDouble(MemberGroupEntryDto::getYear)
+        ));
+
+        // 멤버 목록을 가장 최근 year 기준 내림차순 정렬
+        result.sort(Comparator.comparingDouble(
+                (MemberWithGroupsResponseDto dto) -> dto.getGroups().stream()
+                        .mapToDouble(MemberGroupEntryDto::getYear)
+                        .max()
+                        .orElse(0)
+        ).reversed());
+
+        return result;
     }
 
     @Caching(evict = {
@@ -124,9 +140,9 @@ public class GroupService {
             @CacheEvict(value = "groupMembersInfo", allEntries = true)
     })
     @Transactional
-    public GroupResponseDto assignGroup(Long member_id, Long role_id, GroupRequestDto groupRequestDto) {
-        Member found_member = memberRepository.findById(member_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-        Role found_role = roleRepository.findById(role_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+    public GroupResponseDto assignGroup(Long memberId, Long roleId, GroupRequestDto groupRequestDto) {
+        Member found_member = memberRepository.findById(memberId).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+        Role found_role = roleRepository.findById(roleId).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
 
         Group group = new Group(found_member, found_role, groupRequestDto);
 
