@@ -37,7 +37,7 @@ public class MemberGroupEntryDto {
     private static String normalizePart(String part) {
         if (part == null) return null;
         switch (part.toLowerCase()) {
-            case "server": case "android": case "ios": case "web": return "Dev";
+            case "server": case "android": case "ios": case "web": case "common": return "Dev";
             default: return part;
         }
     }
