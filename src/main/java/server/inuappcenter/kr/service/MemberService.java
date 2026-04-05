@@ -97,7 +97,7 @@ public class MemberService {
         List<Double> years = groupRepository.findAllYearsDesc();
         Double currentYear = years.isEmpty() ? null : years.get(0); // 최댓값 가져오기
 
-        Set<String> devParts = Set.of("dev", "ios", "android", "web", "server");  // 개발 파트 -> Dev 파트로 통일화
+        Set<String> devParts = Set.of("dev", "ios", "android", "web", "server", "common");  // 개발 파트 -> Dev 파트로 통일화
         List<String> allParts = groupRepository.findAllParts();
         long partCount = allParts.stream()
                 .map(p -> devParts.contains(p.toLowerCase()) ? "dev" : p)
