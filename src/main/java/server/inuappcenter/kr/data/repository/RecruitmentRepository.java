@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> {
     List<Recruitment> findAllByCreatedBy(User user);
+    List<Recruitment> findAllByOrderByCreatedDateDesc();
 }

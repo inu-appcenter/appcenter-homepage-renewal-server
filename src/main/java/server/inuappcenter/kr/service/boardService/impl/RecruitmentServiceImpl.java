@@ -52,7 +52,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     @Transactional(readOnly = true)
     public List<RecruitmentListResponseDto> findAllRecruitmentList() {
         List<RecruitmentListResponseDto> responseDtoList = new ArrayList<>();
-        for (Recruitment recruitment : recruitmentRepository.findAll()) {
+        for (Recruitment recruitment : recruitmentRepository.findAllByOrderByCreatedDateDesc()) {
             responseDtoList.add(buildListResponse(recruitment));
         }
         return responseDtoList;
