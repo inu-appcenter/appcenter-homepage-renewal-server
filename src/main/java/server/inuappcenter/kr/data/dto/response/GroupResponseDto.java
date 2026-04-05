@@ -93,7 +93,7 @@ public class GroupResponseDto {
                 .group_id(group.getGroup_id())
                 .member(group.getMember().getName())
                 .profileImage(group.getMember().getProfileImage())
-                .part(normalizePart(group.getPart()))
+                .part(group.getPart())
                 .build();
     }
 }
