@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 
 @Getter
-@RedisHash(value = "image")
+@RedisHash(value = "image", timeToLive = 3600)
 public class ImageRedis {
     @Id
     private Long id;
