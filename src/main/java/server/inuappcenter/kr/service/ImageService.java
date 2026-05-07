@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.inuappcenter.kr.data.domain.board.Board;
 import server.inuappcenter.kr.data.domain.board.Image;
+import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.repository.BoardRepository;
+import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
 import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
 import server.inuappcenter.kr.data.redis.domain.ImageRedis;
 import server.inuappcenter.kr.data.repository.ImageRepository;
@@ -23,6 +25,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final BoardRepository<Board> boardRepository;
     private final ImageRedisRepository imageRedisRepository;
+    private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
 
     @Transactional(readOnly = true)
     public byte[] getImage(Long id) {
@@ -49,6 +52,8 @@ public class ImageService {
         if (!new HashSet<>(foundImageIds).containsAll(image_ids)) {
             throw new CustomNotFoundException("The requested ID was not found.");
         }
+
+        boardResponseRedisRepository.deleteById(board_id);
 
         // remove() 함수는 리스트 자체를 변경 -> 역순으로 순회 -> 인덱스 초과x
         int imagesListSize = foundBoard.getImages().size();
