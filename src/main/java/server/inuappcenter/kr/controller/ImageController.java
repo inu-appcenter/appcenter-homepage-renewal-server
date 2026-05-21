@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.CacheControl;
+import java.util.concurrent.TimeUnit;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class ImageController {
     public ResponseEntity<?> getPhoto (final @PathVariable("id") Long id) {
         byte[] imageData = imageService.getImage(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .cacheControl(CacheControl.noCache())
+                .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic().immutable())
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
     }
