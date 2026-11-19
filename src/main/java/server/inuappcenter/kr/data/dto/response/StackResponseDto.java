@@ -28,7 +28,7 @@ public class StackResponseDto {
         String icon = null;
         if (stack.getIcon() != null) {
             icon = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + "/image/photo/" + stack.getIcon().getId();
+                    + stack.getIcon().getUrlPath();
         }
         return StackResponseDto.builder()
                 .id(stack.getId())

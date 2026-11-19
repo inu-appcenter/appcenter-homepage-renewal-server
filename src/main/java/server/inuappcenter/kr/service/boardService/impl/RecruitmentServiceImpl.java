@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service.boardService.impl;
 
+import server.inuappcenter.kr.data.utils.AfterCommit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -74,7 +75,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
         String thumbnailUrl = null;
         if (recruitment.getThumbnail() != null) {
             thumbnailUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + "/image/photo/" + recruitment.getThumbnail().getId();
+                    + recruitment.getThumbnail().getUrlPath();
         }
 
         return RecruitmentResponseDto.builder()
@@ -104,7 +105,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
         String thumbnailUrl = null;
         if (recruitment.getThumbnail() != null) {
             thumbnailUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + "/image/photo/" + recruitment.getThumbnail().getId();
+                    + recruitment.getThumbnail().getUrlPath();
         }
 
         return RecruitmentListResponseDto.builder()
@@ -167,10 +168,12 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
         recruitment.updateThumbnail(thumbnail);
         recruitmentRepository.save(recruitment);
 
-        // 기존 이미지 Redis 캐시 삭제
+        // 기존 이미지 Redis 캐시 삭제 (커밋 이후)
         if (oldThumbnailId != null) {
-            imageRedisRepository.deleteById(oldThumbnailId);
-            log.info("리크루팅 썸네일 이미지 Redis 캐시 삭제: imageId={}", oldThumbnailId);
+            AfterCommit.run(() -> {
+                imageRedisRepository.deleteById(oldThumbnailId);
+                log.info("리크루팅 썸네일 이미지 Redis 캐시 삭제: imageId={}", oldThumbnailId);
+            });
         }
 
         log.info("리크루팅 썸네일 수정 완료: recruitmentId={}, thumbnailId={}",

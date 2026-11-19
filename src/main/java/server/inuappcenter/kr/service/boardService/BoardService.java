@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service.boardService;
 
+import server.inuappcenter.kr.data.utils.AfterCommit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -9,8 +10,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
@@ -304,7 +303,7 @@ public class BoardService {
         return new CommonResponseDto("id: " + board_id + " has been successfully modified.");
     }
 
-    // 게시글 수정 후 캐시 무효화. 트랜잭션이 있으면 커밋 이후, 없으면(단위 테스트 등) 즉시 실행한다.
+    // 게시글 수정 후 캐시 무효화 (커밋 이후).
     // imageIds는 메서드 진행 중에 채워지므로, 실행 시점의 내용이 사용된다.
     private void evictAfterCommit(Long boardId, List<Long> imageIds) {
         Runnable evict = () -> {
@@ -317,16 +316,7 @@ public class BoardService {
                 Optional.ofNullable(cacheManager.getCache(name)).ifPresent(Cache::clear);
             }
         };
-        if (TransactionSynchronizationManager.isSynchronizationActive()) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    evict.run();
-                }
-            });
-        } else {
-            evict.run();
-        }
+        AfterCommit.run(evict);
     }
 
     private void updateIntroBoardRelations(IntroBoard introBoard, IntroBoardRequestDto requestDto) {

@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service.boardService.impl;
 
+import server.inuappcenter.kr.data.utils.AfterCommit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,7 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
         String imageUrl = null;
         if (board.getThumbnail() != null) {
             imageUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + "/image/photo/" + board.getThumbnail().getId();
+                    + board.getThumbnail().getUrlPath();
         }
         return ActivityBoardResponseDto.builder()
                 .id(board.getId())
@@ -167,8 +168,10 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
         }
 
         activityBoardRepository.save(board);
-        boardResponseRedisRepository.deleteById(boardId);
-        log.info("ActivityBoard Redis 캐시 삭제: id={}", boardId);
+        AfterCommit.run(() -> {
+            boardResponseRedisRepository.deleteById(boardId);
+            log.info("ActivityBoard Redis 캐시 삭제: id={}", boardId);
+        });
         return new CommonResponseDto("id: " + boardId + " has been successfully modified.");
     }
 
@@ -187,13 +190,15 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
         board.updateThumbnail(thumbnail);
         activityBoardRepository.save(board);
 
-        // Redis 캐시 삭제 (이미지 + 보드)
-        if (oldThumbnailId != null) {
-            imageRedisRepository.deleteById(oldThumbnailId);
-            log.info("썸네일 이미지 Redis 캐시 삭제: imageId={}", oldThumbnailId);
-        }
-        boardResponseRedisRepository.deleteById(boardId);
-        log.info("ActivityBoard Redis 캐시 삭제: id={}", boardId);
+        // Redis 캐시 삭제 (이미지 + 보드, 커밋 이후)
+        AfterCommit.run(() -> {
+            if (oldThumbnailId != null) {
+                imageRedisRepository.deleteById(oldThumbnailId);
+                log.info("썸네일 이미지 Redis 캐시 삭제: imageId={}", oldThumbnailId);
+            }
+            boardResponseRedisRepository.deleteById(boardId);
+            log.info("ActivityBoard Redis 캐시 삭제: id={}", boardId);
+        });
 
         log.info("썸네일 수정 완료: boardId={}, thumbnailId={}",
                 boardId,
@@ -231,8 +236,9 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
                     throw new CustomNotFoundException("ID " + imageIds.get(i) + "에 해당하는 이미지가 없습니다.");
                 }
                 target.updateImage(files.get(i));
-                // Redis 캐시 삭제
-                imageRedisRepository.deleteById(imageIds.get(i));
+                // Redis 캐시 삭제 (커밋 이후)
+                Long replacedId = imageIds.get(i);
+                AfterCommit.run(() -> imageRedisRepository.deleteById(replacedId));
             }
         }
         // files만: 새 이미지 추가
@@ -325,8 +331,11 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
 
     private void invalidateBoardCache(ActivityBoard board) {
         if (board != null && board.getId() != null) {
-            boardResponseRedisRepository.deleteById(board.getId());
-            log.info("ActivityBoard Redis 캐시 삭제: id={}", board.getId());
+            Long boardId = board.getId();
+            AfterCommit.run(() -> {
+                boardResponseRedisRepository.deleteById(boardId);
+                log.info("ActivityBoard Redis 캐시 삭제: id={}", boardId);
+            });
         }
     }
 
@@ -342,8 +351,8 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
         // ActivityBoard 삭제 (thumbnail은 cascade로 자동 삭제)
         activityBoardRepository.delete(board);
 
-        // Redis 캐시 삭제
-        boardResponseRedisRepository.deleteById(boardId);
+        // Redis 캐시 삭제 (커밋 이후)
+        AfterCommit.run(() -> boardResponseRedisRepository.deleteById(boardId));
         log.info("ActivityBoard 삭제 완료: id={}", boardId);
 
         return new CommonResponseDto("id: " + boardId + " has been successfully deleted.");

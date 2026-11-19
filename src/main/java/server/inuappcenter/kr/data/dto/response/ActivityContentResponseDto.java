@@ -31,7 +31,7 @@ public class ActivityContentResponseDto {
         if (content.getImages() != null) {
             for (Image image : content.getImages()) {
                 imageUrls.add(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                        + "/image/photo/" + image.getId());
+                        + image.getUrlPath());
             }
         }
         return ActivityContentResponseDto.builder()

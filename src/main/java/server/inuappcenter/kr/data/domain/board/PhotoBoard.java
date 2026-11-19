@@ -75,7 +75,7 @@ public class PhotoBoard extends Board {
         String imageUrl = null;
         if (this.image != null) {
             imageUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + "/image/photo/" + this.image.getId();
+                    + this.image.getUrlPath();
         }
         return PhotoBoardResponseDto.builder()
                 .id(this.getId())

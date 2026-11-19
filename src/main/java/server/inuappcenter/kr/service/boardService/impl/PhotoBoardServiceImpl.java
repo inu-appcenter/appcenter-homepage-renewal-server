@@ -1,5 +1,6 @@
 package server.inuappcenter.kr.service.boardService.impl;
 
+import server.inuappcenter.kr.data.utils.AfterCommit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -47,7 +48,8 @@ public class PhotoBoardServiceImpl implements AdditionalBoardService {
     @CacheEvict(value = "photoBoardList", allEntries = true)
     @Transactional
     public CommonResponseDto updateBoard(Long boardId, Long imageId, PhotoBoardRequestDto requestDto) {
-        boardResponseRedisRepository.deleteById(boardId);
+        // 캐시 삭제는 커밋 이후
+        AfterCommit.run(() -> boardResponseRedisRepository.deleteById(boardId));
 
         PhotoBoard foundBoard = photoBoardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
@@ -59,7 +61,7 @@ public class PhotoBoardServiceImpl implements AdditionalBoardService {
                 // 기존 이미지 수정
                 Image foundImage = imageRepository.findById(imageId)
                         .orElseThrow(() -> new CustomNotFoundException("Image ID: " + imageId + "를 찾을 수 없습니다."));
-                imageRedisRepository.deleteById(imageId);
+                AfterCommit.run(() -> imageRedisRepository.deleteById(imageId));
                 foundImage.updateImage(multipartFile);
                 imageRepository.save(foundImage);
             } else {
