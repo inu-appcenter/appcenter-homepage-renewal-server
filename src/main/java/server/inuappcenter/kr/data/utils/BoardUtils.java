@@ -18,7 +18,7 @@ public class BoardUtils {
                 if (scheme == null) {
                     scheme = request.getScheme();  // 기본 HTTP/HTTPS 값 사용
                 }
-                imageInfo.put(image.getId(), scheme + "://" + request.getServerName() + ":" + request.getServerPort() +  "/image/photo/" + image.getId().toString());
+                imageInfo.put(image.getId(), scheme + "://" + request.getServerName() + ":" + request.getServerPort() +  image.getUrlPath());
             }
         }
         return imageInfo;

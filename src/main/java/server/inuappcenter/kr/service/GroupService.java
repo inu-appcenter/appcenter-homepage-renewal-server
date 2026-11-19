@@ -11,6 +11,7 @@ import server.inuappcenter.kr.data.domain.Group;
 import server.inuappcenter.kr.data.domain.IntroBoardGroup;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.Role;
+import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.domain.board.IntroBoard;
 import server.inuappcenter.kr.data.dto.request.GroupRequestDto;
 import server.inuappcenter.kr.data.dto.response.GroupPartListResponseDto;
@@ -100,8 +101,10 @@ public class GroupService {
             IntroBoard ib = ibg.getIntroBoard();
             String mainImage = null;
             if (!ib.getImages().isEmpty()) {
+                // 프론트와 같은 규칙: 가장 작은 id = 아이콘 (List 순서는 보장되지 않음)
+                Image icon = Collections.min(ib.getImages(), Comparator.comparing(Image::getId));
                 mainImage = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                        + "/image/photo/" + ib.getImages().get(0).getId();
+                        + icon.getUrlPath();
             }
             MemberProjectInfoDto projectDto = new MemberProjectInfoDto(ib.getId(), ib.getTitle(), mainImage);
             if (projectsByMemberId.get(memberId).stream().noneMatch(p -> p.getId().equals(ib.getId()))) {
