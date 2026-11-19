@@ -15,7 +15,7 @@ import server.inuappcenter.kr.data.domain.board.PhotoBoard;
 import server.inuappcenter.kr.data.dto.request.PhotoBoardRequestDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
-import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
+import server.inuappcenter.kr.data.redis.ImageCache;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.repository.PhotoBoardRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
@@ -31,7 +31,7 @@ public class PhotoBoardServiceImpl implements AdditionalBoardService {
     private final PhotoBoardRepository photoBoardRepository;
     private final ImageRepository imageRepository;
     private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
-    private final ImageRedisRepository imageRedisRepository;
+    private final ImageCache imageCache;
     private final HttpServletRequest request;
 
     @Cacheable(value = "photoBoardList", key = "'all'")
@@ -61,7 +61,7 @@ public class PhotoBoardServiceImpl implements AdditionalBoardService {
                 // 기존 이미지 수정
                 Image foundImage = imageRepository.findById(imageId)
                         .orElseThrow(() -> new CustomNotFoundException("Image ID: " + imageId + "를 찾을 수 없습니다."));
-                AfterCommit.run(() -> imageRedisRepository.deleteById(imageId));
+                AfterCommit.run(() -> imageCache.evict(imageId));
                 foundImage.updateImage(multipartFile);
                 imageRepository.save(foundImage);
             } else {
