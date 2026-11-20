@@ -24,5 +24,9 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     List<Image> findAllByBoard(Board board);
 
+    // 이미지 바이트(BLOB)를 읽지 않고 id만 조회
+    @Query("SELECT i.id FROM Image i WHERE i.board = :board")
+    List<Long> findIdsByBoard(@Param("board") Board board);
+
     void deleteAllByBoard(Board board);
 }
