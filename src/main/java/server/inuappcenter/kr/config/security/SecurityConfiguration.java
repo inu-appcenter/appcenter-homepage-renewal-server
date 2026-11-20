@@ -22,7 +22,7 @@ import server.inuappcenter.kr.config.security.exception.CustomAuthenticationEntr
     public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String[] PERMIT_URI_ARRAY = {
+    public static final String[] PERMIT_URI_ARRAY = {
             "/groups/public/*",
             "/faqs/public/*",
             "/introduction-board/public/*",
