@@ -40,7 +40,7 @@ public class PhotoBoardResponseDto extends BoardResponseDto{
         String imageUrl = null;
         if (photoBoard.getImage() != null) {
             imageUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + "/image/photo/" + photoBoard.getImage().getId();
+                    + photoBoard.getImage().getUrlPath();
         }
         return PhotoBoardResponseDto.builder()
                 .id(photoBoard.getId())
