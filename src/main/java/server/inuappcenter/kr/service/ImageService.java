@@ -12,8 +12,7 @@ import server.inuappcenter.kr.data.domain.board.Image;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.repository.BoardRepository;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
-import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
-import server.inuappcenter.kr.data.redis.domain.ImageRedis;
+import server.inuappcenter.kr.data.redis.ImageCache;
 import server.inuappcenter.kr.data.repository.ImageRepository;
 import server.inuappcenter.kr.data.utils.ImageUtils;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
@@ -28,21 +27,19 @@ import java.util.Optional;
 public class ImageService {
     private final ImageRepository imageRepository;
     private final BoardRepository<Board> boardRepository;
-    private final ImageRedisRepository imageRedisRepository;
+    private final ImageCache imageCache;
     private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
     private final CacheManager cacheManager;
 
     @Transactional(readOnly = true)
     public byte[] getImage(Long id) {
-        return imageRedisRepository.findById(id)
-                .map(ImageRedis::getImageData)
-                .orElseGet(() -> {
-                    Image foundImage = imageRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
-                    byte[] decompressedImage = ImageUtils.decompressImage(foundImage.getImageData());
-                    ImageRedis imageRedis = new ImageRedis(foundImage.getId(), decompressedImage);
-                    imageRedisRepository.save(imageRedis);
-                    return decompressedImage;
-                });
+        // Redis에 있으면 바로 반환, 없으면 DB에서 읽고 압축을 풀어 1시간 캐시
+        return imageCache.get(id).orElseGet(() -> {
+            Image foundImage = imageRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
+            byte[] decompressedImage = ImageUtils.decompressImage(foundImage.getImageData());
+            imageCache.put(foundImage.getId(), decompressedImage);
+            return decompressedImage;
+        });
     }
 
     @Transactional
@@ -73,7 +70,7 @@ public class ImageService {
             @Override
             public void afterCommit() {
                 boardResponseRedisRepository.deleteById(boardId);
-                imageRedisRepository.deleteAllById(imageIds);
+                imageCache.evictAll(imageIds);
                 Optional.ofNullable(cacheManager.getCache("introBoardList")).ifPresent(Cache::clear);
             }
         });

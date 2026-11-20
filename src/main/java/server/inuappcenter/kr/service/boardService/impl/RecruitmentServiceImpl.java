@@ -17,7 +17,7 @@ import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentFieldResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentListResponseDto;
 import server.inuappcenter.kr.data.dto.response.RecruitmentResponseDto;
-import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
+import server.inuappcenter.kr.data.redis.ImageCache;
 import server.inuappcenter.kr.data.repository.RecruitmentFieldMappingRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentFieldRepository;
 import server.inuappcenter.kr.data.repository.RecruitmentRepository;
@@ -36,7 +36,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
     private final RecruitmentRepository recruitmentRepository;
     private final RecruitmentFieldRepository recruitmentFieldRepository;
     private final RecruitmentFieldMappingRepository recruitmentFieldMappingRepository;
-    private final ImageRedisRepository imageRedisRepository;
+    private final ImageCache imageCache;
     private final UserRepository userRepository;
     private final HttpServletRequest request;
 
@@ -171,7 +171,7 @@ public class RecruitmentServiceImpl implements AdditionalBoardService {
         // 기존 이미지 Redis 캐시 삭제 (커밋 이후)
         if (oldThumbnailId != null) {
             AfterCommit.run(() -> {
-                imageRedisRepository.deleteById(oldThumbnailId);
+                imageCache.evict(oldThumbnailId);
                 log.info("리크루팅 썸네일 이미지 Redis 캐시 삭제: imageId={}", oldThumbnailId);
             });
         }

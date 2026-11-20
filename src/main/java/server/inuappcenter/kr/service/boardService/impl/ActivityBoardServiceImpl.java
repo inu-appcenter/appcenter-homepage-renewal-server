@@ -16,7 +16,7 @@ import server.inuappcenter.kr.data.dto.response.ActivityBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.ActivityContentResponseDto;
 import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
-import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
+import server.inuappcenter.kr.data.redis.ImageCache;
 import server.inuappcenter.kr.data.repository.ActivityBoardRepository;
 import server.inuappcenter.kr.data.repository.ActivityContentRepository;
 import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException;
@@ -37,7 +37,7 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
     private final ActivityBoardRepository activityBoardRepository;
     private final ActivityContentRepository activityContentRepository;
     private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
-    private final ImageRedisRepository imageRedisRepository;
+    private final ImageCache imageCache;
     private final HttpServletRequest request;
 
     @Override
@@ -193,7 +193,7 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
         // Redis 캐시 삭제 (이미지 + 보드, 커밋 이후)
         AfterCommit.run(() -> {
             if (oldThumbnailId != null) {
-                imageRedisRepository.deleteById(oldThumbnailId);
+                imageCache.evict(oldThumbnailId);
                 log.info("썸네일 이미지 Redis 캐시 삭제: imageId={}", oldThumbnailId);
             }
             boardResponseRedisRepository.deleteById(boardId);
@@ -238,7 +238,7 @@ public class ActivityBoardServiceImpl implements AdditionalBoardService {
                 target.updateImage(files.get(i));
                 // Redis 캐시 삭제 (커밋 이후)
                 Long replacedId = imageIds.get(i);
-                AfterCommit.run(() -> imageRedisRepository.deleteById(replacedId));
+                AfterCommit.run(() -> imageCache.evict(replacedId));
             }
         }
         // files만: 새 이미지 추가

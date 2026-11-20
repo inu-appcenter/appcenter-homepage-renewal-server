@@ -29,7 +29,7 @@ import server.inuappcenter.kr.data.dto.response.BoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.GroupResponseDto;
 import server.inuappcenter.kr.data.dto.response.IntroBoardResponseDto;
 import server.inuappcenter.kr.data.dto.response.StackResponseDto;
-import server.inuappcenter.kr.data.redis.repository.ImageRedisRepository;
+import server.inuappcenter.kr.data.redis.ImageCache;
 import server.inuappcenter.kr.data.redis.repository.BoardResponseRedisRepository;
 import server.inuappcenter.kr.data.domain.Member;
 import server.inuappcenter.kr.data.domain.User;
@@ -51,7 +51,7 @@ public class BoardService {
     private final ImageRepository imageRepository;
     private final HttpServletRequest request;
     private final BoardResponseRedisRepository<BoardResponseDto> boardResponseRedisRepository;
-    private final ImageRedisRepository imageRedisRepository;
+    private final ImageCache imageCache;
     private final StackRepository stackRepository;
     private final GroupRepository groupRepository;
     private final IntroBoardStackRepository introBoardStackRepository;
@@ -307,7 +307,7 @@ public class BoardService {
         Runnable evict = () -> {
             boardResponseRedisRepository.deleteById(boardId);
             if (!imageIds.isEmpty()) {
-                imageRedisRepository.deleteAllById(imageIds);
+                imageCache.evictAll(imageIds);
             }
             // 목록 캐시와 멤버 페이지(프로젝트 대표 이미지 URL 포함) 캐시
             for (String name : List.of("introBoardList", "photoBoardList", "groupMembersInfo")) {
