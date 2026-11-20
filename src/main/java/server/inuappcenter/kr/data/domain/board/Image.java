@@ -9,6 +9,8 @@ import server.inuappcenter.kr.data.utils.ImageUtils;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,10 +38,16 @@ public class Image {
     @Column(name = "is_thumbnail")
     private Boolean isThumbnail = false;
 
+    // 이미지 내용이 바뀐 시각. URL에 ?v= 로 붙여 CDN/브라우저 캐시를 우회한다.
+    // 이 컬럼 추가 전에 저장된 행은 null → URL이 기존과 동일하게 유지된다.
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public Image(String originalFilename, byte[] bytes, long size) {
         this.originalFileName = originalFilename;
         this.imageData = bytes;
         this.fileSize = size;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Image(MultipartFile multipartFile) {
@@ -47,6 +55,7 @@ public class Image {
             this.originalFileName = multipartFile.getOriginalFilename();
             this.imageData = ImageUtils.compressImage(multipartFile.getBytes());
             this.fileSize = multipartFile.getSize();
+            this.updatedAt = LocalDateTime.now();
         } catch (IOException e) {
             throw new RuntimeException("사진을 처리하던 중 오류가 발생했습니다.");
         }
@@ -62,6 +71,7 @@ public class Image {
             this.originalFileName = multipartFile.getOriginalFilename();
             this.imageData = ImageUtils.compressImage(multipartFile.getBytes());
             this.fileSize = multipartFile.getSize();
+            this.updatedAt = LocalDateTime.now();
         } catch (IOException e) {
             throw new RuntimeException("업로드 된 이미지의 정보를 불러올 수 없습니다.");
         }
@@ -81,9 +91,22 @@ public class Image {
             this.imageData = ImageUtils.compressImage(multipartFile.getBytes());
             this.fileSize = multipartFile.getSize();
             this.originalFileName = multipartFile.getOriginalFilename();
+            this.updatedAt = LocalDateTime.now();
         } catch (IOException e) {
             throw new RuntimeException("사진을 처리하던 중 오류가 발생했습니다.");
         }
+    }
+
+    /**
+     * 이미지 조회 경로. 내용이 바뀌면 ?v= 값이 바뀌어 새 URL이 된다.
+     * updatedAt이 없는 기존 이미지는 "/image/photo/{id}" 그대로 반환한다.
+     */
+    public String getUrlPath() {
+        String path = "/image/photo/" + id;
+        if (updatedAt == null) {
+            return path;
+        }
+        return path + "?v=" + updatedAt.toEpochSecond(ZoneOffset.UTC);
     }
 
 

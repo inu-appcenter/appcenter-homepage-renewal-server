@@ -2,11 +2,15 @@ package server.inuappcenter.kr.service.boardService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 import server.inuappcenter.kr.common.data.dto.CommonResponseDto;
 import server.inuappcenter.kr.data.domain.Group;
@@ -37,6 +41,7 @@ import server.inuappcenter.kr.exception.customExceptions.CustomNotFoundException
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +58,7 @@ public class BoardService {
     private final IntroBoardStackRepository introBoardStackRepository;
     private final IntroBoardGroupRepository introBoardGroupRepository;
     private final UserRepository userRepository;
+    private final CacheManager cacheManager;
 
     @Transactional(readOnly = true)
     public BoardResponseDto findBoard(Long id) {
@@ -172,8 +178,10 @@ public class BoardService {
     })
     @Transactional
     public CommonResponseDto updateBoard(Long board_id, List<Long> image_id, BoardRequestDto boardRequestDto, String uid) {
-        // 캐시에서 보드를 삭제한다.
-        boardResponseRedisRepository.deleteById(board_id);
+        // 캐시 삭제는 커밋 이후에 한다. 커밋 전에 지우면 그 사이 조회가 옛 데이터를 다시 캐싱하고,
+        // 새 ?v= URL이 옛 이미지 바이트를 받아 CDN에 1년간 고정될 수 있다.
+        List<Long> evictImageIds = new ArrayList<>();
+        evictAfterCommit(board_id, evictImageIds);
 
         Board foundBoard = boardRepository.findById(board_id).orElseThrow(() -> new CustomNotFoundException("The requested ID was not found."));
 
@@ -235,8 +243,8 @@ public class BoardService {
                 // 찾아진 이미지 목록에서 id를 가져와 찾아진 id 목록에 추가함
                 foundImageIds.add(image.getId());
             }
-            // 캐시에서 이미지를 삭제한다.
-            imageRedisRepository.deleteAllById(foundImageIds);
+            // 교체되는 이미지의 캐시는 커밋 이후에 삭제한다 (evictAfterCommit).
+            evictImageIds.addAll(foundImageIds);
 
             // DB에 존재하지 않는 id(=새로 추가할 이미지의 id)를 찾음
             List<Long> missingImageIds = new ArrayList<>();
@@ -294,6 +302,31 @@ public class BoardService {
         }
 
         return new CommonResponseDto("id: " + board_id + " has been successfully modified.");
+    }
+
+    // 게시글 수정 후 캐시 무효화. 트랜잭션이 있으면 커밋 이후, 없으면(단위 테스트 등) 즉시 실행한다.
+    // imageIds는 메서드 진행 중에 채워지므로, 실행 시점의 내용이 사용된다.
+    private void evictAfterCommit(Long boardId, List<Long> imageIds) {
+        Runnable evict = () -> {
+            boardResponseRedisRepository.deleteById(boardId);
+            if (!imageIds.isEmpty()) {
+                imageRedisRepository.deleteAllById(imageIds);
+            }
+            // 목록 캐시와 멤버 페이지(프로젝트 대표 이미지 URL 포함) 캐시
+            for (String name : List.of("introBoardList", "photoBoardList", "groupMembersInfo")) {
+                Optional.ofNullable(cacheManager.getCache(name)).ifPresent(Cache::clear);
+            }
+        };
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    evict.run();
+                }
+            });
+        } else {
+            evict.run();
+        }
     }
 
     private void updateIntroBoardRelations(IntroBoard introBoard, IntroBoardRequestDto requestDto) {
